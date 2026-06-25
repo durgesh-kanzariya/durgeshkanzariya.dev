@@ -201,7 +201,7 @@ export default function CustomCursor() {
               strokeWidth="1.5"
               strokeLinecap="round"
               strokeLinejoin="round"
-              className="dark:stroke-blue-400/40"
+              className="stroke-teal-600/30 dark:stroke-blue-400/40"
             />
           </svg>
 
@@ -215,8 +215,8 @@ export default function CustomCursor() {
             }}
             animate={{
               scale: isHovered ? 1.6 : 1.0,
-              borderColor: isHovered ? "#3b82f6" : "rgba(100, 116, 139, 0.4)",
-              backgroundColor: isHovered ? "rgba(59, 130, 246, 0.05)" : "rgba(59, 130, 246, 0)",
+              borderColor: isHovered ? "var(--color-cursor-active)" : "rgba(100, 116, 139, 0.4)",
+              backgroundColor: isHovered ? "var(--color-cursor-bg-hover)" : "rgba(59, 130, 246, 0)",
             }}
             transition={{ type: "tween", ease: "easeOut", duration: 0.15 }}
             className="fixed top-0 left-0 w-8 h-8 rounded-full border pointer-events-none z-[9999] dark:border-slate-500/45 dark:bg-white/[0.02]"
@@ -232,7 +232,7 @@ export default function CustomCursor() {
             }}
             animate={{
               scale: isHovered ? 2.0 : 1.0,
-              backgroundColor: isHovered ? "#3b82f6" : "var(--color-ink-primary)",
+              backgroundColor: isHovered ? "var(--color-cursor-active)" : "var(--color-ink-primary)",
             }}
             transition={{ type: "tween", ease: "easeOut", duration: 0.1 }}
             className="fixed top-0 left-0 w-1.5 h-1.5 rounded-full pointer-events-none z-[9999]"
