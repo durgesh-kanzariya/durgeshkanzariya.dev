@@ -111,7 +111,7 @@ export default function ProjectCard({
         {project.image && (
           <motion.div 
             layoutId={`card-image-${project.id}`}
-            className="w-full aspect-[2.1/1] rounded-xl overflow-hidden border border-border-subtle mb-5 relative group"
+            className="w-full aspect-[1.8/1] sm:aspect-[2.1/1] rounded-xl overflow-hidden border border-border-subtle mb-5 relative group"
           >
             <img 
               src={project.image} 

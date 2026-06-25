@@ -625,7 +625,7 @@ export default function Home() {
                 {activeProject.image && (
                   <motion.div 
                     layoutId={`card-image-${activeProject.id}`}
-                    className="w-full aspect-[21/9] rounded-2xl overflow-hidden border border-border-subtle mb-6"
+                    className="w-full aspect-[16/9] sm:aspect-[21/9] rounded-2xl overflow-hidden border border-border-subtle mb-6"
                   >
                     <img 
                       src={activeProject.image} 
