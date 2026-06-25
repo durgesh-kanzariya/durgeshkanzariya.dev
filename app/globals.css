@@ -1,0 +1,88 @@
+@import "tailwindcss";
+
+@theme {
+  --color-canvas: var(--canvas-bg);
+  --color-card-bg: var(--card-bg);
+  --color-ink-primary: var(--ink-primary);
+  --color-ink-muted: var(--ink-muted);
+  --color-tech-blue: #3B82F6;
+  --color-tech-blue-hover: #2563EB;
+  --color-border-subtle: var(--border-subtle);
+  
+  --font-sans: var(--font-geist-sans), Inter, system-ui, sans-serif;
+  --font-mono: var(--font-geist-mono), ui-monospace, monospace;
+}
+
+:root {
+  --canvas-bg: #F8F9FA;
+  --card-bg: #FFFFFF;
+  --ink-primary: #1A1D20;
+  --ink-muted: #64748B;
+  --border-subtle: #E2E8F0;
+}
+
+.dark {
+  --canvas-bg: #0B0F19; /* dark modern night */
+  --card-bg: #111827; /* sleek dark card */
+  --ink-primary: #F9FAFB;
+  --ink-muted: #9CA3AF;
+  --border-subtle: #1F2937;
+}
+
+/* Custom background pattern - Jo Pe Curo & Itomdev vibe */
+.grid-bg {
+  background-image: 
+    radial-gradient(var(--border-subtle) 1px, transparent 1px), 
+    radial-gradient(var(--border-subtle) 1px, var(--canvas-bg) 1px);
+  background-size: 24px 24px;
+  background-position: 0 0, 12px 12px;
+}
+
+/* Scanline and CRT-terminal vibe (Killian Herzer / Itomdev) */
+.scanlines {
+  position: relative;
+  overflow: hidden;
+}
+.scanlines::before {
+  content: " ";
+  display: block;
+  position: absolute;
+  top: 0; left: 0; bottom: 0; right: 0;
+  background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.05) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.01), rgba(0, 255, 0, 0.005), rgba(0, 0, 255, 0.01));
+  z-index: 2;
+  background-size: 100% 3px, 3px 100%;
+  pointer-events: none;
+}
+
+body {
+  background-color: var(--canvas-bg);
+  color: var(--ink-primary);
+  font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+  overflow-x: hidden;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* Custom premium scrollbar styling */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: #F8F9FA;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #CBD5E1;
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #94A3B8;
+}
+
+/* Custom glowing cursor backdrop element */
+.cursor-glow {
+  background: radial-gradient(600px circle at var(--x, 0px) var(--y, 0px), rgba(59, 130, 246, 0.03), transparent 40%);
+}
+
