@@ -30,6 +30,8 @@ export default function CardWithSpotlight({
           y: e.clientY - rect.top,
         });
       }}
+      whileHover={{ y: -4, boxShadow: "0 12px 30px -10px rgba(59, 130, 246, 0.05)" }}
+      transition={{ duration: 0.3, ease: "easeOut" }}
       className={`relative overflow-hidden group ${className}`}
       {...props}
     >

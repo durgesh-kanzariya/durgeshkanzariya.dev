@@ -5,6 +5,8 @@ import Navbar from "@/components/Navbar";
 import ProjectCard from "@/components/ProjectCard";
 import InteractiveConsole from "@/components/InteractiveConsole";
 import CardWithSpotlight from "@/components/CardWithSpotlight";
+import AmbientGlooms from "@/components/AmbientGlooms";
+import FloatingParticles from "@/components/FloatingParticles";
 import { Terminal, ShieldCheck, Layers, Mail, ArrowDownRight, ArrowUpRight, X, Activity, Cpu, Copy, Check } from "lucide-react";
 
 const PROJECTS_DATA = [
@@ -158,15 +160,11 @@ export default function Home() {
       id="home"
       className="min-h-screen bg-canvas text-ink-primary font-sans relative overflow-hidden grid-bg cursor-glow flex flex-col"
     >
-      {/* Ambient background bloom glow spots (atmospheric premium feel) */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none z-0">
-        {/* Top-center soft blue bloom */}
-        <div className="absolute -top-[10%] left-[20%] w-[600px] h-[600px] rounded-full bg-tech-blue/5 dark:bg-tech-blue/8 blur-[130px] opacity-70" />
-        {/* Mid-right violet bloom */}
-        <div className="absolute top-[30%] -right-[10%] w-[700px] h-[700px] rounded-full bg-indigo-500/4 dark:bg-indigo-500/6 blur-[150px] opacity-70" />
-        {/* Bottom-left sky/cyan bloom */}
-        <div className="absolute bottom-[15%] -left-[10%] w-[600px] h-[600px] rounded-full bg-sky-500/5 dark:bg-sky-500/8 blur-[120px] opacity-70" />
-      </div>
+      {/* Ambient background bloom glow spots (pulsing, color-cycling, rippling) */}
+      <AmbientGlooms />
+
+      {/* Floating background interactive code particles */}
+      <FloatingParticles />
 
       {/* Background Bloom Click Ripples */}
       {bgRipples.map((ripple) => (
@@ -213,7 +211,7 @@ export default function Home() {
       {/* Floating Header / Brand Nav (Jo Pe Curo style) */}
       <Navbar />
 
-      <main className="max-w-6xl mx-auto px-6 pt-12 pb-16 md:pt-16 md:pb-24 space-y-28 relative z-10 flex-grow w-full">
+      <main className="max-w-6xl mx-auto px-6 pt-10 pb-16 md:pt-16 md:pb-24 space-y-16 sm:space-y-20 md:space-y-28 relative z-10 flex-grow w-full">
         {/* Editorial Text Header Section (Monolog / Killian Herzer style) */}
         <header className="max-w-3xl">
           <h1 className="text-4xl sm:text-5xl md:text-6xl font-extrabold text-ink-primary tracking-tight leading-[1.1] mb-6 font-sans">
@@ -241,34 +239,40 @@ export default function Home() {
           variants={gridContainerVariants}
           className="space-y-8 scroll-mt-24"
         >
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-border-subtle/60 pb-6">
+          <motion.div 
+            initial={{ opacity: 0, y: 15 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-100px" }}
+            transition={{ duration: 0.5, ease: "easeOut" }}
+            className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-border-subtle/60 pb-6"
+          >
             <div className="flex items-center gap-2 font-mono text-[10px] tracking-widest text-ink-muted uppercase">
               <Terminal className="w-4 h-4 text-tech-blue animate-pulse" />
               <span>Core Engineering Showcase</span>
             </div>
 
             {/* Awwwards-style filter tab switches */}
-            <div className="flex flex-wrap gap-1 bg-slate-100 dark:bg-slate-800 p-1 rounded-xl border border-border-subtle/50 font-mono text-[10px] font-bold transition-colors duration-300">
+            <div className="flex items-center overflow-x-auto scrollbar-none flex-nowrap gap-1 bg-slate-100 dark:bg-slate-800 p-1 rounded-xl border border-border-subtle/50 font-mono text-[10px] font-bold transition-colors duration-300 max-w-full">
               <button
                 onClick={() => setFilter("ALL")}
-                className={`px-3 py-1.5 rounded-lg transition-all duration-300 cursor-pointer ${filter === "ALL" ? "bg-card-bg text-tech-blue shadow-sm" : "text-ink-muted hover:text-ink-primary"}`}
+                className={`px-3 py-1.5 rounded-lg transition-all duration-300 cursor-pointer shrink-0 ${filter === "ALL" ? "bg-card-bg text-tech-blue shadow-sm" : "text-ink-muted hover:text-ink-primary"}`}
               >
                 00 // SHOW ALL
               </button>
               <button
                 onClick={() => setFilter("DATA_SCIENCE")}
-                className={`px-3 py-1.5 rounded-lg transition-all duration-300 cursor-pointer ${filter === "DATA_SCIENCE" ? "bg-card-bg text-tech-blue shadow-sm" : "text-ink-muted hover:text-ink-primary"}`}
+                className={`px-3 py-1.5 rounded-lg transition-all duration-300 cursor-pointer shrink-0 ${filter === "DATA_SCIENCE" ? "bg-card-bg text-tech-blue shadow-sm" : "text-ink-muted hover:text-ink-primary"}`}
               >
                 01 // DATA SCIENCE
               </button>
               <button
                 onClick={() => setFilter("WEB_ARCHITECTURE")}
-                className={`px-3 py-1.5 rounded-lg transition-all duration-300 cursor-pointer ${filter === "WEB_ARCHITECTURE" ? "bg-card-bg text-tech-blue shadow-sm" : "text-ink-muted hover:text-ink-primary"}`}
+                className={`px-3 py-1.5 rounded-lg transition-all duration-300 cursor-pointer shrink-0 ${filter === "WEB_ARCHITECTURE" ? "bg-card-bg text-tech-blue shadow-sm" : "text-ink-muted hover:text-ink-primary"}`}
               >
                 02 // WEB ARCHITECTURE
               </button>
             </div>
-          </div>
+          </motion.div>
           
           {/* Animated Filter Grid layout using Framer Motion */}
           <motion.div 
@@ -300,10 +304,16 @@ export default function Home() {
           variants={gridContainerVariants}
           className="space-y-8 scroll-mt-24"
         >
-          <div className="flex items-center gap-2 font-mono text-[10px] tracking-widest text-ink-muted uppercase border-b border-border-subtle/60 pb-6">
+          <motion.div 
+            initial={{ opacity: 0, x: -20 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true, margin: "-100px" }}
+            transition={{ duration: 0.5, ease: "easeOut" }}
+            className="flex items-center gap-2 font-mono text-[10px] tracking-widest text-ink-muted uppercase border-b border-border-subtle/60 pb-6"
+          >
             <Cpu className="w-4 h-4 text-tech-blue" />
             <span>Capabilities & Technical Competencies</span>
-          </div>
+          </motion.div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <CardWithSpotlight 
               variants={gridItem3DVariants}
@@ -340,10 +350,16 @@ export default function Home() {
           variants={gridContainerVariants}
           className="space-y-8 scroll-mt-24"
         >
-          <div className="flex items-center gap-2 font-mono text-[10px] tracking-widest text-ink-muted uppercase border-b border-border-subtle/60 pb-6">
+          <motion.div 
+            initial={{ opacity: 0, x: -20 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true, margin: "-100px" }}
+            transition={{ duration: 0.5, ease: "easeOut" }}
+            className="flex items-center gap-2 font-mono text-[10px] tracking-widest text-ink-muted uppercase border-b border-border-subtle/60 pb-6"
+          >
             <Layers className="w-4 h-4 text-tech-blue" />
             <span>Engineering Philosophy</span>
-          </div>
+          </motion.div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             <motion.div variants={gridItem3DVariants} className="space-y-2">
               <span className="text-[10px] font-mono text-tech-blue uppercase tracking-widest">01 / Rigor Over Hype</span>
@@ -369,10 +385,16 @@ export default function Home() {
           variants={gridContainerVariants}
           className="space-y-8 scroll-mt-24"
         >
-          <div className="flex items-center gap-2 font-mono text-[10px] tracking-widest text-ink-muted uppercase border-b border-border-subtle/60 pb-6">
+          <motion.div 
+            initial={{ opacity: 0, x: -20 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true, margin: "-100px" }}
+            transition={{ duration: 0.5, ease: "easeOut" }}
+            className="flex items-center gap-2 font-mono text-[10px] tracking-widest text-ink-muted uppercase border-b border-border-subtle/60 pb-6"
+          >
             <Terminal className="w-4 h-4 text-tech-blue" />
             <span>Interactive Workspace Simulation</span>
-          </div>
+          </motion.div>
           
           <motion.div variants={gridItem3DVariants} className="w-full">
             <InteractiveConsole />
@@ -388,10 +410,16 @@ export default function Home() {
           variants={gridContainerVariants}
           className="space-y-8 scroll-mt-24"
         >
-          <div className="flex items-center gap-2 font-mono text-[10px] tracking-widest text-ink-muted uppercase border-b border-border-subtle/60 pb-6">
+          <motion.div 
+            initial={{ opacity: 0, x: -20 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true, margin: "-100px" }}
+            transition={{ duration: 0.5, ease: "easeOut" }}
+            className="flex items-center gap-2 font-mono text-[10px] tracking-widest text-ink-muted uppercase border-b border-border-subtle/60 pb-6"
+          >
             <Activity className="w-4 h-4 text-tech-blue" />
             <span>System Roadmap & Professional Timeline</span>
-          </div>
+          </motion.div>
           <div className="relative border-l border-border-subtle/80 ml-3 pl-8 space-y-10 py-2">
             {/* Timeline Item 1 */}
             <motion.div variants={gridItem3DVariants} className="relative group">
@@ -455,10 +483,16 @@ export default function Home() {
           variants={gridContainerVariants}
           className="space-y-8 scroll-mt-24"
         >
-          <div className="flex items-center gap-2 font-mono text-[10px] tracking-widest text-ink-muted uppercase border-b border-border-subtle/60 pb-6">
+          <motion.div 
+            initial={{ opacity: 0, x: -20 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true, margin: "-100px" }}
+            transition={{ duration: 0.5, ease: "easeOut" }}
+            className="flex items-center gap-2 font-mono text-[10px] tracking-widest text-ink-muted uppercase border-b border-border-subtle/60 pb-6"
+          >
             <ShieldCheck className="w-4 h-4 text-tech-blue" />
             <span>Validated Credentials & Environments</span>
-          </div>
+          </motion.div>
 
           <CardWithSpotlight 
             variants={gridItem3DVariants}

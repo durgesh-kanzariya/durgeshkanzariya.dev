@@ -117,7 +117,7 @@ export default function CustomCursor() {
 
       // Initialize trail points if empty or reset
       if (trailPoints.current.length === 0) {
-        for (let i = 0; i < 14; i++) {
+        for (let i = 0; i < 8; i++) {
           trailPoints.current.push({ x: currentX, y: currentY });
         }
       }
@@ -126,7 +126,7 @@ export default function CustomCursor() {
       trailPoints.current[0] = { x: currentX, y: currentY };
 
       // Each node follows the previous one with spring-like physics
-      const ease = 0.32;
+      const ease = 0.42;
       for (let i = 1; i < trailPoints.current.length; i++) {
         const prev = trailPoints.current[i - 1];
         const curr = trailPoints.current[i];

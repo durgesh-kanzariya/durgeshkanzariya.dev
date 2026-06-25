@@ -108,7 +108,7 @@ export default function InteractiveConsole() {
           y: e.clientY - rect.top,
         });
       }}
-      className="bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden shadow-2xl font-mono text-xs text-slate-350 w-full relative scanlines flex flex-col h-[400px] group"
+      className="bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden shadow-2xl font-mono text-[11px] sm:text-xs text-slate-350 w-full relative scanlines flex flex-col h-[340px] sm:h-[400px] group"
     >
       {/* Spotlight hover bloom glow */}
       <div
@@ -124,23 +124,22 @@ export default function InteractiveConsole() {
         }}
       />
       {/* Terminal Title Bar */}
-      <div className="bg-slate-950/80 border-b border-slate-850 px-4 py-3.5 flex items-center justify-between shrink-0">
-        <div className="flex items-center gap-2">
+      <div className="relative bg-slate-950/80 border-b border-slate-850 px-4 py-3 flex items-center justify-center shrink-0 select-none">
+        <div className="absolute left-4 flex items-center gap-1.5 shrink-0">
           {/* macOS window dots */}
-          <span className="w-3.5 h-3.5 rounded-full bg-rose-500/80" />
-          <span className="w-3.5 h-3.5 rounded-full bg-amber-500/80" />
-          <span className="w-3.5 h-3.5 rounded-full bg-emerald-500/80" />
+          <span className="w-2 h-2 sm:w-2.5 sm:h-2.5 rounded-full bg-rose-500/80" />
+          <span className="w-2 h-2 sm:w-2.5 sm:h-2.5 rounded-full bg-amber-500/80" />
+          <span className="w-2 h-2 sm:w-2.5 sm:h-2.5 rounded-full bg-emerald-500/80" />
         </div>
-        <span className="text-[10px] tracking-wider text-slate-500 font-bold uppercase">
+        <span className="text-[9px] sm:text-[10px] tracking-wider text-slate-500 font-bold uppercase truncate px-2 max-w-[60%] text-center">
           durgesh@portfolio:~$ workspace_console
         </span>
-        <div className="w-16" />
       </div>
 
       {/* Main Terminal Window Scroll Container */}
       <div 
         ref={cliScrollContainerRef}
-        className="flex-1 p-5 overflow-y-auto scrollbar-thin space-y-1.5 min-h-0"
+        className="flex-1 p-4 sm:p-5 overflow-y-auto scrollbar-thin space-y-1.5 min-h-0 text-[10px] sm:text-xs"
       >
         {cliHistory.map((line, idx) => {
           let textClass = "text-slate-300";
@@ -160,19 +159,21 @@ export default function InteractiveConsole() {
       </div>
 
       {/* Footer Interface Command Board */}
-      <div className="bg-slate-950/40 border-t border-slate-850 p-4 space-y-3 shrink-0">
+      <div className="bg-slate-950/40 border-t border-slate-850 p-3 sm:p-4 space-y-2.5 sm:space-y-3 shrink-0">
         {/* Click-to-run quick items */}
-        <div className="flex flex-wrap gap-2 items-center">
-          <span className="text-[10px] text-slate-500 uppercase tracking-widest mr-1 select-none">// Quick Actions:</span>
-          {["help", "bio", "skills", "projects", "credentials", "clear"].map((cmd) => (
-            <button
-              key={cmd}
-              onClick={() => executeCliCommand(cmd)}
-              className="bg-slate-850 hover:bg-slate-750 active:bg-slate-800 text-slate-300 border border-slate-800 hover:border-slate-700 px-2.5 py-1 rounded-md text-[10px] transition-all cursor-pointer font-mono"
-            >
-              {cmd}
-            </button>
-          ))}
+        <div className="flex items-center gap-2 overflow-x-auto scrollbar-none py-0.5 flex-nowrap w-full">
+          <span className="text-[9px] text-slate-500 uppercase tracking-wider select-none shrink-0">// CLI CMDs:</span>
+          <div className="flex items-center gap-1.5 flex-nowrap">
+            {["help", "bio", "skills", "projects", "credentials", "clear"].map((cmd) => (
+              <button
+                key={cmd}
+                onClick={() => executeCliCommand(cmd)}
+                className="bg-slate-850 hover:bg-slate-750 active:bg-slate-800 text-slate-300 border border-slate-800 hover:border-slate-700 px-2.5 py-1 rounded-md text-[9px] sm:text-[10px] transition-all cursor-pointer font-mono shrink-0 active:scale-95"
+              >
+                {cmd}
+              </button>
+            ))}
+          </div>
         </div>
 
         {/* Live Shell Input Form */}
@@ -181,16 +182,19 @@ export default function InteractiveConsole() {
             e.preventDefault();
             executeCliCommand(cliInput);
           }}
-          className="flex items-center gap-2 border-t border-slate-850/50 pt-3"
+          className="flex items-center gap-1.5 sm:gap-2 border-t border-slate-850/50 pt-2.5 sm:pt-3"
         >
-          <ChevronRight className="w-4 h-4 text-emerald-500 shrink-0" />
-          <span className="text-slate-450 font-bold select-none">durgesh@portfolio:~$</span>
+          <ChevronRight className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-emerald-500 shrink-0" />
+          <span className="text-slate-450 font-bold select-none text-[10px] sm:text-xs shrink-0">
+            <span className="hidden sm:inline">durgesh@portfolio:~$</span>
+            <span className="sm:hidden">cli:~$</span>
+          </span>
           <input
             type="text"
             value={cliInput}
             onChange={(e) => setCliInput(e.target.value)}
             placeholder="type queries here (e.g. 'skills')..."
-            className="bg-transparent border-none outline-none text-slate-200 font-mono text-xs flex-1 placeholder-slate-600"
+            className="bg-transparent border-none outline-none text-slate-200 font-mono text-[10px] sm:text-xs flex-1 placeholder-slate-600"
           />
         </form>
       </div>

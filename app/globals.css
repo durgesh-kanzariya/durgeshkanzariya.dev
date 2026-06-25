@@ -97,3 +97,12 @@ body {
     transparent 40%
   );
 }
+
+/* Utility to hide scrollbars on scrollable elements (mobile Quick commands, tab filters, etc.) */
+.scrollbar-none::-webkit-scrollbar {
+  display: none !important;
+}
+.scrollbar-none {
+  -ms-overflow-style: none !important;  /* IE and Edge */
+  scrollbar-width: none !important;  /* Firefox */
+}
