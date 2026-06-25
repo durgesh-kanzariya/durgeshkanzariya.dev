@@ -7,7 +7,7 @@ import InteractiveConsole from "@/components/InteractiveConsole";
 import CardWithSpotlight from "@/components/CardWithSpotlight";
 import AmbientGlooms from "@/components/AmbientGlooms";
 import FloatingParticles from "@/components/FloatingParticles";
-import CoinTossReveal, { CoinTossContainer } from "@/components/CoinTossReveal";
+import CoinTossReveal from "@/components/CoinTossReveal";
 import { Terminal, ShieldCheck, Layers, Mail, ArrowDownRight, ArrowUpRight, X, Activity, Cpu, Copy, Check } from "lucide-react";
 
 const PROJECTS_DATA = [
@@ -276,27 +276,25 @@ export default function Home() {
           </motion.div>
           
           {/* Animated Filter Grid layout using Framer Motion */}
-          <CoinTossContainer>
-            <motion.div 
-              layout
-              className="grid grid-cols-1 md:grid-cols-2 gap-6"
-            >
-              {filteredProjects.map((project, idx) => (
-                <motion.div
-                  key={project.id}
-                  layout
-                  className="w-full h-full"
-                >
-                  <CoinTossReveal index={idx}>
-                    <ProjectCard 
-                      project={project} 
-                      onClick={() => setActiveProject(project)}
-                    />
-                  </CoinTossReveal>
-                </motion.div>
-              ))}
-            </motion.div>
-          </CoinTossContainer>
+          <motion.div 
+            layout
+            className="grid grid-cols-1 md:grid-cols-2 gap-6"
+          >
+            {filteredProjects.map((project, idx) => (
+              <motion.div
+                key={project.id}
+                layout
+                className="w-full h-full"
+              >
+                <CoinTossReveal index={idx}>
+                  <ProjectCard 
+                    project={project} 
+                    onClick={() => setActiveProject(project)}
+                  />
+                </CoinTossReveal>
+              </motion.div>
+            ))}
+          </motion.div>
         </motion.section>
 
         {/* Capabilities Bento Grid Matrix (Itomdev & Big Dirty style) */}
@@ -317,37 +315,35 @@ export default function Home() {
             <Cpu className="w-4 h-4 text-tech-blue" />
             <span>Capabilities & Technical Competencies</span>
           </motion.div>
-          <CoinTossContainer>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              <CoinTossReveal index={0}>
-                <CardWithSpotlight 
-                  className="bg-card-bg border border-border-subtle/80 rounded-2xl p-6 space-y-4 hover:border-tech-blue/30 transition-colors duration-300 w-full h-full"
-                >
-                  <div className="w-10 h-10 rounded-xl bg-blue-50/80 dark:bg-blue-900/20 flex items-center justify-center text-tech-blue font-mono font-bold text-xs select-none">01</div>
-                  <h4 className="text-base font-bold text-ink-primary">Predictive Pipelines</h4>
-                  <p className="text-xs text-ink-muted leading-relaxed font-[300]">Integrating machine learning engines (such as XGBoost) into active server microservices to generate high-fidelity, real-time prediction scopes.</p>
-                </CardWithSpotlight>
-              </CoinTossReveal>
-              <CoinTossReveal index={1}>
-                <CardWithSpotlight 
-                  className="bg-card-bg border border-border-subtle/80 rounded-2xl p-6 space-y-4 hover:border-tech-blue/30 transition-colors duration-300 w-full h-full"
-                >
-                  <div className="w-10 h-10 rounded-xl bg-blue-50/80 dark:bg-blue-900/20 flex items-center justify-center text-tech-blue font-mono font-bold text-xs select-none">02</div>
-                  <h4 className="text-base font-bold text-ink-primary">Relational Infrastructure</h4>
-                  <p className="text-xs text-ink-muted leading-relaxed font-[300]">Designing rigorous, 3NF normalized SQL database architectures targeting highly efficient query speeds and low lookup latencies under index loads.</p>
-                </CardWithSpotlight>
-              </CoinTossReveal>
-              <CoinTossReveal index={2}>
-                <CardWithSpotlight 
-                  className="bg-card-bg border border-border-subtle/80 rounded-2xl p-6 space-y-4 hover:border-tech-blue/30 transition-colors duration-300 w-full h-full"
-                >
-                  <div className="w-10 h-10 rounded-xl bg-blue-50/80 dark:bg-blue-900/20 flex items-center justify-center text-tech-blue font-mono font-bold text-xs select-none">03</div>
-                  <h4 className="text-base font-bold text-ink-primary">Data Operations</h4>
-                  <p className="text-xs text-ink-muted leading-relaxed font-[300]">Engineering automated ETL processes, rolling statistical window analytics, and clean feature engineering models for sensor streams.</p>
-                </CardWithSpotlight>
-              </CoinTossReveal>
-            </div>
-          </CoinTossContainer>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <CoinTossReveal index={0}>
+              <CardWithSpotlight 
+                className="bg-card-bg border border-border-subtle/80 rounded-2xl p-6 space-y-4 hover:border-tech-blue/30 transition-colors duration-300 w-full h-full"
+              >
+                <div className="w-10 h-10 rounded-xl bg-blue-50/80 dark:bg-blue-900/20 flex items-center justify-center text-tech-blue font-mono font-bold text-xs select-none">01</div>
+                <h4 className="text-base font-bold text-ink-primary">Predictive Pipelines</h4>
+                <p className="text-xs text-ink-muted leading-relaxed font-[300]">Integrating machine learning engines (such as XGBoost) into active server microservices to generate high-fidelity, real-time prediction scopes.</p>
+              </CardWithSpotlight>
+            </CoinTossReveal>
+            <CoinTossReveal index={1}>
+              <CardWithSpotlight 
+                className="bg-card-bg border border-border-subtle/80 rounded-2xl p-6 space-y-4 hover:border-tech-blue/30 transition-colors duration-300 w-full h-full"
+              >
+                <div className="w-10 h-10 rounded-xl bg-blue-50/80 dark:bg-blue-900/20 flex items-center justify-center text-tech-blue font-mono font-bold text-xs select-none">02</div>
+                <h4 className="text-base font-bold text-ink-primary">Relational Infrastructure</h4>
+                <p className="text-xs text-ink-muted leading-relaxed font-[300]">Designing rigorous, 3NF normalized SQL database architectures targeting highly efficient query speeds and low lookup latencies under index loads.</p>
+              </CardWithSpotlight>
+            </CoinTossReveal>
+            <CoinTossReveal index={2}>
+              <CardWithSpotlight 
+                className="bg-card-bg border border-border-subtle/80 rounded-2xl p-6 space-y-4 hover:border-tech-blue/30 transition-colors duration-300 w-full h-full"
+              >
+                <div className="w-10 h-10 rounded-xl bg-blue-50/80 dark:bg-blue-900/20 flex items-center justify-center text-tech-blue font-mono font-bold text-xs select-none">03</div>
+                <h4 className="text-base font-bold text-ink-primary">Data Operations</h4>
+                <p className="text-xs text-ink-muted leading-relaxed font-[300]">Engineering automated ETL processes, rolling statistical window analytics, and clean feature engineering models for sensor streams.</p>
+              </CardWithSpotlight>
+            </CoinTossReveal>
+          </div>
         </motion.section>
 
         {/* Engineering Philosophy Section (Monolog inspired) */}

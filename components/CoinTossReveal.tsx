@@ -4,45 +4,18 @@ import { motion } from "framer-motion";
 
 interface CoinTossRevealProps {
   children: React.ReactNode;
-  index?: number; // Optional index to determine deterministic 3D toss vectors
+  index?: number; // Deterministic index to map vectors and staggered delays
 }
 
-// Container component that coordinates scroll triggers for all children in the same row
-export function CoinTossContainer({ 
-  children, 
-  stagger = 0.12, 
-  margin = "-60px" 
-}: { 
-  children: React.ReactNode; 
-  stagger?: number; 
-  margin?: string; 
-}) {
-  return (
-    <motion.div
-      initial="hidden"
-      whileInView="visible"
-      viewport={{ once: true, margin }}
-      variants={{
-        hidden: {},
-        visible: {
-          transition: {
-            staggerChildren: stagger,
-          },
-        },
-      }}
-      className="w-full"
-    >
-      {children}
-    </motion.div>
-  );
-}
-
-export default function CoinTossReveal({ children, index = 2 }: CoinTossRevealProps) {
+export default function CoinTossReveal({ children, index = 0 }: CoinTossRevealProps) {
   // Deterministically map index to one of 3 animation entry vectors:
   // 0: From Left (3D Flip-Y counter-clockwise)
   // 1: From Right (3D Flip-Y clockwise)
   // 2: From Bottom-Center (3D Flip-X forward)
   const vector = index % 3;
+
+  // Stagger animation delays based on the index to create cascading reveals on view entry
+  const delay = (index % 3) * 0.12;
 
   // Get initial state coordinates for the coin-toss
   const getInitialState = () => {
@@ -84,28 +57,26 @@ export default function CoinTossReveal({ children, index = 2 }: CoinTossRevealPr
     }
   };
 
-  const coinTossVariants = {
-    hidden: getInitialState(),
-    visible: {
-      opacity: 1,
-      x: 0,
-      y: 0,
-      scale: 1,
-      rotateX: 0,
-      rotateY: 0,
-      rotateZ: 0,
-      transition: {
+  return (
+    <motion.div
+      initial={getInitialState()}
+      whileInView={{
+        opacity: 1,
+        x: 0,
+        y: 0,
+        scale: 1,
+        rotateX: 0,
+        rotateY: 0,
+        rotateZ: 0,
+      }}
+      viewport={{ once: true, margin: "-60px" }}
+      transition={{
         type: "spring" as const,
         stiffness: 55,
         damping: 13,
         mass: 0.9,
-      },
-    },
-  };
-
-  return (
-    <motion.div
-      variants={coinTossVariants}
+        delay,
+      }}
       style={{ transformStyle: "preserve-3d" }}
       className="w-full h-full"
     >
