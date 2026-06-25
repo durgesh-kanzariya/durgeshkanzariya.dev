@@ -11,6 +11,8 @@ export default function InteractiveConsole() {
   ]);
   const [cliInput, setCliInput] = useState("");
   const cliScrollContainerRef = useRef<HTMLDivElement>(null);
+  const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
+  const [isHovered, setIsHovered] = useState(false);
 
   // Handle local terminal container scrolling only (prevents viewport page scroll)
   useEffect(() => {
@@ -96,7 +98,31 @@ export default function InteractiveConsole() {
   };
 
   return (
-    <div className="bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden shadow-2xl font-mono text-xs text-slate-350 w-full relative scanlines flex flex-col h-[400px]">
+    <div 
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+      onMouseMove={(e) => {
+        const rect = e.currentTarget.getBoundingClientRect();
+        setMousePos({
+          x: e.clientX - rect.left,
+          y: e.clientY - rect.top,
+        });
+      }}
+      className="bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden shadow-2xl font-mono text-xs text-slate-350 w-full relative scanlines flex flex-col h-[400px] group"
+    >
+      {/* Spotlight hover bloom glow */}
+      <div
+        className="absolute pointer-events-none transition-opacity duration-300 opacity-0 group-hover:opacity-100 rounded-full"
+        style={{
+          width: "300px",
+          height: "300px",
+          left: mousePos.x,
+          top: mousePos.y,
+          transform: "translate(-50%, -50%)",
+          background: "radial-gradient(circle, rgba(16, 185, 129, 0.05) 0%, rgba(59, 130, 246, 0.01) 45%, transparent 75%)",
+          zIndex: 0,
+        }}
+      />
       {/* Terminal Title Bar */}
       <div className="bg-slate-950/80 border-b border-slate-850 px-4 py-3.5 flex items-center justify-between shrink-0">
         <div className="flex items-center gap-2">

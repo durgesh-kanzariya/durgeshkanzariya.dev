@@ -56,17 +56,39 @@ export default function ProjectCard({
   onClick: () => void; 
 }) {
   const [isHovered, setIsHovered] = useState(false);
+  const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
 
   return (
     <motion.div
       layoutId={`card-container-${project.id}`}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
+      onMouseMove={(e) => {
+        const rect = e.currentTarget.getBoundingClientRect();
+        setMousePos({
+          x: e.clientX - rect.left,
+          y: e.clientY - rect.top,
+        });
+      }}
       whileHover={{ y: -6, boxShadow: "0 20px 40px -15px rgba(59, 130, 246, 0.08)" }}
       transition={{ duration: 0.35, ease: [0.25, 1, 0.5, 1] }}
       onClick={onClick}
       className="bg-card-bg border border-border-subtle/80 rounded-2xl p-6 flex flex-col justify-between group cursor-pointer relative overflow-hidden transition-colors duration-300 hover:border-tech-blue/30"
     >
+      {/* Spotlight hover bloom glow */}
+      <div
+        className="absolute pointer-events-none transition-opacity duration-300 opacity-0 group-hover:opacity-100 rounded-full"
+        style={{
+          width: "250px",
+          height: "250px",
+          left: mousePos.x,
+          top: mousePos.y,
+          transform: "translate(-50%, -50%)",
+          background: "radial-gradient(circle, rgba(59, 130, 246, 0.08) 0%, rgba(59, 130, 246, 0.01) 45%, transparent 75%)",
+          zIndex: 0,
+        }}
+      />
+
       {/* Decorative subtle background gradient on hover */}
       <div className="absolute inset-0 bg-gradient-to-tr from-tech-blue/[0.01] via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
 

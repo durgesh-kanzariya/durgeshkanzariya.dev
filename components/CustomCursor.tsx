@@ -6,6 +6,7 @@ export default function CustomCursor() {
   const [isVisible, setIsVisible] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
+  const [ripples, setRipples] = useState<{ id: number; x: number; y: number }[]>([]);
 
   // Precise coordinates for the inner dot
   const mouseX = useMotionValue(-100);
@@ -47,7 +48,22 @@ export default function CustomCursor() {
       setIsVisible(true);
     };
 
+    const handleMouseDown = (e: MouseEvent) => {
+      if (isMobile) return;
+      const newRipple = {
+        id: Date.now() + Math.random(),
+        x: e.clientX,
+        y: e.clientY,
+      };
+      setRipples((prev) => [...prev, newRipple]);
+
+      setTimeout(() => {
+        setRipples((prev) => prev.filter((r) => r.id !== newRipple.id));
+      }, 700);
+    };
+
     window.addEventListener("mousemove", handleMouseMove);
+    window.addEventListener("mousedown", handleMouseDown);
     document.addEventListener("mouseleave", handleMouseLeave);
     document.addEventListener("mouseenter", handleMouseEnter);
 
@@ -133,63 +149,96 @@ export default function CustomCursor() {
     return () => {
       window.removeEventListener("resize", checkMobile);
       window.removeEventListener("mousemove", handleMouseMove);
+      window.removeEventListener("mousedown", handleMouseDown);
       document.removeEventListener("mouseleave", handleMouseLeave);
       document.removeEventListener("mouseenter", handleMouseEnter);
       document.removeEventListener("mouseover", handleMouseOver);
       document.removeEventListener("mouseout", handleMouseOut);
       cancelAnimationFrame(animationFrameId);
     };
-  }, [mouseX, mouseY, isVisible]);
+  }, [mouseX, mouseY, isVisible, isMobile]);
 
-  if (isMobile || !isVisible) return null;
+  if (isMobile) return null;
 
   return (
     <>
-      {/* Dynamic elastic string trailing path */}
-      <svg className="fixed inset-0 pointer-events-none z-[9998] w-full h-full">
-        <path
-          d={pathD}
-          fill="none"
-          stroke="rgba(59, 130, 246, 0.28)"
-          strokeWidth="1.5"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          className="dark:stroke-blue-400/40"
-        />
-      </svg>
+      {/* Ripple click effects */}
+      {ripples.map((ripple) => (
+        <div
+          key={ripple.id}
+          className="fixed pointer-events-none z-[9999] w-10 h-10"
+          style={{
+            left: ripple.x,
+            top: ripple.y,
+            transform: "translate(-50%, -50%)",
+          }}
+        >
+          {/* Main outer ripple ring */}
+          <motion.div
+            initial={{ scale: 0.1, opacity: 0.8 }}
+            animate={{ scale: 3.5, opacity: 0 }}
+            transition={{ duration: 0.6, ease: "easeOut" }}
+            className="absolute inset-0 rounded-full border border-tech-blue/50 dark:border-blue-400/60"
+          />
+          {/* Inner expanding glow */}
+          <motion.div
+            initial={{ scale: 0.1, opacity: 0.4 }}
+            animate={{ scale: 2.2, opacity: 0 }}
+            transition={{ duration: 0.45, ease: "easeOut" }}
+            className="absolute inset-0 rounded-full bg-tech-blue/15 dark:bg-blue-400/20"
+          />
+        </div>
+      ))}
 
-      {/* Outer physics-damped ring */}
-      <motion.div
-        style={{
-          x: ringX,
-          y: ringY,
-          translateX: "-50%",
-          translateY: "-50%",
-        }}
-        animate={{
-          scale: isHovered ? 1.6 : 1.0,
-          borderColor: isHovered ? "#3b82f6" : "rgba(100, 116, 139, 0.4)",
-          backgroundColor: isHovered ? "rgba(59, 130, 246, 0.05)" : "rgba(59, 130, 246, 0)",
-        }}
-        transition={{ type: "tween", ease: "easeOut", duration: 0.15 }}
-        className="fixed top-0 left-0 w-8 h-8 rounded-full border pointer-events-none z-[9999] dark:border-slate-500/45 dark:bg-white/[0.02]"
-      />
+      {isVisible && (
+        <>
+          {/* Dynamic elastic string trailing path */}
+          <svg className="fixed inset-0 pointer-events-none z-[9998] w-full h-full">
+            <path
+              d={pathD}
+              fill="none"
+              stroke="rgba(59, 130, 246, 0.28)"
+              strokeWidth="1.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              className="dark:stroke-blue-400/40"
+            />
+          </svg>
 
-      {/* Inner precise position dot */}
-      <motion.div
-        style={{
-          x: mouseX,
-          y: mouseY,
-          translateX: "-50%",
-          translateY: "-50%",
-        }}
-        animate={{
-          scale: isHovered ? 2.0 : 1.0,
-          backgroundColor: isHovered ? "#3b82f6" : "var(--color-ink-primary)",
-        }}
-        transition={{ type: "tween", ease: "easeOut", duration: 0.1 }}
-        className="fixed top-0 left-0 w-1.5 h-1.5 rounded-full pointer-events-none z-[9999]"
-      />
+          {/* Outer physics-damped ring */}
+          <motion.div
+            style={{
+              x: ringX,
+              y: ringY,
+              translateX: "-50%",
+              translateY: "-50%",
+            }}
+            animate={{
+              scale: isHovered ? 1.6 : 1.0,
+              borderColor: isHovered ? "#3b82f6" : "rgba(100, 116, 139, 0.4)",
+              backgroundColor: isHovered ? "rgba(59, 130, 246, 0.05)" : "rgba(59, 130, 246, 0)",
+            }}
+            transition={{ type: "tween", ease: "easeOut", duration: 0.15 }}
+            className="fixed top-0 left-0 w-8 h-8 rounded-full border pointer-events-none z-[9999] dark:border-slate-500/45 dark:bg-white/[0.02]"
+          />
+
+          {/* Inner precise position dot */}
+          <motion.div
+            style={{
+              x: mouseX,
+              y: mouseY,
+              translateX: "-50%",
+              translateY: "-50%",
+            }}
+            animate={{
+              scale: isHovered ? 2.0 : 1.0,
+              backgroundColor: isHovered ? "#3b82f6" : "var(--color-ink-primary)",
+            }}
+            transition={{ type: "tween", ease: "easeOut", duration: 0.1 }}
+            className="fixed top-0 left-0 w-1.5 h-1.5 rounded-full pointer-events-none z-[9999]"
+          />
+        </>
+      )}
     </>
   );
 }

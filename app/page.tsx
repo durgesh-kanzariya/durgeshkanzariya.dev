@@ -4,6 +4,7 @@ import { motion, AnimatePresence, useScroll } from "framer-motion";
 import Navbar from "@/components/Navbar";
 import ProjectCard from "@/components/ProjectCard";
 import InteractiveConsole from "@/components/InteractiveConsole";
+import CardWithSpotlight from "@/components/CardWithSpotlight";
 import { Terminal, ShieldCheck, Layers, Mail, ArrowDownRight, ArrowUpRight, X, Activity, Cpu, Copy, Check } from "lucide-react";
 
 const PROJECTS_DATA = [
@@ -55,6 +56,7 @@ export default function Home() {
   const [copied, setCopied] = useState(false);
   const emailAddress = "durgesh.kanzariya@example.com";
   const containerRef = useRef<HTMLDivElement>(null);
+  const [bgRipples, setBgRipples] = useState<{ id: number; x: number; y: number }[]>([]);
 
   // Framer motion scroll indicator
   const { scrollYProgress } = useScroll();
@@ -69,7 +71,7 @@ export default function Home() {
     }
   };
 
-  // Custom mousemove hook for cursor glow backdrop (Itomdev / Big Dirty style)
+  // Custom mousemove and click ripple hook for cursor glow backdrop (Itomdev / Big Dirty style)
   useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {
       if (!containerRef.current) return;
@@ -80,8 +82,30 @@ export default function Home() {
       containerRef.current.style.setProperty("--y", `${y}px`);
     };
 
+    const handleMouseDown = (e: MouseEvent) => {
+      if (!containerRef.current) return;
+      const rect = containerRef.current.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+
+      const newRipple = {
+        id: Date.now() + Math.random(),
+        x,
+        y,
+      };
+      setBgRipples((prev) => [...prev, newRipple]);
+
+      setTimeout(() => {
+        setBgRipples((prev) => prev.filter((r) => r.id !== newRipple.id));
+      }, 1000);
+    };
+
     window.addEventListener("mousemove", handleMouseMove);
-    return () => window.removeEventListener("mousemove", handleMouseMove);
+    window.addEventListener("mousedown", handleMouseDown);
+    return () => {
+      window.removeEventListener("mousemove", handleMouseMove);
+      window.removeEventListener("mousedown", handleMouseDown);
+    };
   }, []);
 
   // Prevent page scroll when a full case study overlay is expanded
@@ -133,6 +157,49 @@ export default function Home() {
       ref={containerRef}
       className="min-h-screen bg-canvas text-ink-primary font-sans relative overflow-hidden grid-bg cursor-glow flex flex-col"
     >
+      {/* Ambient background bloom glow spots (atmospheric premium feel) */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none z-0">
+        {/* Top-center soft blue bloom */}
+        <div className="absolute -top-[10%] left-[20%] w-[600px] h-[600px] rounded-full bg-tech-blue/5 dark:bg-tech-blue/8 blur-[130px] opacity-70" />
+        {/* Mid-right violet bloom */}
+        <div className="absolute top-[30%] -right-[10%] w-[700px] h-[700px] rounded-full bg-indigo-500/4 dark:bg-indigo-500/6 blur-[150px] opacity-70" />
+        {/* Bottom-left sky/cyan bloom */}
+        <div className="absolute bottom-[15%] -left-[10%] w-[600px] h-[600px] rounded-full bg-sky-500/5 dark:bg-sky-500/8 blur-[120px] opacity-70" />
+      </div>
+
+      {/* Background Bloom Click Ripples */}
+      {bgRipples.map((ripple) => (
+        <motion.div
+          key={ripple.id}
+          initial={{
+            x: ripple.x,
+            y: ripple.y,
+            scale: 0.1,
+            opacity: 0.8,
+          }}
+          animate={{
+            scale: 3.5,
+            opacity: 0,
+          }}
+          transition={{
+            duration: 0.8,
+            ease: "easeOut",
+          }}
+          style={{
+            position: "absolute",
+            left: 0,
+            top: 0,
+            width: "300px",
+            height: "300px",
+            translateX: "-50%",
+            translateY: "-50%",
+            borderRadius: "50%",
+            background: "radial-gradient(circle, var(--cursor-glow-color) 0%, rgba(59, 130, 246, 0.02) 50%, transparent 80%)",
+            pointerEvents: "none",
+            zIndex: 0,
+          }}
+        />
+      ))}
       {/* Floating scroll progress indicator line */}
       <motion.div 
         className="fixed top-0 left-0 right-0 h-0.5 bg-tech-blue origin-left z-50"
@@ -180,7 +247,7 @@ export default function Home() {
             </div>
 
             {/* Awwwards-style filter tab switches */}
-            <div className="flex flex-wrap gap-1 bg-slate-100 dark:bg-slate-800 p-1 rounded-xl border border-border-subtle/50 font-mono text-[10px] font-bold">
+            <div className="flex flex-wrap gap-1 bg-slate-100 dark:bg-slate-800 p-1 rounded-xl border border-border-subtle/50 font-mono text-[10px] font-bold transition-colors duration-300">
               <button
                 onClick={() => setFilter("ALL")}
                 className={`px-3 py-1.5 rounded-lg transition-all duration-300 cursor-pointer ${filter === "ALL" ? "bg-card-bg text-tech-blue shadow-sm" : "text-ink-muted hover:text-ink-primary"}`}
@@ -207,21 +274,20 @@ export default function Home() {
             layout
             className="grid grid-cols-1 md:grid-cols-2 gap-6"
           >
-            <AnimatePresence mode="popLayout">
-              {filteredProjects.map((project) => (
-                <motion.div
-                  key={project.id}
-                  layout
-                  variants={gridItem3DVariants}
-                  exit={{ opacity: 0, scale: 0.95 }}
-                >
-                  <ProjectCard 
-                    project={project} 
-                    onClick={() => setActiveProject(project)}
-                  />
-                </motion.div>
-              ))}
-            </AnimatePresence>
+            {filteredProjects.map((project) => (
+              <motion.div
+                key={project.id}
+                layout
+                initial="hidden"
+                animate="visible"
+                variants={gridItem3DVariants}
+              >
+                <ProjectCard 
+                  project={project} 
+                  onClick={() => setActiveProject(project)}
+                />
+              </motion.div>
+            ))}
           </motion.div>
         </motion.section>
 
@@ -238,30 +304,30 @@ export default function Home() {
             <span>Capabilities & Technical Competencies</span>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <motion.div 
+            <CardWithSpotlight 
               variants={gridItem3DVariants}
               className="bg-card-bg border border-border-subtle/80 rounded-2xl p-6 space-y-4 hover:border-tech-blue/30 transition-colors duration-300"
             >
               <div className="w-10 h-10 rounded-xl bg-blue-50/80 dark:bg-blue-900/20 flex items-center justify-center text-tech-blue font-mono font-bold text-xs select-none">01</div>
               <h4 className="text-base font-bold text-ink-primary">Predictive Pipelines</h4>
               <p className="text-xs text-ink-muted leading-relaxed font-[300]">Integrating machine learning engines (such as XGBoost) into active server microservices to generate high-fidelity, real-time prediction scopes.</p>
-            </motion.div>
-            <motion.div 
+            </CardWithSpotlight>
+            <CardWithSpotlight 
               variants={gridItem3DVariants}
               className="bg-card-bg border border-border-subtle/80 rounded-2xl p-6 space-y-4 hover:border-tech-blue/30 transition-colors duration-300"
             >
               <div className="w-10 h-10 rounded-xl bg-blue-50/80 dark:bg-blue-900/20 flex items-center justify-center text-tech-blue font-mono font-bold text-xs select-none">02</div>
               <h4 className="text-base font-bold text-ink-primary">Relational Infrastructure</h4>
               <p className="text-xs text-ink-muted leading-relaxed font-[300]">Designing rigorous, 3NF normalized SQL database architectures targeting highly efficient query speeds and low lookup latencies under index loads.</p>
-            </motion.div>
-            <motion.div 
+            </CardWithSpotlight>
+            <CardWithSpotlight 
               variants={gridItem3DVariants}
               className="bg-card-bg border border-border-subtle/80 rounded-2xl p-6 space-y-4 hover:border-tech-blue/30 transition-colors duration-300"
             >
               <div className="w-10 h-10 rounded-xl bg-blue-50/80 dark:bg-blue-900/20 flex items-center justify-center text-tech-blue font-mono font-bold text-xs select-none">03</div>
               <h4 className="text-base font-bold text-ink-primary">Data Operations</h4>
               <p className="text-xs text-ink-muted leading-relaxed font-[300]">Engineering automated ETL processes, rolling statistical window analytics, and clean feature engineering models for sensor streams.</p>
-            </motion.div>
+            </CardWithSpotlight>
           </div>
         </motion.section>
 
@@ -393,7 +459,7 @@ export default function Home() {
             <span>Validated Credentials & Environments</span>
           </div>
 
-          <motion.div 
+          <CardWithSpotlight 
             variants={gridItem3DVariants}
             className="bg-card-bg border border-border-subtle/80 rounded-2xl p-6 md:p-8 hover:border-tech-blue/30 transition-colors duration-300"
           >
@@ -459,7 +525,7 @@ export default function Home() {
                 </div>
               </div>
             </div>
-          </motion.div>
+          </CardWithSpotlight>
         </motion.section>
 
         {/* Minimalist Light-Mode Contact Footer Block */}
