@@ -32,7 +32,7 @@ export default function AmbientGlooms() {
           repeat: Infinity,
           ease: "easeInOut",
         }}
-        className="absolute top-[3%] left-[5%] w-[320px] h-[320px] sm:w-[500px] sm:h-[500px] rounded-full bg-tech-blue/10 dark:bg-tech-blue/16 blur-[90px] sm:blur-[130px] opacity-90"
+        className="absolute top-[3%] left-[5%] w-[320px] h-[320px] sm:w-[500px] sm:h-[500px] rounded-full bg-blue-300/12 dark:bg-tech-blue/16 blur-[90px] sm:blur-[130px] opacity-90"
       />
 
       {/* Gloom 2: Upper Mid Right - Indigo / Violet (With Expanding Ripple Rings) */}
@@ -48,12 +48,12 @@ export default function AmbientGlooms() {
             repeat: Infinity,
             ease: "easeInOut",
           }}
-          className="absolute inset-0 rounded-full bg-indigo-500/10 dark:bg-indigo-500/15 blur-[80px] sm:blur-[120px]"
+          className="absolute inset-0 rounded-full bg-indigo-300/12 dark:bg-indigo-500/15 blur-[80px] sm:blur-[120px]"
         />
         {/* Sonar water ripples */}
-        <RippleRing delay={0} borderClass="border-indigo-500/22 dark:border-indigo-500/32" />
-        <RippleRing delay={2} borderClass="border-cyan-500/18 dark:border-cyan-500/28" />
-        <RippleRing delay={4} borderClass="border-purple-500/18 dark:border-purple-500/28" />
+        <RippleRing delay={0} borderClass="border-indigo-400/15 dark:border-indigo-500/32" />
+        <RippleRing delay={2} borderClass="border-cyan-400/12 dark:border-cyan-500/28" />
+        <RippleRing delay={4} borderClass="border-purple-400/12 dark:border-purple-500/28" />
       </div>
 
       {/* Gloom 3: Mid Left - Color Changing (Blue ↔ Emerald ↔ Purple ↔ Amber) */}
@@ -72,11 +72,11 @@ export default function AmbientGlooms() {
         <motion.div
           animate={{
             backgroundColor: [
-              "rgba(59, 130, 246, 0.08)",  // tech-blue
-              "rgba(16, 185, 129, 0.08)",  // emerald
-              "rgba(139, 92, 246, 0.08)",  // violet
-              "rgba(245, 158, 11, 0.07)",  // amber
-              "rgba(59, 130, 246, 0.08)",  // tech-blue
+              "var(--color-gloom-cycle-1)",
+              "var(--color-gloom-cycle-2)",
+              "var(--color-gloom-cycle-3)",
+              "var(--color-gloom-cycle-4)",
+              "var(--color-gloom-cycle-1)",
             ]
           }}
           transition={{
@@ -100,7 +100,7 @@ export default function AmbientGlooms() {
           repeat: Infinity,
           ease: "easeInOut",
         }}
-        className="absolute top-[64%] -right-[8%] w-[290px] h-[290px] sm:w-[440px] sm:h-[440px] rounded-full bg-emerald-500/10 dark:bg-emerald-500/15 blur-[90px] sm:blur-[130px] opacity-90"
+        className="absolute top-[64%] -right-[8%] w-[290px] h-[290px] sm:w-[440px] sm:h-[440px] rounded-full bg-emerald-300/10 dark:bg-emerald-500/15 blur-[90px] sm:blur-[130px] opacity-90"
       />
 
       {/* Gloom 5: Bottom Left - Rose / Amber (With Expanding Ripple Rings) */}
@@ -116,11 +116,11 @@ export default function AmbientGlooms() {
             repeat: Infinity,
             ease: "easeInOut",
           }}
-          className="absolute inset-0 rounded-full bg-rose-500/8 dark:bg-rose-500/12 blur-[80px] sm:blur-[120px]"
+          className="absolute inset-0 rounded-full bg-rose-300/10 dark:bg-rose-500/12 blur-[80px] sm:blur-[120px]"
         />
         {/* Sonar water ripples */}
-        <RippleRing delay={0} borderClass="border-rose-500/18 dark:border-rose-500/28" />
-        <RippleRing delay={3} borderClass="border-amber-500/18 dark:border-amber-500/28" />
+        <RippleRing delay={0} borderClass="border-rose-400/12 dark:border-rose-500/28" />
+        <RippleRing delay={3} borderClass="border-amber-400/12 dark:border-amber-500/28" />
       </div>
 
     </div>

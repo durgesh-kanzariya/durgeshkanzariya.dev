@@ -16,6 +16,11 @@
   --font-mono: var(--font-geist-mono), ui-monospace, monospace;
   
   --cursor-glow-color: rgba(59, 130, 246, 0.08);
+  
+  --color-gloom-cycle-1: rgba(59, 130, 246, 0.03);
+  --color-gloom-cycle-2: rgba(16, 185, 129, 0.03);
+  --color-gloom-cycle-3: rgba(139, 92, 246, 0.03);
+  --color-gloom-cycle-4: rgba(245, 158, 11, 0.02);
 }
 
 .dark {
@@ -26,6 +31,11 @@
   --color-border-subtle: #1F2937;
   
   --cursor-glow-color: rgba(59, 130, 246, 0.18);
+  
+  --color-gloom-cycle-1: rgba(59, 130, 246, 0.08);
+  --color-gloom-cycle-2: rgba(16, 185, 129, 0.08);
+  --color-gloom-cycle-3: rgba(139, 92, 246, 0.08);
+  --color-gloom-cycle-4: rgba(245, 158, 11, 0.07);
 }
 
 /* Force-hide native browser cursor globally on desktop interactive elements */

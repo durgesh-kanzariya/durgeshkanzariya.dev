@@ -14,10 +14,10 @@ interface Particle {
 
 const SYMBOLS = ["+", "//", "01", "{}", "<>", "[]", "•", "cli", "sys", "bin"];
 const COLORS = [
-  "text-tech-blue/35 dark:text-tech-blue/45",
-  "text-emerald-500/30 dark:text-emerald-500/40",
-  "text-indigo-500/35 dark:text-indigo-500/45",
-  "text-cyan-500/30 dark:text-cyan-500/40",
+  "text-blue-600/20 dark:text-tech-blue/35",
+  "text-slate-400/35 dark:text-emerald-400/25",
+  "text-indigo-600/20 dark:text-indigo-400/35",
+  "text-slate-500/25 dark:text-cyan-400/25",
 ];
 
 export default function FloatingParticles() {
