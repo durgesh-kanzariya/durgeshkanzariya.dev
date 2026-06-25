@@ -155,6 +155,7 @@ export default function Home() {
   return (
     <div 
       ref={containerRef}
+      id="home"
       className="min-h-screen bg-canvas text-ink-primary font-sans relative overflow-hidden grid-bg cursor-glow flex flex-col"
     >
       {/* Ambient background bloom glow spots (atmospheric premium feel) */}
