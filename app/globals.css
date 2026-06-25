@@ -12,6 +12,8 @@
   
   --font-sans: var(--font-geist-sans), Inter, system-ui, sans-serif;
   --font-mono: var(--font-geist-mono), ui-monospace, monospace;
+  
+  --cursor-glow-color: rgba(59, 130, 246, 0.08);
 }
 
 .dark {
@@ -20,6 +22,7 @@
   --color-ink-primary: #F9FAFB;
   --color-ink-muted: #9CA3AF;
   --color-border-subtle: #1F2937;
+  --cursor-glow-color: rgba(59, 130, 246, 0.18);
 }
 
 /* Force-hide native browser cursor globally on desktop interactive elements */
@@ -86,5 +89,5 @@ body {
 
 /* Custom glowing cursor backdrop element */
 .cursor-glow {
-  background: radial-gradient(600px circle at var(--x, 0px) var(--y, 0px), rgba(59, 130, 246, 0.03), transparent 40%);
+  background: radial-gradient(600px circle at var(--x, 0px) var(--y, 0px), var(--cursor-glow-color), transparent 40%);
 }
