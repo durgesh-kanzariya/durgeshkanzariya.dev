@@ -7,6 +7,7 @@ import InteractiveConsole from "@/components/InteractiveConsole";
 import CardWithSpotlight from "@/components/CardWithSpotlight";
 import AmbientGlooms from "@/components/AmbientGlooms";
 import FloatingParticles from "@/components/FloatingParticles";
+import CoinTossReveal, { CoinTossContainer } from "@/components/CoinTossReveal";
 import { Terminal, ShieldCheck, Layers, Mail, ArrowDownRight, ArrowUpRight, X, Activity, Cpu, Copy, Check } from "lucide-react";
 
 const PROJECTS_DATA = [
@@ -275,25 +276,27 @@ export default function Home() {
           </motion.div>
           
           {/* Animated Filter Grid layout using Framer Motion */}
-          <motion.div 
-            layout
-            className="grid grid-cols-1 md:grid-cols-2 gap-6"
-          >
-            {filteredProjects.map((project) => (
-              <motion.div
-                key={project.id}
-                layout
-                initial="hidden"
-                animate="visible"
-                variants={gridItem3DVariants}
-              >
-                <ProjectCard 
-                  project={project} 
-                  onClick={() => setActiveProject(project)}
-                />
-              </motion.div>
-            ))}
-          </motion.div>
+          <CoinTossContainer>
+            <motion.div 
+              layout
+              className="grid grid-cols-1 md:grid-cols-2 gap-6"
+            >
+              {filteredProjects.map((project, idx) => (
+                <motion.div
+                  key={project.id}
+                  layout
+                  className="w-full h-full"
+                >
+                  <CoinTossReveal index={idx}>
+                    <ProjectCard 
+                      project={project} 
+                      onClick={() => setActiveProject(project)}
+                    />
+                  </CoinTossReveal>
+                </motion.div>
+              ))}
+            </motion.div>
+          </CoinTossContainer>
         </motion.section>
 
         {/* Capabilities Bento Grid Matrix (Itomdev & Big Dirty style) */}
@@ -314,32 +317,37 @@ export default function Home() {
             <Cpu className="w-4 h-4 text-tech-blue" />
             <span>Capabilities & Technical Competencies</span>
           </motion.div>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <CardWithSpotlight 
-              variants={gridItem3DVariants}
-              className="bg-card-bg border border-border-subtle/80 rounded-2xl p-6 space-y-4 hover:border-tech-blue/30 transition-colors duration-300"
-            >
-              <div className="w-10 h-10 rounded-xl bg-blue-50/80 dark:bg-blue-900/20 flex items-center justify-center text-tech-blue font-mono font-bold text-xs select-none">01</div>
-              <h4 className="text-base font-bold text-ink-primary">Predictive Pipelines</h4>
-              <p className="text-xs text-ink-muted leading-relaxed font-[300]">Integrating machine learning engines (such as XGBoost) into active server microservices to generate high-fidelity, real-time prediction scopes.</p>
-            </CardWithSpotlight>
-            <CardWithSpotlight 
-              variants={gridItem3DVariants}
-              className="bg-card-bg border border-border-subtle/80 rounded-2xl p-6 space-y-4 hover:border-tech-blue/30 transition-colors duration-300"
-            >
-              <div className="w-10 h-10 rounded-xl bg-blue-50/80 dark:bg-blue-900/20 flex items-center justify-center text-tech-blue font-mono font-bold text-xs select-none">02</div>
-              <h4 className="text-base font-bold text-ink-primary">Relational Infrastructure</h4>
-              <p className="text-xs text-ink-muted leading-relaxed font-[300]">Designing rigorous, 3NF normalized SQL database architectures targeting highly efficient query speeds and low lookup latencies under index loads.</p>
-            </CardWithSpotlight>
-            <CardWithSpotlight 
-              variants={gridItem3DVariants}
-              className="bg-card-bg border border-border-subtle/80 rounded-2xl p-6 space-y-4 hover:border-tech-blue/30 transition-colors duration-300"
-            >
-              <div className="w-10 h-10 rounded-xl bg-blue-50/80 dark:bg-blue-900/20 flex items-center justify-center text-tech-blue font-mono font-bold text-xs select-none">03</div>
-              <h4 className="text-base font-bold text-ink-primary">Data Operations</h4>
-              <p className="text-xs text-ink-muted leading-relaxed font-[300]">Engineering automated ETL processes, rolling statistical window analytics, and clean feature engineering models for sensor streams.</p>
-            </CardWithSpotlight>
-          </div>
+          <CoinTossContainer>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <CoinTossReveal index={0}>
+                <CardWithSpotlight 
+                  className="bg-card-bg border border-border-subtle/80 rounded-2xl p-6 space-y-4 hover:border-tech-blue/30 transition-colors duration-300 w-full h-full"
+                >
+                  <div className="w-10 h-10 rounded-xl bg-blue-50/80 dark:bg-blue-900/20 flex items-center justify-center text-tech-blue font-mono font-bold text-xs select-none">01</div>
+                  <h4 className="text-base font-bold text-ink-primary">Predictive Pipelines</h4>
+                  <p className="text-xs text-ink-muted leading-relaxed font-[300]">Integrating machine learning engines (such as XGBoost) into active server microservices to generate high-fidelity, real-time prediction scopes.</p>
+                </CardWithSpotlight>
+              </CoinTossReveal>
+              <CoinTossReveal index={1}>
+                <CardWithSpotlight 
+                  className="bg-card-bg border border-border-subtle/80 rounded-2xl p-6 space-y-4 hover:border-tech-blue/30 transition-colors duration-300 w-full h-full"
+                >
+                  <div className="w-10 h-10 rounded-xl bg-blue-50/80 dark:bg-blue-900/20 flex items-center justify-center text-tech-blue font-mono font-bold text-xs select-none">02</div>
+                  <h4 className="text-base font-bold text-ink-primary">Relational Infrastructure</h4>
+                  <p className="text-xs text-ink-muted leading-relaxed font-[300]">Designing rigorous, 3NF normalized SQL database architectures targeting highly efficient query speeds and low lookup latencies under index loads.</p>
+                </CardWithSpotlight>
+              </CoinTossReveal>
+              <CoinTossReveal index={2}>
+                <CardWithSpotlight 
+                  className="bg-card-bg border border-border-subtle/80 rounded-2xl p-6 space-y-4 hover:border-tech-blue/30 transition-colors duration-300 w-full h-full"
+                >
+                  <div className="w-10 h-10 rounded-xl bg-blue-50/80 dark:bg-blue-900/20 flex items-center justify-center text-tech-blue font-mono font-bold text-xs select-none">03</div>
+                  <h4 className="text-base font-bold text-ink-primary">Data Operations</h4>
+                  <p className="text-xs text-ink-muted leading-relaxed font-[300]">Engineering automated ETL processes, rolling statistical window analytics, and clean feature engineering models for sensor streams.</p>
+                </CardWithSpotlight>
+              </CoinTossReveal>
+            </div>
+          </CoinTossContainer>
         </motion.section>
 
         {/* Engineering Philosophy Section (Monolog inspired) */}
@@ -494,73 +502,74 @@ export default function Home() {
             <span>Validated Credentials & Environments</span>
           </motion.div>
 
-          <CardWithSpotlight 
-            variants={gridItem3DVariants}
-            className="bg-card-bg border border-border-subtle/80 rounded-2xl p-6 md:p-8 hover:border-tech-blue/30 transition-colors duration-300"
-          >
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-              <div>
-                <h4 className="text-[11px] font-mono text-ink-muted uppercase tracking-wider mb-6 pb-2 border-b border-border-subtle/40 flex items-center justify-between">
-                  <span>Advanced Certifications</span>
-                  <span className="text-[9px] text-tech-blue">01 // HONORS</span>
-                </h4>
-                <ul className="space-y-5 font-sans text-sm">
-                  <li className="flex items-start gap-3 group">
-                    <div className="w-1.5 h-1.5 rounded-full bg-tech-blue mt-2 shrink-0 group-hover:scale-125 transition-transform duration-200" />
-                    <div>
-                      <strong className="text-ink-primary block font-semibold group-hover:text-tech-blue transition-colors duration-200">
-                        NPTEL Silver Medalist — Data Structures & Algorithms
-                      </strong>
-                      <span className="text-ink-muted text-xs font-mono">IIT Madras / Elite Silver Distinction</span>
-                    </div>
-                  </li>
-                  <li className="flex items-start gap-3 group">
-                    <div className="w-1.5 h-1.5 rounded-full bg-tech-blue mt-2 shrink-0 group-hover:scale-125 transition-transform duration-200" />
-                    <div>
-                      <strong className="text-ink-primary block font-semibold group-hover:text-tech-blue transition-colors duration-200">
-                        NPTEL Silver Medalist — Python for Data Science
-                      </strong>
-                      <span className="text-ink-muted text-xs font-mono">IIT Madras / Elite Topper & Silver Medal</span>
-                    </div>
-                  </li>
-                  <li className="flex items-start gap-3 group">
-                    <div className="w-1.5 h-1.5 rounded-full bg-tech-blue mt-2 shrink-0 group-hover:scale-125 transition-transform duration-200" />
-                    <div>
-                      <strong className="text-ink-primary block font-semibold group-hover:text-tech-blue transition-colors duration-200">
-                        NPTEL Silver Medalist — Joy of Computing using Python
-                      </strong>
-                      <span className="text-ink-muted text-xs font-mono">IIT Madras / Elite Silver Distinction</span>
-                    </div>
-                  </li>
-                </ul>
-              </div>
+          <CoinTossReveal index={0}>
+            <CardWithSpotlight 
+              className="bg-card-bg border border-border-subtle/80 rounded-2xl p-6 md:p-8 hover:border-tech-blue/30 transition-colors duration-300 w-full h-full"
+            >
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div>
+                  <h4 className="text-[11px] font-mono text-ink-muted uppercase tracking-wider mb-6 pb-2 border-b border-border-subtle/40 flex items-center justify-between">
+                    <span>Advanced Certifications</span>
+                    <span className="text-[9px] text-tech-blue">01 // HONORS</span>
+                  </h4>
+                  <ul className="space-y-5 font-sans text-sm">
+                    <li className="flex items-start gap-3 group">
+                      <div className="w-1.5 h-1.5 rounded-full bg-tech-blue mt-2 shrink-0 group-hover:scale-125 transition-transform duration-200" />
+                      <div>
+                        <strong className="text-ink-primary block font-semibold group-hover:text-tech-blue transition-colors duration-200">
+                          NPTEL Silver Medalist — Data Structures & Algorithms
+                        </strong>
+                        <span className="text-ink-muted text-xs font-mono">IIT Madras / Elite Silver Distinction</span>
+                      </div>
+                    </li>
+                    <li className="flex items-start gap-3 group">
+                      <div className="w-1.5 h-1.5 rounded-full bg-tech-blue mt-2 shrink-0 group-hover:scale-125 transition-transform duration-200" />
+                      <div>
+                        <strong className="text-ink-primary block font-semibold group-hover:text-tech-blue transition-colors duration-200">
+                          NPTEL Silver Medalist — Python for Data Science
+                        </strong>
+                        <span className="text-ink-muted text-xs font-mono">IIT Madras / Elite Topper & Silver Medal</span>
+                      </div>
+                    </li>
+                    <li className="flex items-start gap-3 group">
+                      <div className="w-1.5 h-1.5 rounded-full bg-tech-blue mt-2 shrink-0 group-hover:scale-125 transition-transform duration-200" />
+                      <div>
+                        <strong className="text-ink-primary block font-semibold group-hover:text-tech-blue transition-colors duration-200">
+                          NPTEL Silver Medalist — Joy of Computing using Python
+                        </strong>
+                        <span className="text-ink-muted text-xs font-mono">IIT Madras / Elite Silver Distinction</span>
+                      </div>
+                    </li>
+                  </ul>
+                </div>
 
-              <div>
-                <h4 className="text-[11px] font-mono text-ink-muted uppercase tracking-wider mb-6 pb-2 border-b border-border-subtle/40 flex items-center justify-between">
-                  <span>Core Environments & Toolkits</span>
-                  <span className="text-[9px] text-tech-blue">02 // STACK</span>
-                </h4>
-                <div className="flex flex-wrap gap-2.5">
-                  {[
-                    "Python Analytics",
-                    "Machine Learning",
-                    "SQL & Relational Schema",
-                    "Full-Stack React",
-                    "Node.js Ecosystem",
-                    "XGBoost Engine",
-                    "Tailwind System Design"
-                  ].map((skill, i) => (
-                    <span 
-                      key={i} 
-                      className="text-xs bg-slate-100/30 dark:bg-slate-800/40 border border-border-subtle hover:border-tech-blue/30 hover:bg-slate-100/60 dark:hover:bg-slate-850/60 text-ink-primary px-3 py-2 rounded-xl font-medium font-sans transition-all duration-200 cursor-default select-none"
-                    >
-                      {skill}
-                    </span>
-                  ))}
+                <div>
+                  <h4 className="text-[11px] font-mono text-ink-muted uppercase tracking-wider mb-6 pb-2 border-b border-border-subtle/40 flex items-center justify-between">
+                    <span>Core Environments & Toolkits</span>
+                    <span className="text-[9px] text-tech-blue">02 // STACK</span>
+                  </h4>
+                  <div className="flex flex-wrap gap-2.5">
+                    {[
+                      "Python Analytics",
+                      "Machine Learning",
+                      "SQL & Relational Schema",
+                      "Full-Stack React",
+                      "Node.js Ecosystem",
+                      "XGBoost Engine",
+                      "Tailwind System Design"
+                    ].map((skill, i) => (
+                      <span 
+                        key={i} 
+                        className="text-xs bg-slate-100/30 dark:bg-slate-800/40 border border-border-subtle hover:border-tech-blue/30 hover:bg-slate-100/60 dark:hover:bg-slate-850/60 text-ink-primary px-3 py-2 rounded-xl font-medium font-sans transition-all duration-200 cursor-default select-none"
+                      >
+                        {skill}
+                      </span>
+                    ))}
+                  </div>
                 </div>
               </div>
-            </div>
-          </CardWithSpotlight>
+            </CardWithSpotlight>
+          </CoinTossReveal>
         </motion.section>
 
         {/* Minimalist Light-Mode Contact Footer Block */}
