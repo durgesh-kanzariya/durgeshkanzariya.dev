@@ -184,11 +184,11 @@ export default function CustomCursor() {
           translateY: "-50%",
         }}
         animate={{
-          scale: isHovered ? 0.3 : 1.0,
-          backgroundColor: isHovered ? "#3b82f6" : "rgb(51, 65, 85)",
+          scale: isHovered ? 2.0 : 1.0,
+          backgroundColor: isHovered ? "#3b82f6" : "var(--color-ink-primary)",
         }}
         transition={{ type: "tween", ease: "easeOut", duration: 0.1 }}
-        className="fixed top-0 left-0 w-1.5 h-1.5 rounded-full pointer-events-none z-[9999] dark:bg-slate-200"
+        className="fixed top-0 left-0 w-1.5 h-1.5 rounded-full pointer-events-none z-[9999]"
       />
     </>
   );

@@ -1,39 +1,42 @@
 @import "tailwindcss";
 
 @theme {
-  --color-canvas: var(--canvas-bg);
-  --color-card-bg: var(--card-bg);
-  --color-ink-primary: var(--ink-primary);
-  --color-ink-muted: var(--ink-muted);
+  --color-canvas: #F8F9FA;
+  --color-card-bg: #FFFFFF;
+  --color-ink-primary: #1A1D20;
+  --color-ink-muted: #64748B;
+  --color-border-subtle: #E2E8F0;
+  
   --color-tech-blue: #3B82F6;
   --color-tech-blue-hover: #2563EB;
-  --color-border-subtle: var(--border-subtle);
   
   --font-sans: var(--font-geist-sans), Inter, system-ui, sans-serif;
   --font-mono: var(--font-geist-mono), ui-monospace, monospace;
 }
 
-:root {
-  --canvas-bg: #F8F9FA;
-  --card-bg: #FFFFFF;
-  --ink-primary: #1A1D20;
-  --ink-muted: #64748B;
-  --border-subtle: #E2E8F0;
+.dark {
+  --color-canvas: #0B0F19; /* dark modern night */
+  --color-card-bg: #111827; /* sleek dark card */
+  --color-ink-primary: #F9FAFB;
+  --color-ink-muted: #9CA3AF;
+  --color-border-subtle: #1F2937;
 }
 
-.dark {
-  --canvas-bg: #0B0F19; /* dark modern night */
-  --card-bg: #111827; /* sleek dark card */
-  --ink-primary: #F9FAFB;
-  --ink-muted: #9CA3AF;
-  --border-subtle: #1F2937;
+/* Force-hide native browser cursor globally on desktop interactive elements */
+@media (min-width: 768px) {
+  * {
+    cursor: none !important;
+  }
+  a, button, [role="button"], input, select, textarea, .cursor-pointer {
+    cursor: none !important;
+  }
 }
 
 /* Custom background pattern - Jo Pe Curo & Itomdev vibe */
 .grid-bg {
   background-image: 
-    radial-gradient(var(--border-subtle) 1px, transparent 1px), 
-    radial-gradient(var(--border-subtle) 1px, var(--canvas-bg) 1px);
+    radial-gradient(var(--color-border-subtle) 1px, transparent 1px), 
+    radial-gradient(var(--color-border-subtle) 1px, var(--color-canvas) 1px);
   background-size: 24px 24px;
   background-position: 0 0, 12px 12px;
 }
@@ -55,8 +58,8 @@
 }
 
 body {
-  background-color: var(--canvas-bg);
-  color: var(--ink-primary);
+  background-color: var(--color-canvas);
+  color: var(--color-ink-primary);
   font-feature-settings: "cv02", "cv03", "cv04", "cv11";
   overflow-x: hidden;
   transition: background-color 0.3s ease, color 0.3s ease;
@@ -69,20 +72,19 @@ body {
 }
 
 ::-webkit-scrollbar-track {
-  background: #F8F9FA;
+  background: var(--color-canvas);
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #CBD5E1;
+  background: var(--color-border-subtle);
   border-radius: 3px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #94A3B8;
+  background: var(--color-ink-muted);
 }
 
 /* Custom glowing cursor backdrop element */
 .cursor-glow {
   background: radial-gradient(600px circle at var(--x, 0px) var(--y, 0px), rgba(59, 130, 246, 0.03), transparent 40%);
 }
-

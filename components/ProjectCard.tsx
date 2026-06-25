@@ -65,7 +65,7 @@ export default function ProjectCard({
       whileHover={{ y: -6, boxShadow: "0 20px 40px -15px rgba(59, 130, 246, 0.08)" }}
       transition={{ duration: 0.35, ease: [0.25, 1, 0.5, 1] }}
       onClick={onClick}
-      className="bg-card-bg border border-slate-200/80 rounded-2xl p-6 flex flex-col justify-between group cursor-pointer relative overflow-hidden transition-colors duration-300 hover:border-tech-blue/30"
+      className="bg-card-bg border border-border-subtle/80 rounded-2xl p-6 flex flex-col justify-between group cursor-pointer relative overflow-hidden transition-colors duration-300 hover:border-tech-blue/30"
     >
       {/* Decorative subtle background gradient on hover */}
       <div className="absolute inset-0 bg-gradient-to-tr from-tech-blue/[0.01] via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
@@ -74,13 +74,13 @@ export default function ProjectCard({
         {/* Technical metadata layout (Killian Herzer style) */}
         <motion.div 
           layoutId={`card-meta-${project.id}`}
-          className="flex items-center justify-between border-b border-slate-100 pb-3 mb-4 text-[10px] font-mono tracking-wider text-ink-muted"
+          className="flex items-center justify-between border-b border-border-subtle/50 pb-3 mb-4 text-[10px] font-mono tracking-wider text-ink-muted"
         >
           <span className="flex items-center gap-1.5">
-            <span className={`w-1.5 h-1.5 rounded-full ${isHovered ? "bg-tech-blue animate-ping" : "bg-slate-350"}`} />
+            <span className={`w-1.5 h-1.5 rounded-full ${isHovered ? "bg-tech-blue animate-ping" : "bg-border-subtle"}`} />
             {project.id} // {project.category}
           </span>
-          <span className="bg-slate-50 border border-slate-200 px-2 py-0.5 rounded text-ink-primary font-medium text-[9px] uppercase tracking-widest">
+          <span className="bg-slate-100/30 dark:bg-slate-800/40 border border-border-subtle px-2 py-0.5 rounded text-ink-primary font-medium text-[9px] uppercase tracking-widest">
             {project.scope}
           </span>
         </motion.div>
@@ -89,7 +89,7 @@ export default function ProjectCard({
         {project.image && (
           <motion.div 
             layoutId={`card-image-${project.id}`}
-            className="w-full aspect-[2.1/1] rounded-xl overflow-hidden border border-slate-150 mb-5 relative group"
+            className="w-full aspect-[2.1/1] rounded-xl overflow-hidden border border-border-subtle mb-5 relative group"
           >
             <img 
               src={project.image} 
@@ -130,7 +130,7 @@ export default function ProjectCard({
         {project.tags.map((tag, idx) => (
           <span 
             key={idx} 
-            className="text-[10px] font-mono px-2.5 py-1 bg-slate-50 border border-slate-150 rounded-md text-ink-primary group-hover:bg-white group-hover:border-slate-250 transition-colors duration-300"
+            className="text-[10px] font-mono px-2.5 py-1 bg-slate-100/30 dark:bg-slate-800/40 border border-border-subtle rounded-md text-ink-primary group-hover:bg-card-bg group-hover:border-border-subtle transition-colors duration-300"
           >
             {tag}
           </span>
