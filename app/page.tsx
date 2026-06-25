@@ -1,6 +1,6 @@
 "use client";
 import { useState, useEffect, useRef } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence, useScroll } from "framer-motion";
 import Navbar from "@/components/Navbar";
 import ProjectCard from "@/components/ProjectCard";
 import InteractiveConsole from "@/components/InteractiveConsole";
@@ -56,6 +56,9 @@ export default function Home() {
   const emailAddress = "durgesh.kanzariya@example.com";
   const containerRef = useRef<HTMLDivElement>(null);
 
+  // Framer motion scroll indicator
+  const { scrollYProgress } = useScroll();
+
   const handleCopyEmail = async () => {
     try {
       await navigator.clipboard.writeText(emailAddress);
@@ -96,18 +99,53 @@ export default function Home() {
     return project.category === filter;
   });
 
+  // Staggered Animation variants for Bento Grids
+  const gridContainerVariants = {
+    hidden: {},
+    visible: {
+      transition: {
+        staggerChildren: 0.12
+      }
+    }
+  };
+
+  const gridItem3DVariants = {
+    hidden: { 
+      opacity: 0, 
+      y: 50, 
+      rotateX: 8, 
+      transformPerspective: 1000 
+    },
+    visible: { 
+      opacity: 1, 
+      y: 0, 
+      rotateX: 0,
+      transition: { 
+        type: "spring" as const, 
+        damping: 24, 
+        stiffness: 90 
+      }
+    }
+  };
+
   return (
     <div 
       ref={containerRef}
       className="min-h-screen bg-canvas text-ink-primary font-sans relative overflow-hidden grid-bg cursor-glow flex flex-col"
     >
+      {/* Floating scroll progress indicator line */}
+      <motion.div 
+        className="fixed top-0 left-0 right-0 h-0.5 bg-tech-blue origin-left z-50"
+        style={{ scaleX: scrollYProgress }}
+      />
+
       {/* Decorative top glowing strip */}
       <div className="h-1 w-full bg-gradient-to-r from-tech-blue/50 via-sky-500 to-indigo-500 shrink-0" />
 
       {/* Floating Header / Brand Nav (Jo Pe Curo style) */}
       <Navbar />
 
-      <main className="max-w-6xl mx-auto px-6 pt-12 pb-16 md:pt-16 md:pb-24 space-y-24 relative z-10 flex-grow w-full">
+      <main className="max-w-6xl mx-auto px-6 pt-12 pb-16 md:pt-16 md:pb-24 space-y-28 relative z-10 flex-grow w-full">
         {/* Editorial Text Header Section (Monolog / Killian Herzer style) */}
         <header className="max-w-3xl">
           <h1 className="text-4xl sm:text-5xl md:text-6xl font-extrabold text-ink-primary tracking-tight leading-[1.1] mb-6 font-sans">
@@ -129,10 +167,10 @@ export default function Home() {
         {/* Bento Showcase Grid with filter controls (Jo Pe Curo & Big Dirty Agency) */}
         <motion.section 
           id="work" 
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
+          initial="hidden"
+          whileInView="visible"
           viewport={{ once: true, margin: "-100px" }}
-          transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+          variants={gridContainerVariants}
           className="space-y-8 scroll-mt-24"
         >
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-border-subtle/60 pb-6">
@@ -174,10 +212,8 @@ export default function Home() {
                 <motion.div
                   key={project.id}
                   layout
-                  initial={{ opacity: 0, scale: 0.98 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  exit={{ opacity: 0, scale: 0.98 }}
-                  transition={{ duration: 0.3 }}
+                  variants={gridItem3DVariants}
+                  exit={{ opacity: 0, scale: 0.95 }}
                 >
                   <ProjectCard 
                     project={project} 
@@ -191,10 +227,10 @@ export default function Home() {
 
         {/* Capabilities Bento Grid Matrix (Itomdev & Big Dirty style) */}
         <motion.section 
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-100px" }}
-          transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, margin: "-120px" }}
+          variants={gridContainerVariants}
           className="space-y-8 scroll-mt-24"
         >
           <div className="flex items-center gap-2 font-mono text-[10px] tracking-widest text-ink-muted uppercase border-b border-border-subtle/60 pb-6">
@@ -202,30 +238,39 @@ export default function Home() {
             <span>Capabilities & Technical Competencies</span>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div className="bg-card-bg border border-border-subtle/80 rounded-2xl p-6 space-y-4 hover:border-tech-blue/30 transition-colors duration-300">
+            <motion.div 
+              variants={gridItem3DVariants}
+              className="bg-card-bg border border-border-subtle/80 rounded-2xl p-6 space-y-4 hover:border-tech-blue/30 transition-colors duration-300"
+            >
               <div className="w-10 h-10 rounded-xl bg-blue-50/80 dark:bg-blue-900/20 flex items-center justify-center text-tech-blue font-mono font-bold text-xs select-none">01</div>
               <h4 className="text-base font-bold text-ink-primary">Predictive Pipelines</h4>
               <p className="text-xs text-ink-muted leading-relaxed font-[300]">Integrating machine learning engines (such as XGBoost) into active server microservices to generate high-fidelity, real-time prediction scopes.</p>
-            </div>
-            <div className="bg-card-bg border border-border-subtle/80 rounded-2xl p-6 space-y-4 hover:border-tech-blue/30 transition-colors duration-300">
+            </motion.div>
+            <motion.div 
+              variants={gridItem3DVariants}
+              className="bg-card-bg border border-border-subtle/80 rounded-2xl p-6 space-y-4 hover:border-tech-blue/30 transition-colors duration-300"
+            >
               <div className="w-10 h-10 rounded-xl bg-blue-50/80 dark:bg-blue-900/20 flex items-center justify-center text-tech-blue font-mono font-bold text-xs select-none">02</div>
               <h4 className="text-base font-bold text-ink-primary">Relational Infrastructure</h4>
               <p className="text-xs text-ink-muted leading-relaxed font-[300]">Designing rigorous, 3NF normalized SQL database architectures targeting highly efficient query speeds and low lookup latencies under index loads.</p>
-            </div>
-            <div className="bg-card-bg border border-border-subtle/80 rounded-2xl p-6 space-y-4 hover:border-tech-blue/30 transition-colors duration-300">
+            </motion.div>
+            <motion.div 
+              variants={gridItem3DVariants}
+              className="bg-card-bg border border-border-subtle/80 rounded-2xl p-6 space-y-4 hover:border-tech-blue/30 transition-colors duration-300"
+            >
               <div className="w-10 h-10 rounded-xl bg-blue-50/80 dark:bg-blue-900/20 flex items-center justify-center text-tech-blue font-mono font-bold text-xs select-none">03</div>
               <h4 className="text-base font-bold text-ink-primary">Data Operations</h4>
               <p className="text-xs text-ink-muted leading-relaxed font-[300]">Engineering automated ETL processes, rolling statistical window analytics, and clean feature engineering models for sensor streams.</p>
-            </div>
+            </motion.div>
           </div>
         </motion.section>
 
         {/* Engineering Philosophy Section (Monolog inspired) */}
         <motion.section 
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-100px" }}
-          transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, margin: "-120px" }}
+          variants={gridContainerVariants}
           className="space-y-8 scroll-mt-24"
         >
           <div className="flex items-center gap-2 font-mono text-[10px] tracking-widest text-ink-muted uppercase border-b border-border-subtle/60 pb-6">
@@ -233,28 +278,28 @@ export default function Home() {
             <span>Engineering Philosophy</span>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div className="space-y-2">
+            <motion.div variants={gridItem3DVariants} className="space-y-2">
               <span className="text-[10px] font-mono text-tech-blue uppercase tracking-widest">01 / Rigor Over Hype</span>
               <p className="text-sm font-semibold text-ink-primary">Focus on core algorithms, clean data flows, and proven architecture stacks instead of chasing short-lived tech trends.</p>
-            </div>
-            <div className="space-y-2">
+            </motion.div>
+            <motion.div variants={gridItem3DVariants} className="space-y-2">
               <span className="text-[10px] font-mono text-tech-blue uppercase tracking-widest">02 / Schema as Source of Truth</span>
               <p className="text-sm font-semibold text-ink-primary">A clean, strictly validated database schema ensures atomic data integrity, preventing cascading errors at the service layer.</p>
-            </div>
-            <div className="space-y-2">
+            </motion.div>
+            <motion.div variants={gridItem3DVariants} className="space-y-2">
               <span className="text-[10px] font-mono text-tech-blue uppercase tracking-widest">03 / Performance Is a Feature</span>
               <p className="text-sm font-semibold text-ink-primary">Optimize code and query execution layouts proactively to secure sub-50ms baseline responses under operational load.</p>
-            </div>
+            </motion.div>
           </div>
         </motion.section>
 
         {/* Interactive Developer Console (Itomdev style) */}
         <motion.section 
           id="sandbox" 
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
+          initial="hidden"
+          whileInView="visible"
           viewport={{ once: true, margin: "-100px" }}
-          transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+          variants={gridContainerVariants}
           className="space-y-8 scroll-mt-24"
         >
           <div className="flex items-center gap-2 font-mono text-[10px] tracking-widest text-ink-muted uppercase border-b border-border-subtle/60 pb-6">
@@ -262,18 +307,18 @@ export default function Home() {
             <span>Interactive Workspace Simulation</span>
           </div>
           
-          <div className="w-full">
+          <motion.div variants={gridItem3DVariants} className="w-full">
             <InteractiveConsole />
-          </div>
+          </motion.div>
         </motion.section>
 
         {/* Road Map & Professional Timeline Section (Killian Herzer style) */}
         <motion.section 
           id="timeline"
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
+          initial="hidden"
+          whileInView="visible"
           viewport={{ once: true, margin: "-100px" }}
-          transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+          variants={gridContainerVariants}
           className="space-y-8 scroll-mt-24"
         >
           <div className="flex items-center gap-2 font-mono text-[10px] tracking-widest text-ink-muted uppercase border-b border-border-subtle/60 pb-6">
@@ -282,7 +327,7 @@ export default function Home() {
           </div>
           <div className="relative border-l border-border-subtle/80 ml-3 pl-8 space-y-10 py-2">
             {/* Timeline Item 1 */}
-            <div className="relative group">
+            <motion.div variants={gridItem3DVariants} className="relative group">
               <div className="absolute -left-[41px] top-1.5 w-6 h-6 rounded-full border border-border-subtle bg-card-bg flex items-center justify-center group-hover:border-tech-blue transition-colors duration-300">
                 <div className="w-2 h-2 rounded-full bg-tech-blue scale-75 group-hover:scale-100 transition-transform duration-300" />
               </div>
@@ -296,10 +341,10 @@ export default function Home() {
                   Selected for a 39-month contract starting late 2026, beginning with an intensive 9-month internship developing high-availability backends and data-driven client workflows.
                 </p>
               </div>
-            </div>
+            </motion.div>
 
             {/* Timeline Item 2 */}
-            <div className="relative group">
+            <motion.div variants={gridItem3DVariants} className="relative group">
               <div className="absolute -left-[41px] top-1.5 w-6 h-6 rounded-full border border-border-subtle bg-card-bg flex items-center justify-center group-hover:border-tech-blue transition-colors duration-300">
                 <div className="w-2 h-2 rounded-full bg-border-subtle scale-75 group-hover:scale-100 transition-transform duration-300" />
               </div>
@@ -313,10 +358,10 @@ export default function Home() {
                   Under the guidance of academic mentors Prof. Snehal Sathwara and Prof. Dr. Chetan Shingadiya, focusing on database normalizations, algorithms, and computational statistics.
                 </p>
               </div>
-            </div>
+            </motion.div>
 
             {/* Timeline Item 3 */}
-            <div className="relative group">
+            <motion.div variants={gridItem3DVariants} className="relative group">
               <div className="absolute -left-[41px] top-1.5 w-6 h-6 rounded-full border border-border-subtle bg-card-bg flex items-center justify-center group-hover:border-tech-blue transition-colors duration-300">
                 <div className="w-2 h-2 rounded-full bg-border-subtle scale-75 group-hover:scale-100 transition-transform duration-300" />
               </div>
@@ -330,17 +375,17 @@ export default function Home() {
                   Awarded Silver Medalist & Elite status across two key certifications: <em>Data Structures & Algorithms using Python</em> and <em>Python for Data Science</em>.
                 </p>
               </div>
-            </div>
+            </motion.div>
           </div>
         </motion.section>
 
         {/* Structured Technical Credentials / Achievements (Killian Herzer / Nordic layout) */}
         <motion.section 
           id="credentials" 
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
+          initial="hidden"
+          whileInView="visible"
           viewport={{ once: true, margin: "-100px" }}
-          transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+          variants={gridContainerVariants}
           className="space-y-8 scroll-mt-24"
         >
           <div className="flex items-center gap-2 font-mono text-[10px] tracking-widest text-ink-muted uppercase border-b border-border-subtle/60 pb-6">
@@ -348,7 +393,10 @@ export default function Home() {
             <span>Validated Credentials & Environments</span>
           </div>
 
-          <div className="bg-card-bg border border-border-subtle/80 rounded-2xl p-6 md:p-8 hover:border-tech-blue/30 transition-colors duration-300">
+          <motion.div 
+            variants={gridItem3DVariants}
+            className="bg-card-bg border border-border-subtle/80 rounded-2xl p-6 md:p-8 hover:border-tech-blue/30 transition-colors duration-300"
+          >
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
               <div>
                 <h4 className="text-[11px] font-mono text-ink-muted uppercase tracking-wider mb-6 pb-2 border-b border-border-subtle/40 flex items-center justify-between">
@@ -411,16 +459,16 @@ export default function Home() {
                 </div>
               </div>
             </div>
-          </div>
+          </motion.div>
         </motion.section>
 
         {/* Minimalist Light-Mode Contact Footer Block */}
         <motion.section 
           id="contact" 
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
+          initial="hidden"
+          whileInView="visible"
           viewport={{ once: true, margin: "-100px" }}
-          transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+          variants={gridContainerVariants}
           className="border-t border-border-subtle/80 pt-16 scroll-mt-24 space-y-8"
         >
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 items-start">

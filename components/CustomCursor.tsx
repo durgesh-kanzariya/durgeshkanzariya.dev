@@ -169,7 +169,7 @@ export default function CustomCursor() {
         animate={{
           scale: isHovered ? 1.6 : 1.0,
           borderColor: isHovered ? "#3b82f6" : "rgba(100, 116, 139, 0.4)",
-          backgroundColor: isHovered ? "rgba(59, 130, 246, 0.05)" : "transparent",
+          backgroundColor: isHovered ? "rgba(59, 130, 246, 0.05)" : "rgba(59, 130, 246, 0)",
         }}
         transition={{ type: "tween", ease: "easeOut", duration: 0.15 }}
         className="fixed top-0 left-0 w-8 h-8 rounded-full border pointer-events-none z-[9999] dark:border-slate-500/45 dark:bg-white/[0.02]"
