@@ -73,9 +73,12 @@ export default function InteractiveConsole() {
       case "credentials":
         response = [
           "ACADEMIC ACHIEVEMENTS & CREDENTIALS",
-          "  - NPTEL Silver Medalist — Data Structures & Algorithms (IIT Madras)",
-          "  - NPTEL Silver Medalist — Python for Data Science (IIT Madras)",
-          "  - High-Performance Database Systems Distinction"
+          "  - IIT Madras NPTEL: Elite Topper (Top 5%) & Silver Medalist",
+          "    Course: Programming, Data Structures & Algorithms using Python (Score: 78%)",
+          "  - IIT Madras NPTEL: Elite Topper (Top 5%) & Silver Medalist",
+          "    Course: Python for Data Science (Score: 83%)",
+          "  - IIT Madras NPTEL: Elite Silver Medalist",
+          "    Course: The Joy of Computing using Python (Score: 79%)"
         ];
         break;
       case "clear":
@@ -108,7 +111,7 @@ export default function InteractiveConsole() {
           y: e.clientY - rect.top,
         });
       }}
-      className="bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden shadow-2xl font-mono text-[11px] sm:text-xs text-slate-350 w-full relative scanlines flex flex-col h-[340px] sm:h-[400px] group"
+      className="bg-slate-100/60 border border-slate-200/80 rounded-2xl overflow-hidden shadow-sm font-mono text-[11px] sm:text-xs text-slate-700 dark:bg-slate-900 dark:border-slate-800 dark:text-slate-350 w-full relative flex flex-col h-[340px] sm:h-[400px] group"
     >
       {/* Spotlight hover bloom glow */}
       <div
@@ -124,7 +127,7 @@ export default function InteractiveConsole() {
         }}
       />
       {/* Terminal Title Bar */}
-      <div className="relative bg-slate-950/80 border-b border-slate-850 px-4 py-3 flex items-center justify-center shrink-0 select-none">
+      <div className="relative bg-slate-200/60 border-b border-slate-300/60 dark:bg-slate-950/80 dark:border-slate-850 px-4 py-3 flex items-center justify-center shrink-0 select-none">
         <div className="absolute left-4 flex items-center gap-1.5 shrink-0">
           {/* macOS window dots */}
           <span className="w-2 h-2 sm:w-2.5 sm:h-2.5 rounded-full bg-rose-500/80" />
@@ -142,13 +145,13 @@ export default function InteractiveConsole() {
         className="flex-1 p-4 sm:p-5 overflow-y-auto scrollbar-thin space-y-1.5 min-h-0 text-[10px] sm:text-xs"
       >
         {cliHistory.map((line, idx) => {
-          let textClass = "text-slate-300";
+          let textClass = "text-slate-700 dark:text-slate-300";
           if (line.startsWith("durgesh@")) {
             textClass = "text-tech-blue font-bold";
           } else if (line.startsWith("Available") || line.startsWith("ACTIVE") || line.startsWith("BIOGRAPHY") || line.startsWith("BUILT") || line.startsWith("ACADEMIC")) {
-            textClass = "text-emerald-400 font-bold border-b border-slate-800/40 pb-0.5 inline-block";
+            textClass = "text-emerald-600 dark:text-emerald-400 font-bold border-b border-slate-200 dark:border-slate-800/40 pb-0.5 inline-block";
           } else if (line.startsWith("  ")) {
-            textClass = "text-slate-400 pl-4";
+            textClass = "text-slate-500 dark:text-slate-400 pl-4";
           }
           return (
             <div key={idx} className={`${textClass} leading-relaxed whitespace-pre-wrap`}>
@@ -159,16 +162,16 @@ export default function InteractiveConsole() {
       </div>
 
       {/* Footer Interface Command Board */}
-      <div className="bg-slate-950/40 border-t border-slate-850 p-3 sm:p-4 space-y-2.5 sm:space-y-3 shrink-0">
+      <div className="bg-slate-200/30 border-t border-slate-300/60 dark:bg-slate-950/40 dark:border-slate-850 p-3 sm:p-4 space-y-2.5 sm:space-y-3 shrink-0">
         {/* Click-to-run quick items */}
         <div className="flex items-center gap-2 overflow-x-auto scrollbar-none py-0.5 flex-nowrap w-full">
-          <span className="text-[9px] text-slate-500 uppercase tracking-wider select-none shrink-0">// CLI CMDs:</span>
+          <span className="text-[9px] text-slate-500 dark:text-slate-500 uppercase tracking-wider select-none shrink-0">// CLI CMDs:</span>
           <div className="flex items-center gap-1.5 flex-nowrap">
             {["help", "bio", "skills", "projects", "credentials", "clear"].map((cmd) => (
               <button
                 key={cmd}
                 onClick={() => executeCliCommand(cmd)}
-                className="bg-slate-850 hover:bg-slate-750 active:bg-slate-800 text-slate-300 border border-slate-800 hover:border-slate-700 px-2.5 py-1 rounded-md text-[9px] sm:text-[10px] transition-all cursor-pointer font-mono shrink-0 active:scale-95"
+                className="bg-slate-200/50 hover:bg-slate-200 active:bg-slate-300/80 text-slate-700 border border-slate-300/60 hover:border-slate-400 dark:bg-slate-850 dark:hover:bg-slate-750 dark:active:bg-slate-800 dark:text-slate-300 dark:border-slate-800 dark:hover:border-slate-700 px-2.5 py-1 rounded-md text-[9px] sm:text-[10px] transition-all cursor-pointer font-mono shrink-0 active:scale-95"
               >
                 {cmd}
               </button>
@@ -182,10 +185,10 @@ export default function InteractiveConsole() {
             e.preventDefault();
             executeCliCommand(cliInput);
           }}
-          className="flex items-center gap-1.5 sm:gap-2 border-t border-slate-850/50 pt-2.5 sm:pt-3"
+          className="flex items-center gap-1.5 sm:gap-2 border-t border-slate-300/60 dark:border-slate-850/50 pt-2.5 sm:pt-3"
         >
-          <ChevronRight className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-emerald-500 shrink-0" />
-          <span className="text-slate-450 font-bold select-none text-[10px] sm:text-xs shrink-0">
+          <ChevronRight className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-emerald-600 dark:text-emerald-500 shrink-0" />
+          <span className="text-slate-500 dark:text-slate-450 font-bold select-none text-[10px] sm:text-xs shrink-0">
             <span className="hidden sm:inline">durgesh@portfolio:~$</span>
             <span className="sm:hidden">cli:~$</span>
           </span>
@@ -194,7 +197,7 @@ export default function InteractiveConsole() {
             value={cliInput}
             onChange={(e) => setCliInput(e.target.value)}
             placeholder="type queries here (e.g. 'skills')..."
-            className="bg-transparent border-none outline-none text-slate-200 font-mono text-[10px] sm:text-xs flex-1 placeholder-slate-600"
+            className="bg-transparent border-none outline-none text-slate-800 dark:text-slate-200 font-mono text-[10px] sm:text-xs flex-1 placeholder-slate-400 dark:placeholder-slate-600"
           />
         </form>
       </div>

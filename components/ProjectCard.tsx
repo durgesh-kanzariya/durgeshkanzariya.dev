@@ -116,7 +116,7 @@ export default function ProjectCard({
             <img 
               src={project.image} 
               alt={project.title} 
-              className="w-full h-full object-cover group-hover:scale-[1.03] transition-transform duration-500" 
+              className={`w-full h-full ${project.image.includes('logo') ? 'object-contain bg-white p-4' : 'object-cover'} group-hover:scale-[1.03] transition-transform duration-500`}
             />
             <div className="absolute inset-0 bg-gradient-to-t from-slate-900/5 to-transparent pointer-events-none" />
           </motion.div>

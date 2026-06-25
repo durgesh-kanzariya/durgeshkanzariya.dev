@@ -37,7 +37,7 @@ const PROJECTS_DATA = [
     category: "WEB_ARCHITECTURE",
     scope: "Web Architecture",
     engine: "CORE_ENGINE // React + Express + PostgreSQL",
-    image: "/images/traveldost_cover.png",
+    image: "/images/traveldost_logo.jpeg",
     description: "Designed and engineered a full-stack companion web platform featuring structured relational database mapping, custom multi-tier API routing architectures, and decoupled component management layouts.",
     tags: ["React", "Express.js", "PostgreSQL", "SQL Schema"],
     deepDive: {
@@ -57,7 +57,7 @@ export default function Home() {
   const [filter, setFilter] = useState<"ALL" | "DATA_SCIENCE" | "WEB_ARCHITECTURE">("ALL");
   const [activeProject, setActiveProject] = useState<typeof PROJECTS_DATA[0] | null>(null);
   const [copied, setCopied] = useState(false);
-  const emailAddress = "durgesh.kanzariya@example.com";
+  const emailAddress = "durgesh.j.kanzariya@gmail.com";
   const containerRef = useRef<HTMLDivElement>(null);
   const [bgRipples, setBgRipples] = useState<{ id: number; x: number; y: number }[]>([]);
 
@@ -137,26 +137,26 @@ export default function Home() {
   };
 
   const gridItem3DVariants = {
-    hidden: { 
-      opacity: 0, 
-      y: 50, 
-      rotateX: 8, 
-      transformPerspective: 1000 
+    hidden: {
+      opacity: 0,
+      y: 50,
+      rotateX: 8,
+      transformPerspective: 1000
     },
-    visible: { 
-      opacity: 1, 
-      y: 0, 
+    visible: {
+      opacity: 1,
+      y: 0,
       rotateX: 0,
-      transition: { 
-        type: "spring" as const, 
-        damping: 24, 
-        stiffness: 90 
+      transition: {
+        type: "spring" as const,
+        damping: 24,
+        stiffness: 90
       }
     }
   };
 
   return (
-    <div 
+    <div
       ref={containerRef}
       id="home"
       className="min-h-screen bg-canvas text-ink-primary font-sans relative overflow-hidden grid-bg cursor-glow flex flex-col"
@@ -201,7 +201,7 @@ export default function Home() {
         />
       ))}
       {/* Floating scroll progress indicator line */}
-      <motion.div 
+      <motion.div
         className="fixed top-0 left-0 right-0 h-0.5 bg-tech-blue origin-left z-50"
         style={{ scaleX: scrollYProgress }}
       />
@@ -218,7 +218,7 @@ export default function Home() {
           <h1 className="text-4xl sm:text-5xl md:text-6xl font-extrabold text-ink-primary tracking-tight leading-[1.1] mb-6 font-sans">
             Durgesh Kanzariya
           </h1>
-          
+
           <p className="text-lg sm:text-xl text-ink-muted leading-relaxed font-sans font-[300] max-w-2xl">
             I design and execute rigorous software architectures, balancing full-stack infrastructure development with deep exploratory data analysis and predictive systems engineering.
           </p>
@@ -232,15 +232,15 @@ export default function Home() {
         </header>
 
         {/* Bento Showcase Grid with filter controls (Jo Pe Curo & Big Dirty Agency) */}
-        <motion.section 
-          id="work" 
+        <motion.section
+          id="work"
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true, margin: "-100px" }}
           variants={gridContainerVariants}
           className="space-y-8 scroll-mt-24"
         >
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, y: 15 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: "-100px" }}
@@ -274,9 +274,9 @@ export default function Home() {
               </button>
             </div>
           </motion.div>
-          
+
           {/* Animated Filter Grid layout using Framer Motion */}
-          <motion.div 
+          <motion.div
             layout
             className="grid grid-cols-1 md:grid-cols-2 gap-6"
           >
@@ -287,8 +287,8 @@ export default function Home() {
                 className="w-full h-full"
               >
                 <CoinTossReveal index={idx}>
-                  <ProjectCard 
-                    project={project} 
+                  <ProjectCard
+                    project={project}
                     onClick={() => setActiveProject(project)}
                   />
                 </CoinTossReveal>
@@ -298,14 +298,14 @@ export default function Home() {
         </motion.section>
 
         {/* Capabilities Bento Grid Matrix (Itomdev & Big Dirty style) */}
-        <motion.section 
+        <motion.section
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true, margin: "-120px" }}
           variants={gridContainerVariants}
           className="space-y-8 scroll-mt-24"
         >
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, x: -20 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true, margin: "-100px" }}
@@ -317,7 +317,7 @@ export default function Home() {
           </motion.div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <CoinTossReveal index={0}>
-              <CardWithSpotlight 
+              <CardWithSpotlight
                 className="bg-card-bg border border-border-subtle/80 rounded-2xl p-6 space-y-4 hover:border-tech-blue/30 transition-colors duration-300 w-full h-full"
               >
                 <div className="w-10 h-10 rounded-xl bg-blue-50/80 dark:bg-blue-900/20 flex items-center justify-center text-tech-blue font-mono font-bold text-xs select-none">01</div>
@@ -326,7 +326,7 @@ export default function Home() {
               </CardWithSpotlight>
             </CoinTossReveal>
             <CoinTossReveal index={1}>
-              <CardWithSpotlight 
+              <CardWithSpotlight
                 className="bg-card-bg border border-border-subtle/80 rounded-2xl p-6 space-y-4 hover:border-tech-blue/30 transition-colors duration-300 w-full h-full"
               >
                 <div className="w-10 h-10 rounded-xl bg-blue-50/80 dark:bg-blue-900/20 flex items-center justify-center text-tech-blue font-mono font-bold text-xs select-none">02</div>
@@ -335,7 +335,7 @@ export default function Home() {
               </CardWithSpotlight>
             </CoinTossReveal>
             <CoinTossReveal index={2}>
-              <CardWithSpotlight 
+              <CardWithSpotlight
                 className="bg-card-bg border border-border-subtle/80 rounded-2xl p-6 space-y-4 hover:border-tech-blue/30 transition-colors duration-300 w-full h-full"
               >
                 <div className="w-10 h-10 rounded-xl bg-blue-50/80 dark:bg-blue-900/20 flex items-center justify-center text-tech-blue font-mono font-bold text-xs select-none">03</div>
@@ -347,14 +347,14 @@ export default function Home() {
         </motion.section>
 
         {/* Engineering Philosophy Section (Monolog inspired) */}
-        <motion.section 
+        <motion.section
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true, margin: "-120px" }}
           variants={gridContainerVariants}
           className="space-y-8 scroll-mt-24"
         >
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, x: -20 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true, margin: "-100px" }}
@@ -381,15 +381,15 @@ export default function Home() {
         </motion.section>
 
         {/* Interactive Developer Console (Itomdev style) */}
-        <motion.section 
-          id="sandbox" 
+        <motion.section
+          id="sandbox"
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true, margin: "-100px" }}
           variants={gridContainerVariants}
           className="space-y-8 scroll-mt-24"
         >
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, x: -20 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true, margin: "-100px" }}
@@ -399,14 +399,14 @@ export default function Home() {
             <Terminal className="w-4 h-4 text-tech-blue" />
             <span>Interactive Workspace Simulation</span>
           </motion.div>
-          
+
           <motion.div variants={gridItem3DVariants} className="w-full">
             <InteractiveConsole />
           </motion.div>
         </motion.section>
 
         {/* Road Map & Professional Timeline Section (Killian Herzer style) */}
-        <motion.section 
+        <motion.section
           id="timeline"
           initial="hidden"
           whileInView="visible"
@@ -414,7 +414,7 @@ export default function Home() {
           variants={gridContainerVariants}
           className="space-y-8 scroll-mt-24"
         >
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, x: -20 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true, margin: "-100px" }}
@@ -432,12 +432,12 @@ export default function Home() {
               </div>
               <div className="space-y-1">
                 <div className="flex flex-wrap items-baseline gap-2">
-                  <span className="text-xs font-mono text-tech-blue font-bold">LATE 2026 – PRESENT</span>
-                  <span className="text-xs text-ink-muted font-mono">// GATEWAY GROUP</span>
+                  <span className="text-xs font-mono text-tech-blue font-bold">2023 – 2027</span>
+                  <span className="text-xs text-ink-muted font-mono">// RK UNIVERSITY</span>
                 </div>
-                <h4 className="text-base font-bold text-ink-primary">Incoming Systems Engineer & Intern</h4>
+                <h4 className="text-base font-bold text-ink-primary">B.Tech in Information Technology</h4>
                 <p className="text-xs text-ink-muted leading-relaxed font-[300] max-w-2xl">
-                  Selected for a 39-month contract starting late 2026, beginning with an intensive 9-month internship developing high-availability backends and data-driven client workflows.
+                  Under the guidance of academic mentors Prof. Snehal Sathwara and Prof. Dr. Chetan Shingadiya, focusing on database normalizations, algorithms, and computational statistics.
                 </p>
               </div>
             </motion.div>
@@ -449,29 +449,12 @@ export default function Home() {
               </div>
               <div className="space-y-1">
                 <div className="flex flex-wrap items-baseline gap-2">
-                  <span className="text-xs font-mono text-ink-muted font-bold">2023 – 2027</span>
-                  <span className="text-xs text-ink-muted font-mono">// RK UNIVERSITY</span>
-                </div>
-                <h4 className="text-base font-bold text-ink-primary">B.Tech in Information Technology</h4>
-                <p className="text-xs text-ink-muted leading-relaxed font-[300] max-w-2xl">
-                  Under the guidance of academic mentors Prof. Snehal Sathwara and Prof. Dr. Chetan Shingadiya, focusing on database normalizations, algorithms, and computational statistics.
-                </p>
-              </div>
-            </motion.div>
-
-            {/* Timeline Item 3 */}
-            <motion.div variants={gridItem3DVariants} className="relative group">
-              <div className="absolute -left-[41px] top-1.5 w-6 h-6 rounded-full border border-border-subtle bg-card-bg flex items-center justify-center group-hover:border-tech-blue transition-colors duration-300">
-                <div className="w-2 h-2 rounded-full bg-border-subtle scale-75 group-hover:scale-100 transition-transform duration-300" />
-              </div>
-              <div className="space-y-1">
-                <div className="flex flex-wrap items-baseline gap-2">
-                  <span className="text-xs font-mono text-ink-muted font-bold">2024</span>
+                  <span className="text-xs font-mono text-ink-muted font-bold">2024 – 2025</span>
                   <span className="text-xs text-ink-muted font-mono">// IIT MADRAS NPTEL</span>
                 </div>
-                <h4 className="text-base font-bold text-ink-primary">Double Silver Medalist & Elite Topper</h4>
+                <h4 className="text-base font-bold text-ink-primary">Triple Silver Medalist & Elite Topper</h4>
                 <p className="text-xs text-ink-muted leading-relaxed font-[300] max-w-2xl">
-                  Awarded Silver Medalist & Elite status across two key certifications: <em>Data Structures & Algorithms using Python</em> and <em>Python for Data Science</em>.
+                  Awarded Silver Medalist & Elite status across three certifications from IIT Madras: <em>Programming, Data Structures and Algorithms using Python</em>, <em>Python for Data Science</em>, and <em>The Joy of Computing using Python</em>.
                 </p>
               </div>
             </motion.div>
@@ -479,15 +462,15 @@ export default function Home() {
         </motion.section>
 
         {/* Structured Technical Credentials / Achievements (Killian Herzer / Nordic layout) */}
-        <motion.section 
-          id="credentials" 
+        <motion.section
+          id="credentials"
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true, margin: "-100px" }}
           variants={gridContainerVariants}
           className="space-y-8 scroll-mt-24"
         >
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, x: -20 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true, margin: "-100px" }}
@@ -499,7 +482,7 @@ export default function Home() {
           </motion.div>
 
           <CoinTossReveal index={0}>
-            <CardWithSpotlight 
+            <CardWithSpotlight
               className="bg-card-bg border border-border-subtle/80 rounded-2xl p-6 md:p-8 hover:border-tech-blue/30 transition-colors duration-300 w-full h-full"
             >
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
@@ -511,29 +494,62 @@ export default function Home() {
                   <ul className="space-y-5 font-sans text-sm">
                     <li className="flex items-start gap-3 group">
                       <div className="w-1.5 h-1.5 rounded-full bg-tech-blue mt-2 shrink-0 group-hover:scale-125 transition-transform duration-200" />
-                      <div>
+                      <div className="flex-1">
                         <strong className="text-ink-primary block font-semibold group-hover:text-tech-blue transition-colors duration-200">
-                          NPTEL Silver Medalist — Data Structures & Algorithms
+                          NPTEL Elite Topper (Top 5%) — Programming, Data Structures & Algorithms using Python
                         </strong>
-                        <span className="text-ink-muted text-xs font-mono">IIT Madras / Elite Silver Distinction</span>
+                        <div className="flex flex-wrap items-center gap-x-2 gap-y-1 mt-1 text-xs text-ink-muted font-mono">
+                          <span>IIT Madras // Score: 78% (Elite Silver)</span>
+                          <span className="text-border-subtle/50 select-none">|</span>
+                          <a
+                            href="/certificates/nptel_dsa_python.pdf"
+                            target="_blank"
+                            rel="noreferrer"
+                            className="inline-flex items-center gap-0.5 text-tech-blue hover:underline font-semibold"
+                          >
+                            Verify PDF <ArrowUpRight className="w-3.5 h-3.5" />
+                          </a>
+                        </div>
                       </div>
                     </li>
                     <li className="flex items-start gap-3 group">
                       <div className="w-1.5 h-1.5 rounded-full bg-tech-blue mt-2 shrink-0 group-hover:scale-125 transition-transform duration-200" />
-                      <div>
+                      <div className="flex-1">
                         <strong className="text-ink-primary block font-semibold group-hover:text-tech-blue transition-colors duration-200">
-                          NPTEL Silver Medalist — Python for Data Science
+                          NPTEL Elite Topper (Top 5%) — Python for Data Science
                         </strong>
-                        <span className="text-ink-muted text-xs font-mono">IIT Madras / Elite Topper & Silver Medal</span>
+                        <div className="flex flex-wrap items-center gap-x-2 gap-y-1 mt-1 text-xs text-ink-muted font-mono">
+                          <span>IIT Madras // Score: 83% (Elite Silver)</span>
+                          <span className="text-border-subtle/50 select-none">|</span>
+                          <a
+                            href="/certificates/nptel_python_data_science.pdf"
+                            target="_blank"
+                            rel="noreferrer"
+                            className="inline-flex items-center gap-0.5 text-tech-blue hover:underline font-semibold"
+                          >
+                            Verify PDF <ArrowUpRight className="w-3.5 h-3.5" />
+                          </a>
+                        </div>
                       </div>
                     </li>
                     <li className="flex items-start gap-3 group">
                       <div className="w-1.5 h-1.5 rounded-full bg-tech-blue mt-2 shrink-0 group-hover:scale-125 transition-transform duration-200" />
-                      <div>
+                      <div className="flex-1">
                         <strong className="text-ink-primary block font-semibold group-hover:text-tech-blue transition-colors duration-200">
-                          NPTEL Silver Medalist — Joy of Computing using Python
+                          NPTEL Silver Medalist — The Joy of Computing using Python
                         </strong>
-                        <span className="text-ink-muted text-xs font-mono">IIT Madras / Elite Silver Distinction</span>
+                        <div className="flex flex-wrap items-center gap-x-2 gap-y-1 mt-1 text-xs text-ink-muted font-mono">
+                          <span>IIT Madras // Score: 79% (Elite Silver)</span>
+                          <span className="text-border-subtle/50 select-none">|</span>
+                          <a
+                            href="/certificates/nptel_joy_of_computing.pdf"
+                            target="_blank"
+                            rel="noreferrer"
+                            className="inline-flex items-center gap-0.5 text-tech-blue hover:underline font-semibold"
+                          >
+                            Verify PDF <ArrowUpRight className="w-3.5 h-3.5" />
+                          </a>
+                        </div>
                       </div>
                     </li>
                   </ul>
@@ -554,8 +570,8 @@ export default function Home() {
                       "XGBoost Engine",
                       "Tailwind System Design"
                     ].map((skill, i) => (
-                      <span 
-                        key={i} 
+                      <span
+                        key={i}
                         className="text-xs bg-slate-100/30 dark:bg-slate-800/40 border border-border-subtle hover:border-tech-blue/30 hover:bg-slate-100/60 dark:hover:bg-slate-850/60 text-ink-primary px-3 py-2 rounded-xl font-medium font-sans transition-all duration-200 cursor-default select-none"
                       >
                         {skill}
@@ -569,8 +585,8 @@ export default function Home() {
         </motion.section>
 
         {/* Minimalist Light-Mode Contact Footer Block */}
-        <motion.section 
-          id="contact" 
+        <motion.section
+          id="contact"
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true, margin: "-100px" }}
@@ -583,14 +599,14 @@ export default function Home() {
               <p className="text-sm text-ink-muted leading-relaxed max-w-md font-sans font-[300]">
                 Looking for analytical software development or dedicated machine learning systems engineering expertise. Open to internships, collaborative open-source builds, and architectural discussions.
               </p>
-              
+
               {/* Copyable Email Hub Element */}
               <div className="inline-flex items-center gap-3 bg-card-bg border border-border-subtle rounded-xl p-3 pr-4 shadow-[0_2px_10px_rgba(0,0,0,0.01)] max-w-full overflow-hidden">
                 <div className="w-8 h-8 rounded-lg bg-blue-50 dark:bg-blue-950/40 flex items-center justify-center text-tech-blue shrink-0">
                   <Mail className="w-4 h-4" />
                 </div>
                 <span className="text-xs sm:text-sm font-mono text-ink-primary truncate select-all">{emailAddress}</span>
-                <button 
+                <button
                   onClick={handleCopyEmail}
                   className="ml-2 w-7 h-7 rounded-md border border-border-subtle hover:bg-slate-100/30 dark:hover:bg-slate-800/30 flex items-center justify-center text-ink-muted hover:text-ink-primary transition-all shrink-0 cursor-pointer"
                   title="Copy email address"
@@ -603,17 +619,17 @@ export default function Home() {
             {/* External Links Column Block */}
             <div className="flex flex-col gap-3 font-mono text-xs md:text-right md:items-end">
               <span className="text-[11px] uppercase text-ink-muted tracking-wider mb-1 block">// External Handshakes</span>
-              <a 
-                href="https://github.com/durgeshkanzariya" 
-                target="_blank" 
+              <a
+                href="https://github.com/durgeshkanzariya"
+                target="_blank"
                 rel="noreferrer"
                 className="inline-flex items-center gap-1 text-ink-primary hover:text-tech-blue transition-colors group border-b border-transparent hover:border-tech-blue/30 pb-0.5"
               >
                 GitHub Profile <ArrowUpRight className="w-3 h-3 text-ink-muted group-hover:text-tech-blue transition-colors" />
               </a>
-              <a 
-                href="https://linkedin.com" 
-                target="_blank" 
+              <a
+                href="https://linkedin.com"
+                target="_blank"
                 rel="noreferrer"
                 className="inline-flex items-center gap-1 text-ink-primary hover:text-tech-blue transition-colors group border-b border-transparent hover:border-tech-blue/30 pb-0.5"
               >
@@ -645,14 +661,14 @@ export default function Home() {
             >
               {/* Top Banner Action Header Bar */}
               <div className="p-6 border-b border-border-subtle flex items-center justify-between bg-slate-100/30 dark:bg-slate-800/30">
-                <motion.div 
+                <motion.div
                   layoutId={`card-meta-${activeProject.id}`}
                   className="text-[10px] font-mono tracking-wider text-ink-muted flex items-center gap-1.5"
                 >
                   <span>{activeProject.id} // {activeProject.category}</span>
                 </motion.div>
-                
-                <button 
+
+                <button
                   onClick={() => setActiveProject(null)}
                   className="w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 flex items-center justify-center text-ink-primary transition-colors cursor-pointer"
                 >
@@ -663,27 +679,27 @@ export default function Home() {
               {/* Scrollable Technical Deep Dive Body */}
               <div className="p-6 md:p-8 max-h-[80vh] overflow-y-auto space-y-8 text-left">
                 {activeProject.image && (
-                  <motion.div 
+                  <motion.div
                     layoutId={`card-image-${activeProject.id}`}
                     className="w-full aspect-[16/9] sm:aspect-[21/9] rounded-2xl overflow-hidden border border-border-subtle mb-6"
                   >
-                    <img 
-                      src={activeProject.image} 
-                      alt={activeProject.title} 
-                      className="w-full h-full object-cover" 
+                    <img
+                      src={activeProject.image}
+                      alt={activeProject.title}
+                      className={`w-full h-full ${activeProject.image.includes('logo') ? 'object-contain bg-white p-6' : 'object-cover'}`}
                     />
                   </motion.div>
                 )}
 
                 <div>
-                  <motion.h2 
+                  <motion.h2
                     layoutId={`card-title-${activeProject.id}`}
                     className="text-2xl md:text-3xl font-extrabold text-ink-primary tracking-tight"
                   >
                     {activeProject.title}
                   </motion.h2>
-                  
-                  <motion.p 
+
+                  <motion.p
                     layoutId={`card-engine-${activeProject.id}`}
                     className="text-xs font-mono text-tech-blue mt-1.5"
                   >
@@ -716,7 +732,7 @@ export default function Home() {
                     <Cpu className="w-4 h-4 text-tech-blue" />
                     <span>Technical Implementation & Pipeline Strategy</span>
                   </div>
-                  <motion.p 
+                  <motion.p
                     layoutId={`card-desc-${activeProject.id}`}
                     className="text-sm text-ink-muted leading-relaxed font-sans font-[400]"
                   >
@@ -727,7 +743,7 @@ export default function Home() {
                 {/* Card Tags */}
                 <div className="pt-4 border-t border-border-subtle">
                   <span className="text-[10px] font-mono text-ink-muted uppercase tracking-wider block mb-3">Environment Blueprint Tags</span>
-                  <motion.div 
+                  <motion.div
                     layoutId={`card-tags-${activeProject.id}`}
                     className="flex flex-wrap gap-1.5"
                   >
