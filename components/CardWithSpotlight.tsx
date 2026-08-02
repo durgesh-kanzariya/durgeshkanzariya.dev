@@ -1,5 +1,4 @@
 "use client";
-import { useState } from "react";
 import { motion, HTMLMotionProps } from "framer-motion";
 
 interface CardWithSpotlightProps extends HTMLMotionProps<"div"> {
@@ -16,19 +15,14 @@ export default function CardWithSpotlight({
   glowSize = 250,
   ...props
 }: CardWithSpotlightProps) {
-  const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
-  const [isHovered, setIsHovered] = useState(false);
-
   return (
     <motion.div
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
       onMouseMove={(e) => {
         const rect = e.currentTarget.getBoundingClientRect();
-        setMousePos({
-          x: e.clientX - rect.left,
-          y: e.clientY - rect.top,
-        });
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+        e.currentTarget.style.setProperty("--spotlight-x", `${x}px`);
+        e.currentTarget.style.setProperty("--spotlight-y", `${y}px`);
       }}
       whileHover={{ y: -4, boxShadow: "0 12px 30px -10px rgba(59, 130, 246, 0.05)" }}
       transition={{ duration: 0.3, ease: "easeOut" }}
@@ -41,8 +35,8 @@ export default function CardWithSpotlight({
         style={{
           width: `${glowSize}px`,
           height: `${glowSize}px`,
-          left: mousePos.x,
-          top: mousePos.y,
+          left: "var(--spotlight-x, 0px)",
+          top: "var(--spotlight-y, 0px)",
           transform: "translate(-50%, -50%)",
           background: `radial-gradient(circle, ${glowColor} 0%, rgba(59, 130, 246, 0.01) 45%, transparent 75%)`,
           zIndex: 0,
@@ -55,3 +49,4 @@ export default function CardWithSpotlight({
     </motion.div>
   );
 }
+

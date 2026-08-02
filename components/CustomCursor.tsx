@@ -1,244 +1,199 @@
 "use client";
-import { useEffect, useState, useRef } from "react";
-import { motion, useMotionValue, useSpring } from "framer-motion";
+
+import { useEffect, useRef } from "react";
+
+interface Point {
+  x: number;
+  y: number;
+}
+
+const GRID_SIZE = 4;         // Reduced grid alignment (px) for tighter dot spacing
+const MAX_TRAIL_LENGTH = 55; // Capacity to maintain trail length with tighter spacing
 
 export default function CustomCursor() {
-  const [isVisible, setIsVisible] = useState(false);
-  const [isHovered, setIsHovered] = useState(false);
-  const [isMobile, setIsMobile] = useState(false);
-  const [ripples, setRipples] = useState<{ id: number; x: number; y: number }[]>([]);
-
-  // Precise coordinates for the inner dot
-  const mouseX = useMotionValue(-100);
-  const mouseY = useMotionValue(-100);
-
-  // Smooth springs for the outer ring lag effect
-  const springConfig = { damping: 28, stiffness: 220, mass: 0.6 };
-  const ringX = useSpring(mouseX, springConfig);
-  const ringY = useSpring(mouseY, springConfig);
-
-  // Keep track of recent positions for the organic trailing string
-  const trailPoints = useRef<{ x: number; y: number }[]>([]);
-  const [pathD, setPathD] = useState("");
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const cursorHeadRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    // Detect mobile touch capability or small viewport screen size
-    const checkMobile = () => {
-      const isTouch = 
-        window.matchMedia("(max-width: 768px)").matches || 
-        ("ontouchstart" in window) || 
-        (navigator.maxTouchPoints > 0);
-      setIsMobile(isTouch);
+    if (typeof window !== "undefined" && window.matchMedia("(hover: none) and (pointer: coarse)").matches) {
+      return;
+    }
+
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext("2d", { alpha: true });
+    if (!ctx) return;
+
+    let animationFrameId: number;
+    let isHovering = false;
+    let isMagnetic = false;
+    let isMoving = false;
+    let idleTimer: NodeJS.Timeout | null = null;
+    let globalOpacity = 1.0;
+
+    const mousePos = { x: -100, y: -100 };
+    const lastPoint = { x: -100, y: -100 };
+    let trailPoints: Point[] = [];
+
+    const handleResize = () => {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
     };
 
-    checkMobile();
-    window.addEventListener("resize", checkMobile);
+    handleResize();
+    window.addEventListener("resize", handleResize, { passive: true });
+
+    const handleMouseLeaveWindow = () => {
+      trailPoints = [];
+      lastPoint.x = -100;
+      lastPoint.y = -100;
+      isMoving = false;
+      if (cursorHeadRef.current) {
+        cursorHeadRef.current.style.transform = "translate3d(-100px, -100px, 0px)";
+      }
+    };
+
+    window.addEventListener("mouseleave", handleMouseLeaveWindow, { passive: true });
 
     const handleMouseMove = (e: MouseEvent) => {
-      mouseX.set(e.clientX);
-      mouseY.set(e.clientY);
-      if (!isVisible) setIsVisible(true);
-    };
+      mousePos.x = e.clientX;
+      mousePos.y = e.clientY;
+      isMoving = true;
+      globalOpacity = 1.0;
 
-    const handleMouseLeave = () => {
-      setIsVisible(false);
-    };
-
-    const handleMouseEnter = () => {
-      setIsVisible(true);
-    };
-
-    const handleMouseDown = (e: MouseEvent) => {
-      if (isMobile) return;
-      const newRipple = {
-        id: Date.now() + Math.random(),
-        x: e.clientX,
-        y: e.clientY,
-      };
-      setRipples((prev) => [...prev, newRipple]);
-
-      setTimeout(() => {
-        setRipples((prev) => prev.filter((r) => r.id !== newRipple.id));
-      }, 700);
-    };
-
-    window.addEventListener("mousemove", handleMouseMove);
-    window.addEventListener("mousedown", handleMouseDown);
-    document.addEventListener("mouseleave", handleMouseLeave);
-    document.addEventListener("mouseenter", handleMouseEnter);
-
-    // Scan the DOM hierarchy to trigger custom hover scaling transitions
-    const handleMouseOver = (e: MouseEvent) => {
-      const target = e.target as HTMLElement | null;
-      if (!target) return;
-
-      const isInteractive = 
-        target.closest("button") || 
-        target.closest("a") || 
-        target.closest("input") || 
-        target.closest("select") || 
-        target.closest("textarea") || 
-        target.closest(".interactive-card") || 
-        target.closest('[role="button"]') ||
-        target.classList.contains("cursor-pointer");
-
-      if (isInteractive) {
-        setIsHovered(true);
+      // Position main cursor head INSTANTLY without CSS transition lag
+      if (cursorHeadRef.current) {
+        if (cursorHeadRef.current.style.opacity !== "1") {
+          cursorHeadRef.current.style.opacity = "1";
+        }
+        const scale = isMagnetic ? 2.2 : isHovering ? 1.5 : 1;
+        cursorHeadRef.current.style.transform = `translate3d(${mousePos.x}px, ${mousePos.y}px, 0px) translate(-50%, -50%) scale(${scale})`;
       }
-    };
 
-    const handleMouseOut = (e: MouseEvent) => {
+      // Track hover & magnetic target state
       const target = e.target as HTMLElement | null;
-      if (!target) return;
+      if (target) {
+        isMagnetic = !!target.closest("[data-magnetic='true'], [data-magnetic]");
+        isHovering = !!target.closest("a, button, [role='button'], input, textarea, .group");
 
-      const isInteractive = 
-        target.closest("button") || 
-        target.closest("a") || 
-        target.closest("input") || 
-        target.closest("select") || 
-        target.closest("textarea") || 
-        target.closest(".interactive-card") || 
-        target.closest('[role="button"]') ||
-        target.classList.contains("cursor-pointer");
-
-      if (isInteractive) {
-        setIsHovered(false);
-      }
-    };
-
-    document.addEventListener("mouseover", handleMouseOver);
-    document.addEventListener("mouseout", handleMouseOut);
-
-    // Dynamic Trail Animation Frame Loop
-    let animationFrameId: number;
-    const updateTrail = () => {
-      const currentX = mouseX.get();
-      const currentY = mouseY.get();
-
-      // Initialize trail points if empty or reset
-      if (trailPoints.current.length === 0) {
-        for (let i = 0; i < 8; i++) {
-          trailPoints.current.push({ x: currentX, y: currentY });
+        if (cursorHeadRef.current) {
+          if (isMagnetic) {
+            cursorHeadRef.current.classList.add("cursor-head-magnetic");
+            cursorHeadRef.current.classList.remove("cursor-head-hover");
+          } else if (isHovering) {
+            cursorHeadRef.current.classList.add("cursor-head-hover");
+            cursorHeadRef.current.classList.remove("cursor-head-magnetic");
+          } else {
+            cursorHeadRef.current.classList.remove("cursor-head-hover");
+            cursorHeadRef.current.classList.remove("cursor-head-magnetic");
+          }
         }
       }
 
-      // Head is directly attached to the mouse pointer
-      trailPoints.current[0] = { x: currentX, y: currentY };
-
-      // Each node follows the previous one with spring-like physics
-      const ease = 0.42;
-      for (let i = 1; i < trailPoints.current.length; i++) {
-        const prev = trailPoints.current[i - 1];
-        const curr = trailPoints.current[i];
-        curr.x += (prev.x - curr.x) * ease;
-        curr.y += (prev.y - curr.y) * ease;
+      // If lastPoint was offscreen or uninitialized, snap to current position without spawning diagonal trail
+      if (lastPoint.x < 0 || lastPoint.y < 0) {
+        lastPoint.x = mousePos.x;
+        lastPoint.y = mousePos.y;
+        return;
       }
 
-      // Construct SVG path D parameter
-      const points = trailPoints.current;
-      if (points.length > 0 && points[0].x !== -100) {
-        const d = `M ${points[0].x} ${points[0].y} ` + points.slice(1).map(p => `L ${p.x} ${p.y}`).join(" ");
-        setPathD(d);
+      // Distance calculation from last snapped point
+      const dx = mousePos.x - lastPoint.x;
+      const dy = mousePos.y - lastPoint.y;
+      const dist = Math.hypot(dx, dy);
+
+      if (dist >= GRID_SIZE) {
+        // Cap steps to 15 per mousemove event to prevent massive jumps when cursor re-enters window
+        const steps = Math.min(Math.max(Math.floor(dist / GRID_SIZE), 1), 15);
+
+        for (let i = 1; i <= steps; i++) {
+          const interpX = lastPoint.x + (dx * i) / steps;
+          const interpY = lastPoint.y + (dy * i) / steps;
+
+          const snappedX = Math.round(interpX / GRID_SIZE) * GRID_SIZE;
+          const snappedY = Math.round(interpY / GRID_SIZE) * GRID_SIZE;
+
+          const lastTrail = trailPoints[trailPoints.length - 1];
+          if (!lastTrail || lastTrail.x !== snappedX || lastTrail.y !== snappedY) {
+            trailPoints.push({ x: snappedX, y: snappedY });
+          }
+        }
+
+        // Maintain fixed maximum queue length while moving
+        while (trailPoints.length > MAX_TRAIL_LENGTH) {
+          trailPoints.shift();
+        }
+
+        lastPoint.x = mousePos.x;
+        lastPoint.y = mousePos.y;
       }
 
-      animationFrameId = requestAnimationFrame(updateTrail);
+      // Detect movement stop
+      if (idleTimer) clearTimeout(idleTimer);
+      idleTimer = setTimeout(() => {
+        isMoving = false;
+      }, 35);
     };
 
-    animationFrameId = requestAnimationFrame(updateTrail);
+    window.addEventListener("mousemove", handleMouseMove, { passive: true });
+
+    // 60 FPS Canvas Render Loop
+    const render = () => {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      if (!isMoving && trailPoints.length > 0) {
+        // Fade entire trail array out together simultaneously
+        globalOpacity = Math.max(0, globalOpacity - 0.07);
+        if (globalOpacity <= 0) {
+          trailPoints = [];
+          globalOpacity = 1.0;
+        }
+      }
+
+      const total = trailPoints.length;
+
+      // Draw all dots in trailPoints with identical globalOpacity
+      if (total > 0 && globalOpacity > 0) {
+        ctx.fillStyle = `rgba(255, 255, 255, ${globalOpacity.toFixed(2)})`;
+        for (let i = 0; i < total; i++) {
+          const pt = trailPoints[i];
+          ctx.beginPath();
+          ctx.arc(pt.x, pt.y, 2.0, 0, Math.PI * 2);
+          ctx.fill();
+        }
+      }
+
+      animationFrameId = requestAnimationFrame(render);
+    };
+
+    render();
 
     return () => {
-      window.removeEventListener("resize", checkMobile);
+      if (idleTimer) clearTimeout(idleTimer);
+      window.removeEventListener("resize", handleResize);
+      window.removeEventListener("mouseleave", handleMouseLeaveWindow);
       window.removeEventListener("mousemove", handleMouseMove);
-      window.removeEventListener("mousedown", handleMouseDown);
-      document.removeEventListener("mouseleave", handleMouseLeave);
-      document.removeEventListener("mouseenter", handleMouseEnter);
-      document.removeEventListener("mouseover", handleMouseOver);
-      document.removeEventListener("mouseout", handleMouseOut);
       cancelAnimationFrame(animationFrameId);
     };
-  }, [mouseX, mouseY, isVisible, isMobile]);
-
-  if (isMobile) return null;
+  }, []);
 
   return (
     <>
-      {/* Ripple click effects */}
-      {ripples.map((ripple) => (
-        <div
-          key={ripple.id}
-          className="fixed pointer-events-none z-[9999] w-10 h-10"
-          style={{
-            left: ripple.x,
-            top: ripple.y,
-            transform: "translate(-50%, -50%)",
-          }}
-        >
-          {/* Main outer ripple ring */}
-          <motion.div
-            initial={{ scale: 0.1, opacity: 0.8 }}
-            animate={{ scale: 3.5, opacity: 0 }}
-            transition={{ duration: 0.6, ease: "easeOut" }}
-            className="absolute inset-0 rounded-full border border-tech-blue/50 dark:border-blue-400/60"
-          />
-          {/* Inner expanding glow */}
-          <motion.div
-            initial={{ scale: 0.1, opacity: 0.4 }}
-            animate={{ scale: 2.2, opacity: 0 }}
-            transition={{ duration: 0.45, ease: "easeOut" }}
-            className="absolute inset-0 rounded-full bg-tech-blue/15 dark:bg-blue-400/20"
-          />
-        </div>
-      ))}
+      {/* High Performance 60 FPS Grid Matrix Canvas */}
+      <canvas
+        ref={canvasRef}
+        className="hidden md:block fixed inset-0 pointer-events-none z-[99999] w-full h-full"
+      />
 
-      {isVisible && (
-        <>
-          {/* Dynamic elastic string trailing path */}
-          <svg className="fixed inset-0 pointer-events-none z-[9998] w-full h-full">
-            <path
-              d={pathD}
-              fill="none"
-              stroke="rgba(59, 130, 246, 0.28)"
-              strokeWidth="1.5"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              className="stroke-teal-600/30 dark:stroke-blue-400/40"
-            />
-          </svg>
-
-          {/* Outer physics-damped ring */}
-          <motion.div
-            style={{
-              x: ringX,
-              y: ringY,
-              translateX: "-50%",
-              translateY: "-50%",
-            }}
-            animate={{
-              scale: isHovered ? 1.6 : 1.0,
-              borderColor: isHovered ? "var(--color-cursor-active)" : "rgba(100, 116, 139, 0.4)",
-              backgroundColor: isHovered ? "var(--color-cursor-bg-hover)" : "rgba(59, 130, 246, 0)",
-            }}
-            transition={{ type: "tween", ease: "easeOut", duration: 0.15 }}
-            className="fixed top-0 left-0 w-8 h-8 rounded-full border pointer-events-none z-[9999] dark:border-slate-500/45 dark:bg-white/[0.02]"
-          />
-
-          {/* Inner precise position dot */}
-          <motion.div
-            style={{
-              x: mouseX,
-              y: mouseY,
-              translateX: "-50%",
-              translateY: "-50%",
-            }}
-            animate={{
-              scale: isHovered ? 2.0 : 1.0,
-              backgroundColor: isHovered ? "var(--color-cursor-active)" : "var(--color-ink-primary)",
-            }}
-            transition={{ type: "tween", ease: "easeOut", duration: 0.1 }}
-            className="fixed top-0 left-0 w-1.5 h-1.5 rounded-full pointer-events-none z-[9999]"
-          />
-        </>
-      )}
+      {/* Crisp Solid Main Cursor Head without Bloom Effect */}
+      <div
+        ref={cursorHeadRef}
+        className="hidden md:block fixed top-0 left-0 w-2.5 h-2.5 rounded-full pointer-events-none z-[999999] bg-white border border-purple-200/80 [&.cursor-head-hover]:bg-purple-500/50 [&.cursor-head-hover]:border-purple-300 [&.cursor-head-magnetic]:bg-purple-900/60 [&.cursor-head-magnetic]:backdrop-blur-md [&.cursor-head-magnetic]:border-purple-400 transition-opacity duration-200"
+        style={{
+          transform: "translate3d(-100px, -100px, 0)",
+          opacity: 0,
+        }}
+      />
     </>
   );
 }

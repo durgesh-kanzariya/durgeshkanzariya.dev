@@ -11,8 +11,6 @@ export default function InteractiveConsole() {
   ]);
   const [cliInput, setCliInput] = useState("");
   const cliScrollContainerRef = useRef<HTMLDivElement>(null);
-  const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
-  const [isHovered, setIsHovered] = useState(false);
 
   // Handle local terminal container scrolling only (prevents viewport page scroll)
   useEffect(() => {
@@ -102,14 +100,12 @@ export default function InteractiveConsole() {
 
   return (
     <div 
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
       onMouseMove={(e) => {
         const rect = e.currentTarget.getBoundingClientRect();
-        setMousePos({
-          x: e.clientX - rect.left,
-          y: e.clientY - rect.top,
-        });
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+        e.currentTarget.style.setProperty("--spotlight-x", `${x}px`);
+        e.currentTarget.style.setProperty("--spotlight-y", `${y}px`);
       }}
       className="bg-slate-100/60 border border-slate-200/80 rounded-2xl overflow-hidden shadow-sm font-mono text-[11px] sm:text-xs text-slate-700 dark:bg-slate-900 dark:border-slate-800 dark:text-slate-350 w-full relative flex flex-col h-[340px] sm:h-[400px] group"
     >
@@ -119,8 +115,8 @@ export default function InteractiveConsole() {
         style={{
           width: "300px",
           height: "300px",
-          left: mousePos.x,
-          top: mousePos.y,
+          left: "var(--spotlight-x, 0px)",
+          top: "var(--spotlight-y, 0px)",
           transform: "translate(-50%, -50%)",
           background: "radial-gradient(circle, rgba(16, 185, 129, 0.05) 0%, rgba(59, 130, 246, 0.01) 45%, transparent 75%)",
           zIndex: 0,

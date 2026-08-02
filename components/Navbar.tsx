@@ -1,28 +1,25 @@
 "use client";
+
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Sun, Moon, Menu, X, Mail } from "lucide-react";
+import { ArrowUpRight, Menu, X } from "lucide-react";
+import { usePathname, useRouter } from "next/navigation";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+import MagneticButton from "@/components/MagneticButton";
 
 export default function Navbar() {
-  const [theme, setTheme] = useState<"light" | "dark">("light");
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [activeSection, setActiveSection] = useState("home");
+  const [activeSection, setActiveSection] = useState("hero");
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const pathname = usePathname();
+  const router = useRouter();
 
   useEffect(() => {
-    const savedTheme = localStorage.getItem("theme");
-    const systemTheme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
-    const initialTheme = (savedTheme as "light" | "dark") || systemTheme;
-    setTheme(initialTheme);
-    if (initialTheme === "dark") {
-      document.documentElement.classList.add("dark");
-    } else {
-      document.documentElement.classList.remove("dark");
-    }
-  }, []);
+    if (pathname !== "/") return;
 
-  // Intersection Observer to track scroll positions for active section naming
-  useEffect(() => {
-    const sectionIds = ["home", "work", "sandbox", "timeline", "credentials", "contact"];
+    gsap.registerPlugin(ScrollTrigger);
+
+    const sectionIds = ["hero", "work", "arsenal", "process", "about", "contact"];
     const observers = sectionIds.map((id) => {
       const el = document.getElementById(id);
       if (!el) return null;
@@ -33,199 +30,149 @@ export default function Navbar() {
             setActiveSection(id);
           }
         },
-        {
-          rootMargin: "-25% 0px -55% 0px", // triggers as the section crosses the screen's main view focus
-        }
+        { rootMargin: "-25% 0px -50% 0px" }
       );
       observer.observe(el);
       return { observer, el };
     });
 
     return () => {
-      observers.forEach((obs) => {
-        if (obs) {
-          obs.observer.unobserve(obs.el);
-        }
-      });
+      observers.forEach((obs) => obs?.observer.unobserve(obs.el));
     };
-  }, []);
-
-  const toggleTheme = () => {
-    const nextTheme = theme === "light" ? "dark" : "light";
-    setTheme(nextTheme);
-    localStorage.setItem("theme", nextTheme);
-    if (nextTheme === "dark") {
-      document.documentElement.classList.add("dark");
-    } else {
-      document.documentElement.classList.remove("dark");
-    }
-  };
+  }, [pathname]);
 
   const scrollToSection = (id: string) => {
-    const element = document.getElementById(id);
-    if (element) {
-      element.scrollIntoView({ behavior: "smooth" });
+    setMobileMenuOpen(false);
+
+    if (pathname !== "/") {
+      router.push(`/#${id}`);
+      return;
+    }
+
+    const el = document.getElementById(id);
+    if (el) {
+      if (typeof window !== "undefined" && (window as any).lenis) {
+        (window as any).lenis.scrollTo(el, {
+          duration: 1.2,
+          onComplete: () => {
+            ScrollTrigger.refresh();
+          },
+        });
+      } else {
+        el.scrollIntoView({ behavior: "smooth" });
+      }
     }
   };
 
+  const handleBrandClick = () => {
+    setMobileMenuOpen(false);
+    if (pathname !== "/") {
+      router.push("/");
+    } else {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+  };
+
+  const NAV_ITEMS = [
+    { id: "work", label: "// work" },
+    { id: "arsenal", label: "// arsenal" },
+    { id: "process", label: "// process" },
+    { id: "about", label: "// about" },
+  ];
+
   return (
-    <>
-      {/* Top Navbar */}
-      <motion.nav 
-        initial={{ y: -20, opacity: 0 }}
-        animate={{ y: 0, opacity: 1 }}
-        transition={{ duration: 0.5, ease: "easeOut" }}
-        className="sticky top-0 z-40 w-full bg-canvas/80 backdrop-blur-md border-b border-border-subtle/60"
-      >
-        <div className="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
-          {/* Brand Core Domain Link */}
-          <span 
-            onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
-            className="text-sm font-mono font-semibold tracking-tight text-ink-primary cursor-pointer group flex items-center gap-1"
-          >
-            durgeshkanzariya<span className="text-tech-blue group-hover:animate-pulse">.dev</span>
+    <motion.header
+      initial={{ y: -20, opacity: 0 }}
+      animate={{ y: 0, opacity: 1 }}
+      transition={{ duration: 0.5, ease: "easeOut" }}
+      className="fixed top-0 left-0 right-0 w-full z-50 bg-[#07070A]/35 backdrop-blur-2xl border-b border-white/10 shadow-[0_4px_30px_rgba(0,0,0,0.3)] transition-colors duration-300"
+    >
+      <div className="max-w-7xl mx-auto px-6 sm:px-10 h-14 flex items-center justify-between font-sans">
+        {/* Left: Brand Identity Mark */}
+        <button
+          onClick={handleBrandClick}
+          className="group flex items-center gap-2 text-left focus-visible:ring-2 focus-visible:ring-purple-400 focus-visible:outline-none rounded-md px-1 py-0.5"
+        >
+          <span className="font-mono text-xs sm:text-sm font-extrabold tracking-tight text-white group-hover:text-purple-300 transition-colors">
+            durgeshkanzariya<span className="text-purple-500">.dev</span>
           </span>
+          <span className="relative flex h-2 w-2">
+            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-purple-400 opacity-75"></span>
+            <span className="relative inline-flex rounded-full h-2 w-2 bg-purple-500"></span>
+          </span>
+        </button>
 
-          {/* Desktop Navigation Items (Hidden on mobile) */}
-          <div className="hidden md:flex items-center gap-4 sm:gap-6 font-mono text-xs">
-            <button 
-              onClick={() => scrollToSection("work")} 
-              className={`hover:text-ink-primary transition-colors cursor-pointer ${activeSection === "work" ? "text-tech-blue font-bold" : "text-ink-muted"}`}
-            >
-              // work
-            </button>
-            <button 
-              onClick={() => scrollToSection("sandbox")} 
-              className={`hover:text-ink-primary transition-colors cursor-pointer ${activeSection === "sandbox" ? "text-tech-blue font-bold" : "text-ink-muted"}`}
-            >
-              // sandbox
-            </button>
-            <button 
-              onClick={() => scrollToSection("timeline")} 
-              className={`hover:text-ink-primary transition-colors cursor-pointer ${activeSection === "timeline" ? "text-tech-blue font-bold" : "text-ink-muted"}`}
-            >
-              // timeline
-            </button>
-            <button 
-              onClick={() => scrollToSection("credentials")} 
-              className={`hover:text-ink-primary transition-colors cursor-pointer ${activeSection === "credentials" ? "text-tech-blue font-bold" : "text-ink-muted"}`}
-            >
-              // credentials
-            </button>
+        {/* Center: Desktop Monospace Navigation Links */}
+        <nav className="hidden md:flex items-center gap-6 sm:gap-8 font-mono text-xs text-purple-300/70">
+          {NAV_ITEMS.map((item) => (
+            <MagneticButton key={item.id} onClick={() => scrollToSection(item.id)} distanceThreshold={40} maxTranslate={10}>
+              <span className={`transition-colors hover:text-white px-2 py-1 rounded focus-visible:ring-2 focus-visible:ring-purple-400 focus-visible:outline-none ${
+                activeSection === item.id && pathname === "/" ? "text-purple-400 font-bold drop-shadow-[0_0_8px_rgba(168,85,247,0.6)]" : ""
+              }`}>
+                {item.label}
+              </span>
+            </MagneticButton>
+          ))}
+        </nav>
 
-            <div className="flex items-center gap-2 pl-2 border-l border-border-subtle">
-              <button 
-                onClick={toggleTheme}
-                className="text-ink-muted hover:text-ink-primary p-1.5 rounded-lg border border-border-subtle bg-card-bg hover:shadow-sm transition-all cursor-pointer flex items-center justify-center"
-                title="Toggle theme"
-              >
-                {theme === "light" ? <Moon className="w-3.5 h-3.5" /> : <Sun className="w-3.5 h-3.5" />}
-              </button>
-              <button 
-                onClick={() => scrollToSection("contact")} 
-                className="text-ink-primary font-medium border border-border-subtle bg-card-bg px-3 py-1.5 rounded-lg hover:shadow-sm transition-all cursor-pointer"
-              >
-                connect
-              </button>
-            </div>
-          </div>
-        </div>
-      </motion.nav>
-
-      {/* Floating Bottom Menu & sheet on mobile only */}
-      <AnimatePresence>
-        {isMenuOpen && (
-          <>
-            {/* Backdrop Blur Overlay */}
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              onClick={() => setIsMenuOpen(false)}
-              className="md:hidden fixed inset-0 z-45 bg-slate-950/20 dark:bg-slate-950/40 backdrop-blur-xs"
-            />
-            {/* Bottom Sheet Menu Drawer */}
-            <motion.div
-              initial={{ y: "100%", opacity: 0, x: "-50%" }}
-              animate={{ y: 0, opacity: 1, x: "-50%" }}
-              exit={{ y: "100%", opacity: 0, x: "-50%" }}
-              transition={{ type: "spring", damping: 25, stiffness: 220 }}
-              className="md:hidden fixed bottom-24 left-1/2 z-50 w-[90%] max-w-[340px] border border-border-subtle bg-canvas/95 backdrop-blur-md rounded-2xl shadow-2xl overflow-hidden"
-            >
-              <div className="px-5 py-4 flex flex-col gap-3 font-mono text-xs">
-                <span className="text-[10px] text-ink-muted uppercase border-b border-border-subtle/50 pb-2 mb-1">// System Navigation</span>
-                <button 
-                  onClick={() => { scrollToSection("work"); setIsMenuOpen(false); }} 
-                  className={`text-left py-2 hover:text-ink-primary transition-colors cursor-pointer ${activeSection === "work" ? "text-tech-blue font-bold" : "text-ink-muted"}`}
-                >
-                  00 // WORK SHOWCASE
-                </button>
-                <button 
-                  onClick={() => { scrollToSection("sandbox"); setIsMenuOpen(false); }} 
-                  className={`text-left py-2 hover:text-ink-primary transition-colors cursor-pointer ${activeSection === "sandbox" ? "text-tech-blue font-bold" : "text-ink-muted"}`}
-                >
-                  01 // SIMULATION SANDBOX
-                </button>
-                <button 
-                  onClick={() => { scrollToSection("timeline"); setIsMenuOpen(false); }} 
-                  className={`text-left py-2 hover:text-ink-primary transition-colors cursor-pointer ${activeSection === "timeline" ? "text-tech-blue font-bold" : "text-ink-muted"}`}
-                >
-                  02 // ROADMAP TIMELINE
-                </button>
-                <button 
-                  onClick={() => { scrollToSection("credentials"); setIsMenuOpen(false); }} 
-                  className={`text-left py-2 hover:text-ink-primary transition-colors cursor-pointer ${activeSection === "credentials" ? "text-tech-blue font-bold" : "text-ink-muted"}`}
-                >
-                  03 // VALIDATED CREDENTIALS
-                </button>
-              </div>
-            </motion.div>
-          </>
-        )}
-      </AnimatePresence>
-
-      {/* Floating Sticky Bottom Action Bar (Mobile Viewport Only) */}
-      <div className="md:hidden fixed bottom-6 left-1/2 -translate-x-1/2 z-50 w-[90%] max-w-[340px]">
-        <div className="bg-canvas/80 backdrop-blur-lg border border-border-subtle/80 p-1.5 pl-4 pr-1.5 rounded-full flex items-center justify-between shadow-lg">
-          {/* Active section name indicator */}
-          <button
-            onClick={() => scrollToSection(activeSection)}
-            className="text-[10px] font-mono font-bold text-tech-blue uppercase tracking-wider py-1 cursor-pointer transition-all active:scale-95 shrink-0"
-          >
-            // {activeSection}
-          </button>
-          
-          {/* Group of right-hand action buttons */}
-          <div className="flex items-center gap-1.5">
-            {/* Theme switcher */}
-            <button
-              onClick={toggleTheme}
-              className="text-ink-muted hover:text-ink-primary w-8 h-8 rounded-full border border-border-subtle/60 bg-card-bg cursor-pointer flex items-center justify-center transition-all active:scale-90"
-              title="Toggle theme"
-            >
-              {theme === "light" ? <Moon className="w-3.5 h-3.5" /> : <Sun className="w-3.5 h-3.5" />}
-            </button>
-
-            {/* Quick link to connect / contact */}
+        {/* Right: Connect CTA Button & Mobile Hamburger Toggle */}
+        <div className="flex items-center gap-3">
+          <MagneticButton distanceThreshold={60} maxTranslate={15}>
             <button
               onClick={() => scrollToSection("contact")}
-              className="text-ink-muted hover:text-ink-primary w-8 h-8 rounded-full border border-border-subtle/60 bg-card-bg cursor-pointer flex items-center justify-center transition-all active:scale-90"
-              title="Connect / Contact"
+              className="group flex items-center gap-1.5 px-4 py-1.5 rounded-full bg-purple-950/60 hover:bg-purple-900/80 border border-purple-500/40 hover:border-purple-400 text-xs font-mono text-purple-200 transition-all shadow-[0_0_20px_rgba(168,85,247,0.25)] hover:shadow-[0_0_30px_rgba(168,85,247,0.5)] focus-visible:ring-2 focus-visible:ring-purple-400 focus-visible:outline-none"
             >
-              <Mail className="w-3.5 h-3.5" />
+              <span className="font-bold">Connect</span>
+              <ArrowUpRight className="w-3.5 h-3.5 text-purple-400 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
             </button>
+          </MagneticButton>
 
-            {/* Hamburger menu toggler */}
-            <button
-              onClick={() => setIsMenuOpen(!isMenuOpen)}
-              className="text-ink-muted hover:text-ink-primary w-8 h-8 rounded-full border border-border-subtle/60 bg-card-bg cursor-pointer flex items-center justify-center transition-all active:scale-90"
-              title="Toggle menu"
-            >
-              {isMenuOpen ? <X className="w-3.5 h-3.5" /> : <Menu className="w-3.5 h-3.5" />}
-            </button>
-          </div>
+          {/* Mobile Hamburger Toggle Button (Minimum 44x44px touch target) */}
+          <button
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            aria-label="Toggle Navigation Menu"
+            className="md:hidden flex items-center justify-center min-w-[44px] min-h-[44px] rounded-xl bg-purple-950/50 border border-purple-800/40 text-purple-300 hover:text-white transition-colors focus-visible:ring-2 focus-visible:ring-purple-400 focus-visible:outline-none"
+          >
+            {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+          </button>
         </div>
       </div>
-    </>
+
+      {/* Cyber-Luxury Mobile Dropdown Navigation Drawer */}
+      <AnimatePresence>
+        {mobileMenuOpen && (
+          <motion.div
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: "auto" }}
+            exit={{ opacity: 0, height: 0 }}
+            transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
+            className="md:hidden border-t border-purple-900/40 bg-[#07070A]/95 backdrop-blur-2xl px-6 py-6 overflow-hidden"
+          >
+            <div className="flex flex-col gap-4 font-mono text-sm">
+              {NAV_ITEMS.map((item) => (
+                <button
+                  key={item.id}
+                  onClick={() => scrollToSection(item.id)}
+                  className={`text-left min-h-[44px] flex items-center px-4 rounded-xl border transition-all ${
+                    activeSection === item.id && pathname === "/"
+                      ? "bg-purple-950/80 border-purple-500/80 text-purple-300 font-bold"
+                      : "bg-black/40 border-purple-900/30 text-purple-200/80 hover:text-white hover:border-purple-800/60"
+                  }`}
+                >
+                  {item.label}
+                </button>
+              ))}
+              <button
+                onClick={() => scrollToSection("contact")}
+                className="min-h-[44px] flex items-center justify-between px-4 rounded-xl bg-gradient-to-r from-purple-600 to-indigo-600 text-white font-bold transition-all shadow-md"
+              >
+                <span>// CONNECT &amp; GET IN TOUCH</span>
+                <ArrowUpRight className="w-4 h-4" />
+              </button>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </motion.header>
   );
 }

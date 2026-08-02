@@ -3,45 +3,83 @@
 @custom-variant dark (&:where(.dark, .dark *));
 
 @theme {
-  --color-canvas: #F8F9FA;
-  --color-card-bg: #FFFFFF;
-  --color-ink-primary: #1A1D20;
-  --color-ink-muted: #64748B;
-  --color-border-subtle: #E2E8F0;
+  --color-canvas: #07070A;
+  --color-card-bg: #0b0f19;
+  --color-ink-primary: #F9FAFB;
+  --color-ink-muted: #9CA3AF;
+  --color-border-subtle: #1e293b;
   
   --color-tech-blue: #3B82F6;
   --color-tech-blue-hover: #2563EB;
   
-  --font-sans: var(--font-geist-sans), Inter, system-ui, sans-serif;
-  --font-mono: var(--font-geist-mono), ui-monospace, monospace;
-  
-  --cursor-glow-color: rgba(13, 148, 136, 0.15);
-  --color-cursor-active: #0d9488;
-  --color-cursor-ring-active: rgba(13, 148, 136, 0.5);
-  --color-cursor-bg-hover: rgba(13, 148, 136, 0.08);
-  
-  --color-gloom-cycle-1: rgba(244, 63, 94, 0.10);
-  --color-gloom-cycle-2: rgba(245, 158, 11, 0.10);
-  --color-gloom-cycle-3: rgba(236, 72, 153, 0.09);
-  --color-gloom-cycle-4: rgba(99, 102, 241, 0.09);
+  --font-syne: var(--font-syne), 'Syne', sans-serif;
+  --font-sans: var(--font-jakarta), 'Plus Jakarta Sans', system-ui, sans-serif;
+  --font-mono: var(--font-jetbrains), 'JetBrains Mono', ui-monospace, monospace;
 }
 
-.dark {
-  --color-canvas: #030712; /* deeper cyber night */
-  --color-card-bg: #0b0f19; /* dark charcoal card background */
-  --color-ink-primary: #F9FAFB;
-  --color-ink-muted: #9CA3AF;
-  --color-border-subtle: #1e293b; /* sleek dark slate border */
-  
-  --cursor-glow-color: rgba(59, 130, 246, 0.24);
-  --color-cursor-active: #3b82f6;
-  --color-cursor-ring-active: rgba(59, 130, 246, 0.5);
-  --color-cursor-bg-hover: rgba(59, 130, 246, 0.08);
-  
-  --color-gloom-cycle-1: rgba(59, 130, 246, 0.14);
-  --color-gloom-cycle-2: rgba(16, 185, 129, 0.14);
-  --color-gloom-cycle-3: rgba(139, 92, 246, 0.14);
-  --color-gloom-cycle-4: rgba(245, 158, 11, 0.12);
+.font-syne {
+  font-family: var(--font-syne);
+}
+.font-jakarta {
+  font-family: var(--font-sans);
+}
+.font-jetbrains {
+  font-family: var(--font-mono);
+}
+
+.text-stroke-hollow {
+  -webkit-text-stroke: 1.5px rgba(255, 255, 255, 0.25);
+  color: transparent;
+}
+.text-stroke-hollow-purple {
+  -webkit-text-stroke: 2px rgba(168, 85, 247, 0.6);
+  color: transparent;
+  filter: drop-shadow(0 0 40px rgba(147, 51, 234, 0.45));
+}
+
+/* Fixed Cyber-Luxury Noise Overlay Filter */
+.cyber-noise-overlay {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  pointer-events: none;
+  z-index: 40;
+  opacity: 0.025;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+}
+
+/* Ambient Orbit Mesh Animations */
+@keyframes orbitTopLeft {
+  0% {
+    transform: translate(0px, 0px) scale(1);
+  }
+  50% {
+    transform: translate(120px, 80px) scale(1.15);
+  }
+  100% {
+    transform: translate(0px, 0px) scale(1);
+  }
+}
+
+@keyframes orbitBottomRight {
+  0% {
+    transform: translate(0px, 0px) scale(1);
+  }
+  50% {
+    transform: translate(-100px, -90px) scale(1.2);
+  }
+  100% {
+    transform: translate(0px, 0px) scale(1);
+  }
+}
+
+.animate-orbit-tl {
+  animation: orbitTopLeft 20s ease-in-out infinite;
+}
+
+.animate-orbit-br {
+  animation: orbitBottomRight 20s ease-in-out infinite;
 }
 
 /* Force-hide native browser cursor globally on desktop interactive elements */
@@ -54,29 +92,13 @@
   }
 }
 
-/* Custom background pattern - Jo Pe Curo & Itomdev vibe */
+/* Custom background pattern */
 .grid-bg {
   background-image: 
     radial-gradient(var(--color-border-subtle) 1px, transparent 1px), 
     radial-gradient(var(--color-border-subtle) 1px, var(--color-canvas) 1px);
   background-size: 24px 24px;
   background-position: 0 0, 12px 12px;
-}
-
-/* Scanline and CRT-terminal vibe (Killian Herzer / Itomdev) */
-.scanlines {
-  position: relative;
-  overflow: hidden;
-}
-.scanlines::before {
-  content: " ";
-  display: block;
-  position: absolute;
-  top: 0; left: 0; bottom: 0; right: 0;
-  background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.05) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.01), rgba(0, 255, 0, 0.005), rgba(0, 0, 255, 0.01));
-  z-index: 2;
-  background-size: 100% 3px, 3px 100%;
-  pointer-events: none;
 }
 
 body {
@@ -114,11 +136,10 @@ body {
   );
 }
 
-/* Utility to hide scrollbars on scrollable elements (mobile Quick commands, tab filters, etc.) */
 .scrollbar-none::-webkit-scrollbar {
   display: none !important;
 }
 .scrollbar-none {
-  -ms-overflow-style: none !important;  /* IE and Edge */
-  scrollbar-width: none !important;  /* Firefox */
+  -ms-overflow-style: none !important;
+  scrollbar-width: none !important;
 }
