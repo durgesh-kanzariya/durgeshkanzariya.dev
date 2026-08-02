@@ -87,11 +87,11 @@ export default function Navbar() {
       transition={{ duration: 0.5, ease: "easeOut" }}
       className="fixed top-0 left-0 right-0 w-full z-50 bg-[#07070A]/35 backdrop-blur-2xl border-b border-white/10 shadow-[0_4px_30px_rgba(0,0,0,0.3)] transition-colors duration-300"
     >
-      <div className="max-w-7xl mx-auto px-6 sm:px-10 h-14 flex items-center justify-between font-sans">
+      <div className="max-w-7xl mx-auto px-4 sm:px-10 h-14 flex items-center justify-between font-sans">
         {/* Left: Brand Identity Mark */}
         <button
           onClick={handleBrandClick}
-          className="group flex items-center gap-2 text-left focus-visible:ring-2 focus-visible:ring-purple-400 focus-visible:outline-none rounded-md px-1 py-0.5"
+          className="group flex items-center gap-1.5 sm:gap-2 text-left focus-visible:ring-2 focus-visible:ring-purple-400 focus-visible:outline-none rounded-md px-1 py-0.5"
         >
           <span className="font-mono text-xs sm:text-sm font-extrabold tracking-tight text-white group-hover:text-purple-300 transition-colors">
             durgeshkanzariya<span className="text-purple-500">.dev</span>
@@ -115,17 +115,19 @@ export default function Navbar() {
           ))}
         </nav>
 
-        {/* Right: Connect CTA Button & Mobile Hamburger Toggle */}
-        <div className="flex items-center gap-3">
-          <MagneticButton distanceThreshold={60} maxTranslate={15}>
-            <button
-              onClick={() => scrollToSection("contact")}
-              className="group flex items-center gap-1.5 px-4 py-1.5 rounded-full bg-purple-950/60 hover:bg-purple-900/80 border border-purple-500/40 hover:border-purple-400 text-xs font-mono text-purple-200 transition-all shadow-[0_0_20px_rgba(168,85,247,0.25)] hover:shadow-[0_0_30px_rgba(168,85,247,0.5)] focus-visible:ring-2 focus-visible:ring-purple-400 focus-visible:outline-none"
-            >
-              <span className="font-bold">Connect</span>
-              <ArrowUpRight className="w-3.5 h-3.5 text-purple-400 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
-            </button>
-          </MagneticButton>
+        {/* Right: Connect CTA Button (Hidden on small mobile) & Mobile Hamburger Toggle */}
+        <div className="flex items-center gap-2 sm:gap-3">
+          <div className="hidden sm:block">
+            <MagneticButton distanceThreshold={60} maxTranslate={15}>
+              <button
+                onClick={() => scrollToSection("contact")}
+                className="group flex items-center gap-1.5 px-4 py-1.5 rounded-full bg-purple-950/60 hover:bg-purple-900/80 border border-purple-500/40 hover:border-purple-400 text-xs font-mono text-purple-200 transition-all shadow-[0_0_20px_rgba(168,85,247,0.25)] hover:shadow-[0_0_30px_rgba(168,85,247,0.5)] focus-visible:ring-2 focus-visible:ring-purple-400 focus-visible:outline-none"
+              >
+                <span className="font-bold">Connect</span>
+                <ArrowUpRight className="w-3.5 h-3.5 text-purple-400 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
+              </button>
+            </MagneticButton>
+          </div>
 
           {/* Mobile Hamburger Toggle Button (Minimum 44x44px touch target) */}
           <button
@@ -146,9 +148,9 @@ export default function Navbar() {
             animate={{ opacity: 1, height: "auto" }}
             exit={{ opacity: 0, height: 0 }}
             transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
-            className="md:hidden border-t border-purple-900/40 bg-[#07070A]/95 backdrop-blur-2xl px-6 py-6 overflow-hidden"
+            className="md:hidden border-t border-purple-900/40 bg-[#07070A]/95 backdrop-blur-2xl px-4 sm:px-6 py-6 overflow-y-auto max-h-[calc(100vh-3.5rem)]"
           >
-            <div className="flex flex-col gap-4 font-mono text-sm">
+            <div className="flex flex-col gap-3.5 font-mono text-sm">
               {NAV_ITEMS.map((item) => (
                 <button
                   key={item.id}
@@ -164,7 +166,7 @@ export default function Navbar() {
               ))}
               <button
                 onClick={() => scrollToSection("contact")}
-                className="min-h-[44px] flex items-center justify-between px-4 rounded-xl bg-gradient-to-r from-purple-600 to-indigo-600 text-white font-bold transition-all shadow-md"
+                className="min-h-[44px] flex items-center justify-between px-4 rounded-xl bg-gradient-to-r from-purple-600 to-indigo-600 text-white font-bold transition-all shadow-md mt-1"
               >
                 <span>// CONNECT &amp; GET IN TOUCH</span>
                 <ArrowUpRight className="w-4 h-4" />

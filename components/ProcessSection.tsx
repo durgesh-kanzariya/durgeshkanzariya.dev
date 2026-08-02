@@ -30,8 +30,8 @@ const PROCESS_STEPS = [
 
 export default function ProcessSection() {
   return (
-    <section id="process" className="relative w-full py-24 px-6 md:px-12 bg-[#07070A] text-white">
-      <div className="max-w-6xl mx-auto space-y-12">
+    <section id="process" className="relative w-full pt-20 sm:pt-24 pb-16 sm:pb-24 px-4 sm:px-6 md:px-12 bg-[#07070A] text-white scroll-mt-14">
+      <div className="max-w-6xl mx-auto space-y-8 sm:space-y-12">
         {/* Animated Section Header */}
         <AnimatedHeading
           subtitle="// 03 ENGINEERING PROCESS"
@@ -39,7 +39,7 @@ export default function ProcessSection() {
         />
 
         {/* Process Cards Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-5 sm:gap-6">
           {PROCESS_STEPS.map((item, index) => {
             const Icon = item.icon;
             return (
@@ -50,7 +50,7 @@ export default function ProcessSection() {
                 viewport={{ once: true, amount: 0.15 }}
                 transition={{ duration: 0.7, delay: index * 0.14, ease: [0.16, 1, 0.3, 1] }}
                 whileHover={{ y: -6, scale: 1.01 }}
-                className="group relative rounded-3xl bg-[#0B0B10] border border-purple-900/40 hover:border-purple-500/80 p-6 sm:p-7 flex flex-col justify-between overflow-hidden transition-all duration-300 hover:shadow-[0_0_30px_rgba(168,85,247,0.25)]"
+                className="group relative rounded-3xl bg-[#0B0B10] border border-purple-900/40 hover:border-purple-500/80 p-5 sm:p-7 flex flex-col justify-between overflow-hidden transition-all duration-300 hover:shadow-[0_0_30px_rgba(168,85,247,0.25)]"
               >
                 {/* Background Radial Glow - Strictly clipped inside rounded-3xl */}
                 <div 

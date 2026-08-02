@@ -7,8 +7,8 @@ import AnimatedHeading from "@/components/AnimatedHeading";
 
 export default function AboutSection() {
   return (
-    <section id="about" className="relative w-full py-24 px-6 md:px-12 bg-[#07070A] text-white">
-      <div className="max-w-6xl mx-auto space-y-16">
+    <section id="about" className="relative w-full pt-20 sm:pt-24 pb-16 sm:pb-24 px-4 sm:px-6 md:px-12 bg-[#07070A] text-white scroll-mt-14">
+      <div className="max-w-6xl mx-auto space-y-10 sm:space-y-16">
         {/* Animated Section Header */}
         <AnimatedHeading
           subtitle="// 04 ABOUT & PHILOSOPHY"
@@ -16,7 +16,7 @@ export default function AboutSection() {
         />
 
         {/* Content Layout */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
           {/* Left Column: Portrait Card */}
           <motion.div 
             initial={{ opacity: 0, y: 60, scale: 0.94, filter: "blur(10px)" }}
@@ -29,7 +29,7 @@ export default function AboutSection() {
             {/* Ambient Purple Backdrop Glow */}
             <div className="absolute inset-0 bg-gradient-to-t from-purple-950/80 via-transparent to-transparent z-10 pointer-events-none" />
 
-            <div className="relative w-full h-[450px] sm:h-[500px]">
+            <div className="relative w-full h-[320px] sm:h-[500px]">
               <Image
                 src="/sequence/frame_0090.webp"
                 alt="Durgesh Kanzariya Studio Portrait"

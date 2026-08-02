@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { Sparkles, ArrowDown } from "lucide-react";
+import { ArrowDown } from "lucide-react";
 
 const TOTAL_FRAMES = 180;
 
@@ -216,8 +216,9 @@ export default function ImageSequenceScroll() {
     // Soft Edge Radial Vignette Gradient Overlay
     const centerX = width / 2;
     const centerY = height / 2;
-    const innerRadius = Math.min(width, height) * 0.32;
-    const outerRadius = Math.max(width, height) * 0.6;
+    const isMobileViewport = width < 640;
+    const innerRadius = Math.min(width, height) * (isMobileViewport ? 0.45 : 0.32);
+    const outerRadius = Math.max(width, height) * (isMobileViewport ? 0.75 : 0.6);
 
     const vignette = ctx.createRadialGradient(
       centerX,
@@ -297,10 +298,37 @@ export default function ImageSequenceScroll() {
     gsap.registerPlugin(ScrollTrigger);
 
     const updateOverlays = (progress: number, stageIdx: number) => {
-      // Headline update
+      // Headline animated update
       if (headlineRef.current && STORY_HEADLINES[stageIdx]) {
-        if (headlineRef.current.innerText !== STORY_HEADLINES[stageIdx]) {
-          headlineRef.current.innerText = STORY_HEADLINES[stageIdx];
+        const nextText = STORY_HEADLINES[stageIdx];
+        if (headlineRef.current.getAttribute("data-text") !== nextText) {
+          headlineRef.current.setAttribute("data-text", nextText);
+
+          gsap.killTweensOf(headlineRef.current);
+          gsap.to(headlineRef.current, {
+            opacity: 0,
+            y: -10,
+            filter: "blur(6px)",
+            duration: 0.18,
+            ease: "power2.in",
+            onComplete: () => {
+              if (headlineRef.current) {
+                headlineRef.current.innerText = nextText;
+                gsap.fromTo(
+                  headlineRef.current,
+                  { opacity: 0, y: 12, filter: "blur(6px)" },
+                  {
+                    opacity: 1,
+                    y: 0,
+                    filter: "blur(0px)",
+                    duration: 0.35,
+                    ease: "back.out(1.4)",
+                    overwrite: "auto",
+                  }
+                );
+              }
+            },
+          });
         }
       }
 
@@ -310,11 +338,32 @@ export default function ImageSequenceScroll() {
         if (stageNumRef.current && stageNumRef.current.innerText !== `STAGE ${stage.num} / 04`) {
           stageNumRef.current.innerText = `STAGE ${stage.num} / 04`;
         }
-        if (stageHeadingRef.current && stageHeadingRef.current.innerText !== stage.bigText) {
-          stageHeadingRef.current.innerText = stage.bigText;
-        }
-        if (stageDetailRef.current && stageDetailRef.current.innerText !== stage.detail) {
-          stageDetailRef.current.innerText = stage.detail;
+        if (stageHeadingRef.current && stageHeadingRef.current.getAttribute("data-text") !== stage.bigText) {
+          stageHeadingRef.current.setAttribute("data-text", stage.bigText);
+          gsap.killTweensOf([stageHeadingRef.current, stageDetailRef.current]);
+          gsap.to([stageHeadingRef.current, stageDetailRef.current], {
+            opacity: 0,
+            y: -8,
+            filter: "blur(4px)",
+            duration: 0.15,
+            ease: "power2.in",
+            onComplete: () => {
+              if (stageHeadingRef.current) stageHeadingRef.current.innerText = stage.bigText;
+              if (stageDetailRef.current) stageDetailRef.current.innerText = stage.detail;
+              gsap.fromTo(
+                [stageHeadingRef.current, stageDetailRef.current],
+                { opacity: 0, y: 10, filter: "blur(4px)" },
+                {
+                  opacity: 1,
+                  y: 0,
+                  filter: "blur(0px)",
+                  duration: 0.3,
+                  ease: "power3.out",
+                  stagger: 0.05,
+                }
+              );
+            },
+          });
         }
       }
 
@@ -419,17 +468,17 @@ export default function ImageSequenceScroll() {
                 scale: 0.95,
                 transition: { duration: 0.25, ease: "easeOut" },
               }}
-              className="relative z-10 flex flex-col items-center justify-center gap-4 text-center select-none"
+              className="relative z-10 flex flex-col items-center justify-center gap-4 text-center select-none px-4"
             >
-              <span className="font-mono text-[11px] text-purple-400 font-bold tracking-[0.25em] uppercase">
+              <span className="font-mono text-[10px] sm:text-[11px] text-purple-400 font-bold tracking-[0.2em] sm:tracking-[0.25em] uppercase">
                 durgeshkanzariya.dev // loading
               </span>
 
-              <div className="font-syne text-6xl sm:text-8xl font-black text-transparent bg-clip-text bg-gradient-to-b from-white via-purple-100 to-purple-400 tracking-tighter drop-shadow-[0_0_35px_rgba(168,85,247,0.4)]">
+              <div className="font-syne text-5xl sm:text-8xl font-black text-transparent bg-clip-text bg-gradient-to-b from-white via-purple-100 to-purple-400 tracking-tighter drop-shadow-[0_0_35px_rgba(168,85,247,0.4)]">
                 {loadPercentage}%
               </div>
 
-              <div className="w-44 h-0.5 bg-purple-950/80 rounded-full overflow-hidden border border-purple-800/40 relative mt-2">
+              <div className="w-36 sm:w-44 h-0.5 bg-purple-950/80 rounded-full overflow-hidden border border-purple-800/40 relative mt-2">
                 <div
                   className="h-full bg-gradient-to-r from-purple-500 via-indigo-300 to-purple-400 transition-all duration-200 ease-out shadow-[0_0_12px_rgba(168,85,247,0.9)]"
                   style={{ width: `${loadPercentage}%` }}
@@ -443,7 +492,7 @@ export default function ImageSequenceScroll() {
       {/* Main Pinned Hero Canvas Area */}
       <div 
         ref={containerRef} 
-        className="relative w-full h-screen flex flex-col justify-between pt-28 sm:pt-36 p-6 md:p-10 z-10 overflow-hidden"
+        className="relative w-full h-screen flex flex-col justify-between pt-20 sm:pt-36 p-4 sm:p-6 md:p-10 z-10 overflow-hidden"
       >
         {/* Fullscreen Display Layer: Giant Hollow "DURGESH" + Canvas with Bottom Masking */}
         <div className="absolute inset-0 w-full h-full flex items-center justify-center pointer-events-none overflow-hidden">
@@ -473,32 +522,22 @@ export default function ImageSequenceScroll() {
 
         {/* OVERLAY WRAPPER FOR DIRECT REF ANIMATIONS */}
         <div ref={overlayContainerRef} className="contents transition-opacity duration-300">
-          {/* TOP-LEFT Refined Name & Evolving Headline */}
-          <div className="absolute top-20 sm:top-24 left-6 md:left-12 z-30 max-w-lg lg:max-w-xl pointer-events-auto space-y-3">
-            {/* Stacked Name Typography */}
+          {/* Cinematic Film Title Overlay Block (Pure Minimalist Typography) */}
+          <div className="absolute bottom-40 sm:bottom-auto sm:top-24 left-4 right-4 sm:left-12 sm:right-auto z-30 max-w-lg lg:max-w-xl pointer-events-auto flex flex-col items-center sm:items-start text-center sm:text-left space-y-2.5 sm:space-y-3 bg-transparent border-none shadow-none p-0">
+            {/* Cinematic Film Title Typography */}
             <div className="space-y-1">
-              <h2 className="font-syne text-3xl sm:text-4xl lg:text-5xl xl:text-6xl font-black tracking-[0.16em] text-white uppercase leading-none drop-shadow-[0_4px_30px_rgba(0,0,0,0.95)]">
+              <h2 className="font-syne text-3xl sm:text-5xl lg:text-6xl font-black tracking-[0.18em] sm:tracking-[0.22em] text-white uppercase leading-none drop-shadow-[0_4px_30px_rgba(0,0,0,0.95)]">
                 DURGESH
               </h2>
-              <h2 className="font-syne text-3xl sm:text-4xl lg:text-5xl xl:text-6xl font-black tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-purple-200 via-white to-purple-400 uppercase leading-none drop-shadow-[0_4px_30px_rgba(0,0,0,0.95)]">
+              <h2 className="font-syne text-3xl sm:text-5xl lg:text-6xl font-black tracking-[0.15em] sm:tracking-[0.2em] text-transparent bg-clip-text bg-gradient-to-r from-purple-200 via-white to-purple-400 uppercase leading-none drop-shadow-[0_4px_30px_rgba(168,85,247,0.5)]">
                 KANZARIYA
               </h2>
             </div>
 
-            {/* Evolving Foreground Headline */}
-            <p ref={headlineRef} className="font-syne text-base sm:text-lg lg:text-xl font-extrabold text-purple-200/95 drop-shadow-[0_2px_15px_rgba(0,0,0,0.8)] transition-all duration-300 pt-1">
+            {/* Film Subtitle / Evolving Headline */}
+            <p ref={headlineRef} className="font-syne text-xs sm:text-base lg:text-lg font-bold tracking-wider text-purple-200/95 drop-shadow-[0_2px_15px_rgba(0,0,0,0.95)] transition-all duration-300 uppercase pt-0.5">
               {STORY_HEADLINES[0]}
             </p>
-
-            {/* Editorial Metric Tags filling the vertical left space */}
-            <div className="flex items-center gap-3 pt-2 font-mono text-xs text-purple-300/80">
-              <span className="px-3 py-1 rounded-full bg-purple-950/60 border border-purple-800/40 font-semibold">
-                REACT &amp; NEXT.JS 16
-              </span>
-              <span className="px-3 py-1 rounded-full bg-purple-950/60 border border-purple-800/40 font-semibold">
-                PYTHON &amp; XGBOOST
-              </span>
-            </div>
           </div>
 
           {/* MIDDLE-RIGHT Big Animated Text & Telemetry Card */}
@@ -531,10 +570,10 @@ export default function ImageSequenceScroll() {
             </div>
           </div>
 
-          {/* BOTTOM-LEFT Glass Info Card */}
-          <div className="absolute bottom-8 left-6 md:left-12 z-30 max-w-sm p-5 sm:p-6 rounded-2xl backdrop-blur-md bg-white/[0.03] border border-purple-500/20 shadow-2xl space-y-3.5 pointer-events-auto">
+          {/* BOTTOM-LEFT Glass Info Card (Desktop Only) */}
+          <div className="hidden sm:block absolute bottom-8 left-12 z-30 max-w-sm p-6 rounded-2xl backdrop-blur-md bg-white/[0.03] border border-purple-500/20 shadow-2xl space-y-3.5 pointer-events-auto">
             <div className="space-y-1">
-              <h3 className="font-syne text-sm sm:text-base font-extrabold text-white tracking-widest uppercase block overflow-visible leading-tight">
+              <h3 className="font-syne text-base font-extrabold text-white tracking-widest uppercase block overflow-visible leading-tight">
                 CREATIVE DEVELOPER
               </h3>
               <span className="font-mono text-[11px] text-purple-400 uppercase font-bold block tracking-wider">
@@ -563,7 +602,7 @@ export default function ImageSequenceScroll() {
           </div>
 
           {/* BOTTOM-RIGHT Vertical Line Scroll Indicator */}
-          <div className="absolute bottom-8 right-6 md:right-12 z-30 flex flex-col items-center gap-2 font-mono text-xs text-purple-300/80 tracking-widest pointer-events-auto">
+          <div className="hidden sm:flex absolute bottom-8 right-6 md:right-12 z-30 flex-col items-center gap-2 font-mono text-xs text-purple-300/80 tracking-widest pointer-events-auto">
             <span className="font-bold">SCROLL</span>
             <div className="w-[2px] h-16 bg-purple-950/80 rounded-full relative overflow-hidden">
               <div 

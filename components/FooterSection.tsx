@@ -8,26 +8,26 @@ export default function FooterSection() {
   const emailAddress = "durgesh.j.kanzariya@gmail.com";
 
   return (
-    <footer id="contact" className="relative w-full py-24 px-6 md:px-12 bg-[#07070A] text-white border-t border-purple-900/30 overflow-hidden">
+    <footer id="contact" className="relative w-full pt-20 sm:pt-24 pb-16 sm:pb-24 px-4 sm:px-6 md:px-12 bg-[#07070A] text-white border-t border-purple-900/30 overflow-hidden scroll-mt-14">
       {/* Background Ambient Radial Purple Glow */}
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[500px] bg-purple-600/15 rounded-full blur-[160px] pointer-events-none" />
 
-      <div className="max-w-6xl mx-auto space-y-16 relative z-10">
+      <div className="max-w-6xl mx-auto space-y-12 sm:space-y-16 relative z-10">
         {/* Headline CTA */}
-        <div className="space-y-8 max-w-4xl">
+        <div className="space-y-6 sm:space-y-8 max-w-4xl">
           <span className="font-mono text-xs text-purple-400 uppercase tracking-widest font-bold">
             // GET IN TOUCH
           </span>
 
-          <h2 className="font-syne text-4xl sm:text-6xl md:text-7xl font-extrabold tracking-tight text-white leading-tight">
+          <h2 className="font-syne text-3xl sm:text-6xl md:text-7xl font-extrabold tracking-tight text-white leading-tight">
             LET&apos;S BUILD SOMETHING <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 via-violet-300 to-indigo-300 drop-shadow-[0_0_30px_rgba(168,85,247,0.4)]">EXTRAORDINARY.</span>
           </h2>
 
-          <div className="pt-4 flex flex-wrap items-center gap-6">
+          <div className="pt-2 sm:pt-4 flex flex-col sm:flex-row items-stretch sm:items-center gap-4 sm:gap-6">
             <MagneticButton distanceThreshold={70} maxTranslate={18}>
               <a
                 href={`mailto:${emailAddress}`}
-                className="group inline-flex items-center gap-3 px-8 py-4 rounded-full bg-gradient-to-r from-purple-600 via-violet-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white font-syne font-bold text-base shadow-[0_0_35px_rgba(168,85,247,0.5)] hover:shadow-[0_0_50px_rgba(168,85,247,0.8)] transition-all duration-300"
+                className="group inline-flex items-center justify-center gap-3 px-6 sm:px-8 py-3.5 sm:py-4 rounded-full bg-gradient-to-r from-purple-600 via-violet-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white font-syne font-bold text-sm sm:text-base shadow-[0_0_35px_rgba(168,85,247,0.5)] hover:shadow-[0_0_50px_rgba(168,85,247,0.8)] transition-all duration-300 w-full sm:w-auto"
               >
                 <span>Get in Touch</span>
                 <ArrowUpRight className="w-5 h-5 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
@@ -35,7 +35,7 @@ export default function FooterSection() {
             </MagneticButton>
 
             {/* Social Links Minimalist Icon Pill */}
-            <div className="flex items-center gap-3 px-5 py-3 rounded-full bg-black/60 backdrop-blur-xl border border-white/15 shadow-xl">
+            <div className="flex items-center justify-center gap-3 px-5 py-3 rounded-full bg-black/60 backdrop-blur-xl border border-white/15 shadow-xl">
               <MagneticButton distanceThreshold={40} maxTranslate={10}>
                 <a
                   href="https://github.com"
@@ -78,7 +78,7 @@ export default function FooterSection() {
         </div>
 
         {/* Bottom Bar */}
-        <div className="pt-12 border-t border-purple-950/80 flex flex-col sm:flex-row items-center justify-between gap-4 font-mono text-xs text-purple-400/60">
+        <div className="pt-8 sm:pt-12 border-t border-purple-950/80 flex flex-col sm:flex-row items-center justify-between gap-3 text-center sm:text-left font-mono text-[11px] sm:text-xs text-purple-400/60">
           <span>© 2026 Durgesh Kanzariya • Built with Next.js &amp; GSAP</span>
           <span className="text-[10px] text-purple-500/50">ALL RIGHTS RESERVED</span>
         </div>

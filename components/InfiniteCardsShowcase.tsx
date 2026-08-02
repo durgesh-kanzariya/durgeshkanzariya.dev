@@ -83,8 +83,9 @@ export default function InfiniteCardsShowcase() {
     activeIndexRef.current = clampedIndex;
     setActiveIndex(clampedIndex);
 
-    const isMobile = typeof window !== "undefined" && window.innerWidth < 640;
-    const spacing = isMobile ? 270 : 360;
+    const width = typeof window !== "undefined" ? window.innerWidth : 1200;
+    const isMobile = width < 640;
+    const spacing = isMobile ? width * 0.85 : 360;
 
     cardRefs.current.forEach((cardEl, index) => {
       if (!cardEl) return;
@@ -92,9 +93,9 @@ export default function InfiniteCardsShowcase() {
       const absPos = Math.abs(relPos);
 
       const xTranslate = relPos * spacing;
-      const scale = Math.max(0.65, 1 - absPos * 0.16);
-      const opacity = Math.max(0, 1 - absPos * 0.4);
-      const rotateY = Math.max(-25, Math.min(25, relPos * -12));
+      const scale = isMobile ? (relPos === 0 ? 1 : 0.85) : Math.max(0.65, 1 - absPos * 0.16);
+      const opacity = isMobile ? (relPos === 0 ? 1 : 0) : Math.max(0, 1 - absPos * 0.4);
+      const rotateY = isMobile ? 0 : Math.max(-25, Math.min(25, relPos * -12));
       const zIndex = Math.round(100 - absPos * 10);
 
       gsap.to(cardEl, {
@@ -179,11 +180,11 @@ export default function InfiniteCardsShowcase() {
     <section 
       ref={sectionRef}
       id="work"
-      className="relative z-10 w-full bg-[#07070A] text-white select-none overflow-hidden"
+      className="relative z-10 w-full bg-[#07070A] text-white select-none overflow-hidden scroll-mt-14"
     >
       <div 
         ref={containerRef}
-        className="relative w-full h-screen py-16 sm:py-20 px-6 sm:px-12 flex flex-col justify-between overflow-hidden"
+        className="relative w-full min-h-screen sm:h-screen pt-16 sm:pt-20 pb-6 sm:pb-16 px-4 sm:px-12 flex flex-col justify-start sm:justify-between gap-4 sm:gap-0 overflow-hidden"
       >
         {/* Background Ambient Radial Glow */}
         <div className="absolute inset-0 pointer-events-none z-0 overflow-hidden">
@@ -191,15 +192,15 @@ export default function InfiniteCardsShowcase() {
           <div className="absolute inset-0 bg-[radial-gradient(#ffffff_1px,transparent_1px)] [background-size:36px_36px] opacity-[0.03]" />
         </div>
 
-        <div className="max-w-7xl mx-auto w-full space-y-4 relative z-10">
+        <div className="max-w-7xl mx-auto w-full space-y-1.5 sm:space-y-4 relative z-10">
           {/* Section Header */}
-          <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-purple-900/30 pb-4">
-            <div className="space-y-1">
-              <span className="font-mono text-[11px] text-purple-400 uppercase tracking-widest font-bold flex items-center gap-2">
+          <div className="flex flex-col md:flex-row md:items-end justify-between gap-2 sm:gap-4 border-b border-purple-900/30 pb-2 sm:pb-4">
+            <div className="space-y-0.5 sm:space-y-1">
+              <span className="font-mono text-[10px] sm:text-[11px] text-purple-400 uppercase tracking-widest font-bold flex items-center gap-2">
                 <Sparkles className="w-3.5 h-3.5 text-purple-400" />
                 // PINNED SHOWCASE // FEATURED WORK
               </span>
-              <h2 className="font-syne text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-white uppercase">
+              <h2 className="font-syne text-2xl sm:text-4xl lg:text-5xl font-bold sm:font-extrabold tracking-tight text-white uppercase">
                 Project Showcase
               </h2>
             </div>
@@ -210,7 +211,7 @@ export default function InfiniteCardsShowcase() {
         </div>
 
         {/* 3D Perspective Card Stage */}
-        <div className="relative w-full h-[450px] flex items-center justify-center overflow-hidden my-6 z-10">
+        <div className="relative w-full h-[450px] sm:h-[460px] flex items-center justify-center overflow-hidden my-1 sm:my-6 z-10">
           <div className="relative w-full max-w-6xl h-full flex items-center justify-center">
             {BASE_PROJECTS.map((project, index) => {
               const isActive = index === activeIndex;
@@ -222,7 +223,7 @@ export default function InfiniteCardsShowcase() {
                     cardRefs.current[index] = el;
                   }}
                   onClick={() => handleCardClick(index)}
-                  className={`absolute w-[290px] sm:w-[350px] h-[390px] sm:h-[430px] rounded-3xl bg-black/90 border p-6 flex flex-col justify-between shadow-[0_25px_60px_rgba(0,0,0,0.95)] cursor-pointer backdrop-blur-xl group overflow-hidden transition-colors duration-300 ${
+                  className={`absolute w-[calc(100vw-32px)] sm:w-[350px] max-w-[340px] h-[430px] sm:h-[430px] rounded-3xl bg-black/90 border p-4 sm:p-6 flex flex-col justify-between shadow-[0_25px_60px_rgba(0,0,0,0.95)] cursor-pointer backdrop-blur-xl group overflow-hidden transition-colors duration-300 ${
                     isActive
                       ? "border-purple-500/90 shadow-[0_0_40px_rgba(168,85,247,0.4)] ring-1 ring-purple-500/50"
                       : "border-white/10 hover:border-purple-800/60"
@@ -232,11 +233,11 @@ export default function InfiniteCardsShowcase() {
                   <div className="absolute -top-16 -right-16 w-48 h-48 bg-purple-600/20 rounded-full blur-2xl group-hover:bg-purple-600/40 transition-colors" />
 
                   {/* Top Badge */}
-                  <div className="flex items-center justify-between relative z-10">
-                    <span className="font-mono text-[10px] text-purple-300 font-bold uppercase px-3 py-1 rounded-full bg-purple-950/80 border border-purple-800/40 truncate max-w-[200px]">
+                  <div className="flex items-center justify-between gap-2 relative z-10">
+                    <span className="font-mono text-[9px] sm:text-[10px] text-purple-300 font-bold uppercase px-2.5 sm:px-3 py-1 rounded-full bg-purple-950/80 border border-purple-800/40 shrink-0">
                       {project.engine}
                     </span>
-                    <span className="font-syne text-2xl font-black text-purple-400">
+                    <span className="font-syne text-xl sm:text-2xl font-black text-purple-400 shrink-0">
                       0{project.num}
                     </span>
                   </div>
@@ -251,7 +252,7 @@ export default function InfiniteCardsShowcase() {
                       src={project.image}
                       alt={project.title}
                       fill
-                      sizes="(max-width: 640px) 290px, 350px"
+                      sizes="(max-width: 640px) 300px, 350px"
                       className="object-cover p-1 filter grayscale group-hover:grayscale-0 transition-all duration-700 scale-100 group-hover/img:scale-105"
                     />
                     <div className="absolute inset-0 bg-purple-950/20 opacity-0 group-hover/img:opacity-100 transition-opacity flex items-center justify-center">
@@ -263,17 +264,17 @@ export default function InfiniteCardsShowcase() {
                   </Link>
 
                   {/* Title & Metric Info */}
-                  <div className="space-y-3 relative z-10 pt-2 border-t border-purple-900/40">
+                  <div className="space-y-2.5 sm:space-y-3 relative z-10 pt-2 border-t border-purple-900/40">
                     <div className="flex items-start justify-between gap-2">
-                      <div>
-                        <h3 className="font-syne text-base sm:text-lg font-black text-white group-hover:text-purple-200 transition-colors uppercase line-clamp-1">
+                      <div className="space-y-0.5">
+                        <h3 className="font-syne text-base sm:text-lg font-bold text-white group-hover:text-purple-200 transition-colors uppercase leading-snug">
                           {project.title}
                         </h3>
-                        <p className="font-sans text-xs text-purple-300/80 line-clamp-1">
+                        <p className="font-sans text-[11px] sm:text-xs text-purple-300/80 line-clamp-1">
                           {project.subtitle}
                         </p>
                       </div>
-                      <span className="font-mono text-[10px] text-purple-300 font-bold px-2 py-0.5 rounded bg-purple-950/90 border border-purple-800/40 shrink-0">
+                      <span className="font-mono text-[9px] sm:text-[10px] text-purple-300 font-bold px-1.5 sm:px-2 py-0.5 rounded bg-purple-950/90 border border-purple-800/40 shrink-0 mt-0.5">
                         {project.metric}
                       </span>
                     </div>
@@ -283,10 +284,10 @@ export default function InfiniteCardsShowcase() {
                       <Link
                         href={`/work/${project.slug}`}
                         onClick={(e) => handleLinkClick(e, index)}
-                        className="group/btn flex items-center justify-between px-4 py-2.5 rounded-full bg-purple-600 hover:bg-purple-500 text-white font-mono text-xs font-bold transition-all shadow-md shadow-purple-950/50 w-full"
+                        className="group/btn flex items-center justify-between px-3.5 sm:px-4 py-2 sm:py-2.5 rounded-full bg-purple-600 hover:bg-purple-500 text-white font-mono text-[11px] sm:text-xs font-bold transition-all shadow-md shadow-purple-950/50 w-full"
                       >
                         <span>VIEW CASE STUDY</span>
-                        <ArrowUpRight className="w-4 h-4 group-hover/btn:translate-x-0.5 group-hover/btn:-translate-y-0.5 transition-transform" />
+                        <ArrowUpRight className="w-3.5 h-3.5 sm:w-4 sm:h-4 group-hover/btn:translate-x-0.5 group-hover/btn:-translate-y-0.5 transition-transform" />
                       </Link>
                     </MagneticButton>
                   </div>
@@ -297,9 +298,9 @@ export default function InfiniteCardsShowcase() {
         </div>
 
         {/* Bottom Navigation Controls & Progress Footer */}
-        <div className="relative z-20 max-w-7xl mx-auto w-full flex items-center justify-between gap-4 pt-4 border-t border-purple-950/80 font-mono text-xs">
-          <div className="flex items-center gap-3">
-            <span className="text-purple-400 font-bold">
+        <div className="relative z-20 max-w-7xl mx-auto w-full flex items-center justify-between gap-2 sm:gap-4 pt-3 sm:pt-4 border-t border-purple-950/80 font-mono text-xs">
+          <div className="flex items-center gap-2 sm:gap-3">
+            <span className="text-purple-400 font-bold text-[11px] sm:text-xs">
               PROJECT 0{BASE_PROJECTS[activeIndex]?.num} / 0{totalProjects}
             </span>
             <div className="hidden sm:flex items-center gap-1.5">
@@ -320,13 +321,13 @@ export default function InfiniteCardsShowcase() {
             <MagneticButton distanceThreshold={50} maxTranslate={12}>
               <button
                 onClick={handlePrev}
-                className={`flex items-center gap-2 px-5 py-2.5 rounded-full border font-mono text-xs font-bold transition-all shadow-[0_0_20px_rgba(168,85,247,0.2)] ${
+                className={`flex items-center gap-1.5 sm:gap-2 px-3.5 sm:px-5 py-2 sm:py-2.5 rounded-full border font-mono text-[11px] sm:text-xs font-bold transition-all shadow-[0_0_20px_rgba(168,85,247,0.2)] ${
                   activeIndex === 0
                     ? "bg-black/40 border-purple-950/50 text-purple-900/40 pointer-events-none cursor-not-allowed"
                     : "bg-black/70 border-purple-500/40 hover:border-purple-400 text-purple-200 hover:text-white"
                 }`}
               >
-                <ChevronLeft className="w-4 h-4 text-purple-400" />
+                <ChevronLeft className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-purple-400" />
                 <span>PREV</span>
               </button>
             </MagneticButton>
@@ -334,14 +335,14 @@ export default function InfiniteCardsShowcase() {
             <MagneticButton distanceThreshold={50} maxTranslate={12}>
               <button
                 onClick={handleNext}
-                className={`flex items-center gap-2 px-5 py-2.5 rounded-full border font-mono text-xs font-bold transition-all shadow-[0_0_20px_rgba(168,85,247,0.2)] ${
+                className={`flex items-center gap-1.5 sm:gap-2 px-3.5 sm:px-5 py-2 sm:py-2.5 rounded-full border font-mono text-[11px] sm:text-xs font-bold transition-all shadow-[0_0_20px_rgba(168,85,247,0.2)] ${
                   activeIndex === totalProjects - 1
                     ? "bg-black/40 border-purple-950/50 text-purple-900/40 pointer-events-none cursor-not-allowed"
                     : "bg-black/70 border-purple-500/40 hover:border-purple-400 text-purple-200 hover:text-white"
                 }`}
               >
                 <span>NEXT</span>
-                <ChevronRight className="w-4 h-4 text-purple-400" />
+                <ChevronRight className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-purple-400" />
               </button>
             </MagneticButton>
           </div>

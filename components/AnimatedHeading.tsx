@@ -108,7 +108,7 @@ export default function AnimatedHeading({
         {subtitle}
       </span>
       <div className="relative inline-block max-w-full">
-        <h2 className="font-syne text-4xl sm:text-5xl font-extrabold tracking-tight text-white uppercase flex flex-wrap gap-x-3 gap-y-1">
+        <h2 className="font-syne text-2xl sm:text-5xl font-bold sm:font-extrabold tracking-tight text-white uppercase flex flex-wrap gap-x-2.5 sm:gap-x-3 gap-y-1">
           {words.map((word, index) => (
             <span
               key={index}
