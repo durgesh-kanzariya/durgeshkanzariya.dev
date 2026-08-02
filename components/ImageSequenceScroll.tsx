@@ -80,6 +80,7 @@ export default function ImageSequenceScroll() {
   // Loading state only for Preloader component
   const [loadedCount, setLoadedCount] = useState<number>(0);
   const [isLoaded, setIsLoaded] = useState<boolean>(false);
+  const [preloaderComplete, setPreloaderComplete] = useState<boolean>(false);
 
   // Refresh ScrollTrigger layout once frames are ready
   useEffect(() => {
@@ -382,8 +383,8 @@ export default function ImageSequenceScroll() {
       </div>
 
       {/* Cyber-Luxury Staggered Multi-Column Curtain Preloader (Locomotive / Cuberto Exit Reveal) */}
-      <AnimatePresence>
-        {!isLoaded && (
+      <AnimatePresence onExitComplete={() => setPreloaderComplete(true)}>
+        {!isLoaded && !preloaderComplete && (
           <motion.div
             key="preloader"
             className="fixed inset-0 z-[99999] flex items-center justify-center select-none overflow-hidden pointer-events-auto"

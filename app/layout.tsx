@@ -41,9 +41,10 @@ export default function RootLayout({
   return (
     <html
       lang="en"
+      suppressHydrationWarning
       className={`${syne.variable} ${jakarta.variable} ${jetbrains.variable} antialiased font-sans`}
     >
-      <body className="bg-[#07070A] text-white selection:bg-purple-600 selection:text-white md:cursor-none relative overflow-x-hidden">
+      <body suppressHydrationWarning className="bg-[#07070A] text-white selection:bg-purple-600 selection:text-white md:cursor-none relative overflow-x-hidden">
         {/* 1. NOISE OVERLAY: Fixed, pointer-events-none noise texture layer (z-40, opacity 0.025) */}
         <div className="cyber-noise-overlay" />
 
