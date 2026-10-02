@@ -13,7 +13,6 @@ export default function HeroSection() {
   const nameRef = useRef<HTMLHeadingElement>(null);
   const taglineRef = useRef<HTMLParagraphElement>(null);
   const ctaRef = useRef<HTMLDivElement>(null);
-  const scrollCueRef = useRef<HTMLDivElement>(null);
   const counterRef = useRef<HTMLDivElement>(null);
   const roleIndexRef = useRef(0);
   const roleTicker = useRef<HTMLSpanElement>(null);
@@ -62,16 +61,6 @@ export default function HeroSection() {
         { opacity: 1, y: 0, duration: 0.8, ease: "power3.out", delay: 1.0 }
       );
 
-      // --- Scroll cue bob ---
-      gsap.to(scrollCueRef.current, {
-        y: 8,
-        duration: 1.4,
-        ease: "sine.inOut",
-        yoyo: true,
-        repeat: -1,
-        delay: 3,
-      });
-
       // --- Role ticker ---
       let index = 0;
       const tick = () => {
@@ -99,19 +88,10 @@ export default function HeroSection() {
     return () => ctx.revert();
   }, []);
 
-  const handleScrollDown = () => {
-    const el = document.getElementById("projects");
-    if (el) {
-      const lenis = (window as any).lenis;
-      if (lenis) lenis.scrollTo(el, { duration: 1.5 });
-      else el.scrollIntoView({ behavior: "smooth" });
-    }
-  };
-
   return (
     <section
       ref={sectionRef}
-      className="relative min-h-screen flex flex-col justify-center pt-20"
+      className="relative min-h-[100dvh] flex flex-col justify-center pt-24 pb-16"
       style={{ perspective: "1000px" }}
     >
       {/* Dot grid background */}
@@ -119,7 +99,6 @@ export default function HeroSection() {
 
       <div className="section-container relative z-10">
         <div className="max-w-5xl">
-
           {/* Main name */}
           <h1
             ref={nameRef}
@@ -133,7 +112,7 @@ export default function HeroSection() {
           {/* Tagline + role ticker */}
           <p
             ref={taglineRef}
-            className="text-[#6B7280] text-lg md:text-2xl font-jakarta font-normal max-w-xl mb-4"
+            className="text-[#8E90A6] text-lg md:text-2xl font-jakarta font-normal max-w-xl mb-4"
           >
             Engineer by craft. Builder by passion.
           </p>
@@ -150,7 +129,7 @@ export default function HeroSection() {
             </span>
           </div>
 
-          {/* CTAs */}
+          {/* CTAs — Button-in-Button architecture */}
           <div ref={ctaRef} className="flex flex-wrap items-center gap-4 mb-20" style={{ opacity: 0 }}>
             <button
               onClick={() => {
@@ -158,26 +137,28 @@ export default function HeroSection() {
                 const lenis = (window as any).lenis;
                 if (el) lenis ? lenis.scrollTo(el, { duration: 1.2 }) : el.scrollIntoView({ behavior: "smooth" });
               }}
-              className="btn-primary"
+              className="group/btn inline-flex items-center gap-3 px-6 py-3.5 rounded-full bg-[#4F8EFF] text-white text-sm font-semibold tracking-wide hover:bg-[#3d7be8] active:scale-[0.98] transition-all duration-300 shadow-[0_10px_30px_rgba(79,142,255,0.25)]"
             >
-              View Projects
-              <ArrowDown size={14} />
+              <span>View Projects</span>
+              <span className="w-6 h-6 rounded-full bg-white/20 flex items-center justify-center transition-transform duration-300 group-hover/btn:translate-y-0.5">
+                <ArrowDown size={13} />
+              </span>
             </button>
             <a
               href="https://github.com/durgesh-kanzariya"
               target="_blank"
               rel="noopener noreferrer"
-              className="btn-ghost"
+              className="inline-flex items-center gap-2.5 px-6 py-3.5 rounded-full bg-white/[0.04] border border-white/[0.08] text-[#F0F0F8] text-sm font-medium hover:bg-white/[0.08] hover:border-white/20 active:scale-[0.98] transition-all duration-300"
             >
               <GithubIcon size={14} />
               GitHub
             </a>
           </div>
 
-          {/* Quick stats */}
+          {/* Quick stats — High contrast & machined borders */}
           <div
             ref={counterRef}
-            className="flex flex-wrap gap-8 pt-8 border-t border-[#1c1c3a]"
+            className="flex flex-wrap gap-10 pt-8 border-t border-white/[0.08]"
             style={{ opacity: 0 }}
           >
             {[
@@ -192,16 +173,6 @@ export default function HeroSection() {
             ))}
           </div>
         </div>
-      </div>
-
-      {/* Scroll cue */}
-      <div
-        ref={scrollCueRef}
-        className="absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 cursor-pointer"
-        onClick={handleScrollDown}
-      >
-        <span className="label-muted text-[0.6rem] tracking-[0.2em]">SCROLL</span>
-        <div className="w-px h-8 bg-gradient-to-b from-[#4F8EFF]/60 to-transparent" />
       </div>
 
       {/* Social links — vertical on right side (desktop) */}

@@ -83,11 +83,13 @@ export default function FooterSection() {
           <div ref={bodyRef} className="flex flex-col sm:flex-row items-start sm:items-center gap-4" style={{ opacity: 0 }}>
             <a
               href="mailto:durgesh.j.kanzariya@gmail.com"
-              className="btn-primary text-base py-3.5 px-7"
+              className="group/btn inline-flex items-center gap-3.5 px-7 py-4 rounded-full bg-[#4F8EFF] text-white text-base font-semibold tracking-wide hover:bg-[#3d7be8] active:scale-[0.98] transition-all duration-300 shadow-[0_10px_35px_rgba(79,142,255,0.3)]"
             >
-              <Mail size={16} />
-              Send an email
-              <ArrowUpRight size={14} />
+              <Mail size={18} />
+              <span>Send an email</span>
+              <span className="w-7 h-7 rounded-full bg-white/20 flex items-center justify-center transition-transform duration-300 group-hover/btn:translate-x-0.5 group-hover/btn:-translate-y-0.5">
+                <ArrowUpRight size={14} />
+              </span>
             </a>
             <p className="text-[#6B7280] text-sm">
               Or connect on LinkedIn, GitHub — I respond to everything.
