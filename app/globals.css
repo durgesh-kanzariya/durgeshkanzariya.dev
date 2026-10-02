@@ -2,144 +2,466 @@
 
 @custom-variant dark (&:where(.dark, .dark *));
 
+/* ============================================================
+   DESIGN TOKENS
+   ============================================================ */
 @theme {
-  --color-canvas: #07070A;
-  --color-card-bg: #0b0f19;
-  --color-ink-primary: #F9FAFB;
-  --color-ink-muted: #9CA3AF;
-  --color-border-subtle: #1e293b;
-  
-  --color-tech-blue: #3B82F6;
-  --color-tech-blue-hover: #2563EB;
-  
-  --font-syne: var(--font-syne), 'Syne', sans-serif;
-  --font-sans: var(--font-jakarta), 'Plus Jakarta Sans', system-ui, sans-serif;
-  --font-mono: var(--font-jetbrains), 'JetBrains Mono', ui-monospace, monospace;
+  /* — Core Palette — */
+  --color-canvas:       #080810;
+  --color-canvas-soft:  #0c0c18;
+  --color-card-bg:      #0f0f1e;
+  --color-card-hover:   #13132a;
+  --color-border:       #1c1c3a;
+  --color-border-light: #252548;
+
+  /* — Ink — */
+  --color-ink-primary: #F0F0F8;
+  --color-ink-muted:   #6B7280;
+  --color-ink-subtle:  #3A3A5C;
+
+  /* — Accent — */
+  --color-accent:       #4F8EFF;
+  --color-accent-hover: #3B7FFF;
+  --color-accent-dim:   rgba(79, 142, 255, 0.12);
+  --color-accent-glow:  rgba(79, 142, 255, 0.3);
+
+  /* — Domains — */
+  --color-domain-web:    #4F8EFF;
+  --color-domain-ml:     #A855F7;
+  --color-domain-mobile: #10B981;
+  --color-domain-ai:     #F59E0B;
+
+  /* — Fonts — */
+  --font-syne:     var(--font-syne), 'Syne', sans-serif;
+  --font-sans:     var(--font-jakarta), 'Plus Jakarta Sans', system-ui, sans-serif;
+  --font-mono:     var(--font-jetbrains), 'JetBrains Mono', ui-monospace, monospace;
+
+  /* — Spacing — */
+  --section-px: clamp(1.25rem, 5vw, 6rem);
+  --section-py: clamp(5rem, 10vw, 9rem);
 }
 
-.font-syne {
-  font-family: var(--font-syne);
-}
-.font-jakarta {
-  font-family: var(--font-sans);
-}
-.font-jetbrains {
-  font-family: var(--font-mono);
+/* ============================================================
+   FONT HELPERS
+   ============================================================ */
+.font-syne    { font-family: var(--font-syne); }
+.font-jakarta { font-family: var(--font-sans); }
+.font-mono    { font-family: var(--font-mono); }
+
+/* ============================================================
+   BODY BASE
+   ============================================================ */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
 }
 
-.text-stroke-hollow {
-  -webkit-text-stroke: 1.5px rgba(255, 255, 255, 0.25);
-  color: transparent;
-}
-.text-stroke-hollow-purple {
-  -webkit-text-stroke: 2px rgba(168, 85, 247, 0.6);
-  color: transparent;
-  filter: drop-shadow(0 0 40px rgba(147, 51, 234, 0.45));
-}
-
-/* Fixed Cyber-Luxury Noise Overlay Filter */
-.cyber-noise-overlay {
-  position: fixed;
-  inset: 0;
-  width: 100vw;
-  height: 100vh;
-  pointer-events: none;
-  z-index: 40;
-  opacity: 0.025;
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
-}
-
-/* Ambient Orbit Mesh Animations */
-@keyframes orbitTopLeft {
-  0% {
-    transform: translate(0px, 0px) scale(1);
-  }
-  50% {
-    transform: translate(120px, 80px) scale(1.15);
-  }
-  100% {
-    transform: translate(0px, 0px) scale(1);
-  }
-}
-
-@keyframes orbitBottomRight {
-  0% {
-    transform: translate(0px, 0px) scale(1);
-  }
-  50% {
-    transform: translate(-100px, -90px) scale(1.2);
-  }
-  100% {
-    transform: translate(0px, 0px) scale(1);
-  }
-}
-
-.animate-orbit-tl {
-  animation: orbitTopLeft 20s ease-in-out infinite;
-}
-
-.animate-orbit-br {
-  animation: orbitBottomRight 20s ease-in-out infinite;
-}
-
-/* Force-hide native browser cursor globally on desktop interactive elements */
-@media (min-width: 768px) {
-  * {
-    cursor: none !important;
-  }
-  a, button, [role="button"], input, select, textarea, .cursor-pointer {
-    cursor: none !important;
-  }
-}
-
-/* Custom background pattern */
-.grid-bg {
-  background-image: 
-    radial-gradient(var(--color-border-subtle) 1px, transparent 1px), 
-    radial-gradient(var(--color-border-subtle) 1px, var(--color-canvas) 1px);
-  background-size: 24px 24px;
-  background-position: 0 0, 12px 12px;
+html {
+  scroll-behavior: auto; /* Lenis handles smooth scroll */
 }
 
 body {
   background-color: var(--color-canvas);
   color: var(--color-ink-primary);
+  font-family: var(--font-sans);
   font-feature-settings: "cv02", "cv03", "cv04", "cv11";
   overflow-x: hidden;
-  transition: background-color 0.3s ease, color 0.3s ease;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
-/* Custom premium scrollbar styling */
-::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
+/* ============================================================
+   SELECTION
+   ============================================================ */
+::selection {
+  background: rgba(79, 142, 255, 0.3);
+  color: #fff;
 }
 
-::-webkit-scrollbar-track {
-  background: var(--color-canvas);
-}
-
+/* ============================================================
+   SCROLLBAR
+   ============================================================ */
+::-webkit-scrollbar       { width: 5px; height: 5px; }
+::-webkit-scrollbar-track { background: var(--color-canvas); }
 ::-webkit-scrollbar-thumb {
-  background: var(--color-border-subtle);
-  border-radius: 3px;
+  background: var(--color-border-light);
+  border-radius: 2px;
+}
+::-webkit-scrollbar-thumb:hover { background: var(--color-ink-subtle); }
+
+.scrollbar-none::-webkit-scrollbar { display: none !important; }
+.scrollbar-none { -ms-overflow-style: none !important; scrollbar-width: none !important; }
+
+/* ============================================================
+   CURSOR (desktop)
+   ============================================================ */
+@media (min-width: 768px) {
+  * { cursor: none !important; }
+  a, button, [role="button"], input, select, textarea, .cursor-pointer {
+    cursor: none !important;
+  }
 }
 
-::-webkit-scrollbar-thumb:hover {
-  background: var(--color-ink-muted);
+/* ============================================================
+   NOISE OVERLAY (fixed, subtle)
+   ============================================================ */
+.noise-overlay {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  pointer-events: none;
+  z-index: 50;
+  opacity: 0.018;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
 }
 
+/* ============================================================
+   AMBIENT GLOW MESH (background blurs)
+   ============================================================ */
+@keyframes orbitTL {
+  0%   { transform: translate(0, 0) scale(1); }
+  50%  { transform: translate(80px, 60px) scale(1.1); }
+  100% { transform: translate(0, 0) scale(1); }
+}
+@keyframes orbitBR {
+  0%   { transform: translate(0, 0) scale(1); }
+  50%  { transform: translate(-70px, -80px) scale(1.15); }
+  100% { transform: translate(0, 0) scale(1); }
+}
+@keyframes orbitCenter {
+  0%   { transform: translate(0, 0) scale(1) rotate(0deg); opacity: 0.06; }
+  50%  { transform: translate(40px, -30px) scale(1.05) rotate(180deg); opacity: 0.09; }
+  100% { transform: translate(0, 0) scale(1) rotate(360deg); opacity: 0.06; }
+}
+
+.glow-tl { animation: orbitTL 25s ease-in-out infinite; }
+.glow-br { animation: orbitBR 22s ease-in-out infinite; }
+.glow-center { animation: orbitCenter 35s ease-in-out infinite; }
+
+/* ============================================================
+   CURSOR GLOW RADIAL
+   ============================================================ */
 .cursor-glow {
   background: radial-gradient(
-    400px circle at var(--x, 0px) var(--y, 0px),
-    var(--cursor-glow-color),
+    350px circle at var(--x, 0px) var(--y, 0px),
+    rgba(79, 142, 255, 0.06),
     transparent 40%
   );
 }
 
-.scrollbar-none::-webkit-scrollbar {
-  display: none !important;
+/* ============================================================
+   TYPOGRAPHY SCALE
+   ============================================================ */
+.display-xl {
+  font-family: var(--font-syne);
+  font-size: clamp(3.5rem, 9vw, 9rem);
+  font-weight: 800;
+  line-height: 0.95;
+  letter-spacing: -0.03em;
 }
-.scrollbar-none {
-  -ms-overflow-style: none !important;
-  scrollbar-width: none !important;
+
+.display-lg {
+  font-family: var(--font-syne);
+  font-size: clamp(2.5rem, 6vw, 6rem);
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: -0.025em;
 }
+
+.display-md {
+  font-family: var(--font-syne);
+  font-size: clamp(1.8rem, 4vw, 4rem);
+  font-weight: 700;
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+}
+
+.heading-sm {
+  font-family: var(--font-syne);
+  font-size: clamp(1.25rem, 2.5vw, 2rem);
+  font-weight: 700;
+  line-height: 1.15;
+  letter-spacing: -0.015em;
+}
+
+.label-sm {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  font-weight: 500;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--color-accent);
+}
+
+.label-muted {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--color-ink-muted);
+}
+
+/* ============================================================
+   TEXT EFFECTS
+   ============================================================ */
+.text-hollow {
+  -webkit-text-stroke: 1.5px rgba(240, 240, 248, 0.2);
+  color: transparent;
+}
+
+.text-hollow-accent {
+  -webkit-text-stroke: 1.5px rgba(79, 142, 255, 0.4);
+  color: transparent;
+  filter: drop-shadow(0 0 30px rgba(79, 142, 255, 0.2));
+}
+
+.text-gradient-blue {
+  background: linear-gradient(135deg, #4F8EFF 0%, #A855F7 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.text-gradient-warm {
+  background: linear-gradient(135deg, #F0F0F8 0%, #9CA3AF 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* ============================================================
+   SECTION LAYOUT
+   ============================================================ */
+.section-container {
+  width: 100%;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 var(--section-px);
+}
+
+.section-padding {
+  padding: var(--section-py) 0;
+}
+
+/* ============================================================
+   CARD STYLES
+   ============================================================ */
+.card-base {
+  background: var(--color-card-bg);
+  border: 1px solid var(--color-border);
+  border-radius: 16px;
+  transition: border-color 0.3s ease, background 0.3s ease;
+}
+
+.card-base:hover {
+  border-color: var(--color-border-light);
+  background: var(--color-card-hover);
+}
+
+/* ============================================================
+   PILL / TAG
+   ============================================================ */
+.tag-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.25rem 0.75rem;
+  border-radius: 9999px;
+  border: 1px solid var(--color-border);
+  background: var(--color-card-bg);
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--color-ink-muted);
+  white-space: nowrap;
+}
+
+/* ============================================================
+   BUTTONS
+   ============================================================ */
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.75rem;
+  border-radius: 8px;
+  background: var(--color-accent);
+  color: #fff;
+  font-family: var(--font-sans);
+  font-size: 0.875rem;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  text-decoration: none;
+  transition: background 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+  box-shadow: 0 0 0 0 var(--color-accent-glow);
+}
+
+.btn-primary:hover {
+  background: var(--color-accent-hover);
+  transform: translateY(-1px);
+  box-shadow: 0 8px 30px var(--color-accent-glow);
+}
+
+.btn-ghost {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.75rem;
+  border-radius: 8px;
+  border: 1px solid var(--color-border-light);
+  background: transparent;
+  color: var(--color-ink-primary);
+  font-family: var(--font-sans);
+  font-size: 0.875rem;
+  font-weight: 500;
+  text-decoration: none;
+  transition: border-color 0.2s ease, background 0.2s ease, transform 0.2s ease;
+}
+
+.btn-ghost:hover {
+  border-color: var(--color-accent);
+  background: var(--color-accent-dim);
+  transform: translateY(-1px);
+}
+
+.btn-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 8px;
+  border: 1px solid var(--color-border);
+  background: var(--color-card-bg);
+  color: var(--color-ink-muted);
+  text-decoration: none;
+  transition: border-color 0.2s ease, color 0.2s ease, background 0.2s ease;
+}
+
+.btn-icon:hover {
+  border-color: var(--color-accent);
+  color: var(--color-accent);
+  background: var(--color-accent-dim);
+}
+
+/* ============================================================
+   DIVIDER
+   ============================================================ */
+.divider {
+  width: 100%;
+  height: 1px;
+  background: var(--color-border);
+}
+
+/* ============================================================
+   MARQUEE
+   ============================================================ */
+@keyframes marqueeLeft {
+  0%   { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+@keyframes marqueeRight {
+  0%   { transform: translateX(-50%); }
+  100% { transform: translateX(0); }
+}
+
+.marquee-track {
+  display: flex;
+  width: max-content;
+  animation: marqueeLeft 35s linear infinite;
+}
+.marquee-track-reverse {
+  display: flex;
+  width: max-content;
+  animation: marqueeRight 30s linear infinite;
+}
+.marquee-track:hover,
+.marquee-track-reverse:hover {
+  animation-play-state: paused;
+}
+
+/* ============================================================
+   GRID BACKGROUND DOT PATTERN
+   ============================================================ */
+.dot-grid {
+  background-image:
+    radial-gradient(rgba(79, 142, 255, 0.08) 1px, transparent 1px);
+  background-size: 28px 28px;
+}
+
+/* ============================================================
+   FADE-IN ANIMATION (for GSAP targets)
+   ============================================================ */
+.gsap-fade-up {
+  opacity: 0;
+  transform: translateY(40px);
+}
+.gsap-fade-in {
+  opacity: 0;
+}
+.gsap-clip-reveal {
+  clip-path: inset(0 100% 0 0);
+}
+
+/* ============================================================
+   PROJECT SECTION SPECIFIC
+   ============================================================ */
+.project-number {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--color-ink-subtle);
+}
+
+/* ============================================================
+   LINE CLAMP UTILITIES
+   ============================================================ */
+.line-clamp-2 {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.line-clamp-3 {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* ============================================================
+   LINK UNDERLINE ANIMATION
+   ============================================================ */
+.link-hover {
+  position: relative;
+  text-decoration: none;
+}
+.link-hover::after {
+  content: '';
+  position: absolute;
+  bottom: -1px;
+  left: 0;
+  width: 0;
+  height: 1px;
+  background: var(--color-accent);
+  transition: width 0.3s ease;
+}
+.link-hover:hover::after { width: 100%; }
+
+/* ============================================================
+   DOMAIN COLOR DOTS
+   ============================================================ */
+.domain-web    { color: var(--color-domain-web); }
+.domain-ml     { color: var(--color-domain-ml); }
+.domain-mobile { color: var(--color-domain-mobile); }
+.domain-ai     { color: var(--color-domain-ai); }
+
+.dot-web    { background: var(--color-domain-web); }
+.dot-ml     { background: var(--color-domain-ml); }
+.dot-mobile { background: var(--color-domain-mobile); }
+.dot-ai     { background: var(--color-domain-ai); }

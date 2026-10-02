@@ -1,180 +1,195 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import { ArrowUpRight, Menu, X } from "lucide-react";
-import { usePathname, useRouter } from "next/navigation";
+import { useEffect, useRef, useState } from "react";
+import Link from "next/link";
+import { Mail, FileText } from "lucide-react";
+import { GithubIcon, LinkedinIcon } from "@/components/BrandIcons";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import MagneticButton from "@/components/MagneticButton";
+
+const NAV_LINKS = [
+  { label: "Projects", href: "#projects" },
+  { label: "Skills", href: "#skills" },
+  { label: "About", href: "#about" },
+  { label: "Contact", href: "#contact" },
+];
+
+const SOCIAL_LINKS = [
+  { icon: GithubIcon, href: "https://github.com/durgesh-kanzariya", label: "GitHub" },
+  { icon: LinkedinIcon, href: "https://linkedin.com/in/durgesh-kanzariya", label: "LinkedIn" },
+  { icon: Mail, href: "mailto:durgesh.j.kanzariya@gmail.com", label: "Email" },
+];
 
 export default function Navbar() {
-  const [activeSection, setActiveSection] = useState("hero");
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const pathname = usePathname();
-  const router = useRouter();
+  const navRef = useRef<HTMLElement>(null);
+  const [scrolled, setScrolled] = useState(false);
+  const [mobileOpen, setMobileOpen] = useState(false);
 
   useEffect(() => {
-    if (pathname !== "/") return;
-
     gsap.registerPlugin(ScrollTrigger);
 
-    const sectionIds = ["hero", "work", "arsenal", "process", "about", "contact"];
-    const observers = sectionIds.map((id) => {
-      const el = document.getElementById(id);
-      if (!el) return null;
+    const handleScroll = () => {
+      setScrolled(window.scrollY > 60);
+    };
+    window.addEventListener("scroll", handleScroll, { passive: true });
 
-      const observer = new IntersectionObserver(
-        ([entry]) => {
-          if (entry.isIntersecting) {
-            setActiveSection(id);
-          }
-        },
-        { rootMargin: "-25% 0px -50% 0px" }
+    // Animate in on load
+    const ctx = gsap.context(() => {
+      gsap.fromTo(
+        navRef.current,
+        { opacity: 0, y: -20 },
+        { opacity: 1, y: 0, duration: 1, ease: "power3.out", delay: 0.5 }
       );
-      observer.observe(el);
-      return { observer, el };
     });
 
     return () => {
-      observers.forEach((obs) => obs?.observer.unobserve(obs.el));
+      window.removeEventListener("scroll", handleScroll);
+      ctx.revert();
     };
-  }, [pathname]);
+  }, []);
 
-  const scrollToSection = (id: string) => {
-    setMobileMenuOpen(false);
-
-    if (pathname !== "/") {
-      router.push(`/#${id}`);
-      return;
-    }
-
-    const el = document.getElementById(id);
-    if (el) {
-      if (typeof window !== "undefined" && (window as any).lenis) {
-        (window as any).lenis.scrollTo(el, {
-          duration: 1.2,
-          onComplete: () => {
-            ScrollTrigger.refresh();
-          },
-        });
-      } else {
-        el.scrollIntoView({ behavior: "smooth" });
+  const handleNavClick = (href: string) => {
+    setMobileOpen(false);
+    if (href.startsWith("#")) {
+      const el = document.getElementById(href.replace("#", ""));
+      if (el) {
+        const lenis = (window as any).lenis;
+        if (lenis) {
+          lenis.scrollTo(el, { duration: 1.2, easing: (t: number) => Math.min(1, 1.001 - Math.pow(2, -10 * t)) });
+        } else {
+          el.scrollIntoView({ behavior: "smooth" });
+        }
       }
     }
   };
 
-  const handleBrandClick = () => {
-    setMobileMenuOpen(false);
-    if (pathname !== "/") {
-      router.push("/");
-    } else {
-      window.scrollTo({ top: 0, behavior: "smooth" });
-    }
-  };
-
-  const NAV_ITEMS = [
-    { id: "work", label: "// work" },
-    { id: "arsenal", label: "// arsenal" },
-    { id: "process", label: "// process" },
-    { id: "about", label: "// about" },
-  ];
-
   return (
-    <motion.header
-      initial={{ y: -20, opacity: 0 }}
-      animate={{ y: 0, opacity: 1 }}
-      transition={{ duration: 0.5, ease: "easeOut" }}
-      className="fixed top-0 left-0 right-0 w-full z-50 bg-[#07070A]/35 backdrop-blur-2xl border-b border-white/10 shadow-[0_4px_30px_rgba(0,0,0,0.3)] transition-colors duration-300"
-    >
-      <div className="max-w-7xl mx-auto px-4 sm:px-10 h-14 flex items-center justify-between font-sans">
-        {/* Left: Brand Identity Mark */}
-        <button
-          onClick={handleBrandClick}
-          className="group flex items-center gap-1.5 sm:gap-2 text-left focus-visible:ring-2 focus-visible:ring-purple-400 focus-visible:outline-none rounded-md px-1 py-0.5"
-        >
-          <span className="font-mono text-xs sm:text-sm font-extrabold tracking-tight text-white group-hover:text-purple-300 transition-colors">
-            durgeshkanzariya<span className="text-purple-500">.dev</span>
-          </span>
-          <span className="relative flex h-2 w-2">
-            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-purple-400 opacity-75"></span>
-            <span className="relative inline-flex rounded-full h-2 w-2 bg-purple-500"></span>
-          </span>
-        </button>
+    <>
+      <nav
+        ref={navRef}
+        className={`fixed top-0 left-0 right-0 z-40 transition-all duration-500 ${
+          scrolled
+            ? "bg-[#080810]/80 backdrop-blur-xl border-b border-[#1c1c3a]"
+            : "bg-transparent"
+        }`}
+        style={{ opacity: 0 }}
+      >
+        <div className="section-container">
+          <div className="flex items-center justify-between h-16 md:h-18">
+            {/* Logo / Name */}
+            <Link
+              href="/"
+              className="font-syne font-bold text-[#F0F0F8] text-sm tracking-wide hover:text-[#4F8EFF] transition-colors duration-200"
+            >
+              DK<span className="text-[#4F8EFF]">.</span>
+            </Link>
 
-        {/* Center: Desktop Monospace Navigation Links */}
-        <nav className="hidden md:flex items-center gap-6 sm:gap-8 font-mono text-xs text-purple-300/70">
-          {NAV_ITEMS.map((item) => (
-            <MagneticButton key={item.id} onClick={() => scrollToSection(item.id)} distanceThreshold={40} maxTranslate={10}>
-              <span className={`transition-colors hover:text-white px-2 py-1 rounded focus-visible:ring-2 focus-visible:ring-purple-400 focus-visible:outline-none ${
-                activeSection === item.id && pathname === "/" ? "text-purple-400 font-bold drop-shadow-[0_0_8px_rgba(168,85,247,0.6)]" : ""
-              }`}>
-                {item.label}
-              </span>
-            </MagneticButton>
-          ))}
-        </nav>
-
-        {/* Right: Connect CTA Button (Hidden on small mobile) & Mobile Hamburger Toggle */}
-        <div className="flex items-center gap-2 sm:gap-3">
-          <div className="hidden sm:block">
-            <MagneticButton distanceThreshold={60} maxTranslate={15}>
-              <button
-                onClick={() => scrollToSection("contact")}
-                className="group flex items-center gap-1.5 px-4 py-1.5 rounded-full bg-purple-950/60 hover:bg-purple-900/80 border border-purple-500/40 hover:border-purple-400 text-xs font-mono text-purple-200 transition-all shadow-[0_0_20px_rgba(168,85,247,0.25)] hover:shadow-[0_0_30px_rgba(168,85,247,0.5)] focus-visible:ring-2 focus-visible:ring-purple-400 focus-visible:outline-none"
-              >
-                <span className="font-bold">Connect</span>
-                <ArrowUpRight className="w-3.5 h-3.5 text-purple-400 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
-              </button>
-            </MagneticButton>
-          </div>
-
-          {/* Mobile Hamburger Toggle Button (Minimum 44x44px touch target) */}
-          <button
-            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            aria-label="Toggle Navigation Menu"
-            className="md:hidden flex items-center justify-center min-w-[44px] min-h-[44px] rounded-xl bg-purple-950/50 border border-purple-800/40 text-purple-300 hover:text-white transition-colors focus-visible:ring-2 focus-visible:ring-purple-400 focus-visible:outline-none"
-          >
-            {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
-          </button>
-        </div>
-      </div>
-
-      {/* Cyber-Luxury Mobile Dropdown Navigation Drawer */}
-      <AnimatePresence>
-        {mobileMenuOpen && (
-          <motion.div
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: "auto" }}
-            exit={{ opacity: 0, height: 0 }}
-            transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
-            className="md:hidden border-t border-purple-900/40 bg-[#07070A]/95 backdrop-blur-2xl px-4 sm:px-6 py-6 overflow-y-auto max-h-[calc(100vh-3.5rem)]"
-          >
-            <div className="flex flex-col gap-3.5 font-mono text-sm">
-              {NAV_ITEMS.map((item) => (
+            {/* Desktop Nav Links */}
+            <div className="hidden md:flex items-center gap-8">
+              {NAV_LINKS.map(({ label, href }) => (
                 <button
-                  key={item.id}
-                  onClick={() => scrollToSection(item.id)}
-                  className={`text-left min-h-[44px] flex items-center px-4 rounded-xl border transition-all ${
-                    activeSection === item.id && pathname === "/"
-                      ? "bg-purple-950/80 border-purple-500/80 text-purple-300 font-bold"
-                      : "bg-black/40 border-purple-900/30 text-purple-200/80 hover:text-white hover:border-purple-800/60"
-                  }`}
+                  key={label}
+                  onClick={() => handleNavClick(href)}
+                  className="label-muted hover:text-[#F0F0F8] hover:text-[0.75rem] transition-all duration-200 link-hover"
                 >
-                  {item.label}
+                  {label}
                 </button>
               ))}
-              <button
-                onClick={() => scrollToSection("contact")}
-                className="min-h-[44px] flex items-center justify-between px-4 rounded-xl bg-gradient-to-r from-purple-600 to-indigo-600 text-white font-bold transition-all shadow-md mt-1"
-              >
-                <span>// CONNECT &amp; GET IN TOUCH</span>
-                <ArrowUpRight className="w-4 h-4" />
-              </button>
             </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-    </motion.header>
+
+            {/* Desktop Social + Resume */}
+            <div className="hidden md:flex items-center gap-2">
+              {SOCIAL_LINKS.map(({ icon: Icon, href, label }) => (
+                <a
+                  key={label}
+                  href={href}
+                  target={href.startsWith("http") ? "_blank" : undefined}
+                  rel="noopener noreferrer"
+                  aria-label={label}
+                  className="btn-icon"
+                >
+                  <Icon size={14} />
+                </a>
+              ))}
+              <a
+                href="/resume.pdf"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="ml-2 btn-ghost py-1.5 px-4 text-xs"
+              >
+                <FileText size={12} />
+                Resume
+              </a>
+            </div>
+
+            {/* Mobile Menu Toggle */}
+            <button
+              className="md:hidden flex flex-col gap-1.5 p-2"
+              onClick={() => setMobileOpen(!mobileOpen)}
+              aria-label="Toggle navigation"
+            >
+              <span
+                className={`block w-5 h-[1.5px] bg-[#F0F0F8] transition-all duration-300 ${
+                  mobileOpen ? "rotate-45 translate-y-[4.5px]" : ""
+                }`}
+              />
+              <span
+                className={`block w-5 h-[1.5px] bg-[#F0F0F8] transition-all duration-300 ${
+                  mobileOpen ? "opacity-0" : ""
+                }`}
+              />
+              <span
+                className={`block w-5 h-[1.5px] bg-[#F0F0F8] transition-all duration-300 ${
+                  mobileOpen ? "-rotate-45 -translate-y-[4.5px]" : ""
+                }`}
+              />
+            </button>
+          </div>
+        </div>
+      </nav>
+
+      {/* Mobile Menu Drawer */}
+      <div
+        className={`fixed inset-0 z-30 transition-all duration-500 ${
+          mobileOpen ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
+        }`}
+      >
+        <div
+          className="absolute inset-0 bg-[#080810]/90 backdrop-blur-xl"
+          onClick={() => setMobileOpen(false)}
+        />
+        <div
+          className={`absolute top-16 left-0 right-0 bg-[#0c0c18] border-b border-[#1c1c3a] transition-transform duration-500 ${
+            mobileOpen ? "translate-y-0" : "-translate-y-full"
+          }`}
+        >
+          <div className="section-container py-8 flex flex-col gap-6">
+            {NAV_LINKS.map(({ label, href }) => (
+              <button
+                key={label}
+                onClick={() => handleNavClick(href)}
+                className="text-left font-syne text-2xl font-bold text-[#F0F0F8] hover:text-[#4F8EFF] transition-colors duration-200"
+              >
+                {label}
+              </button>
+            ))}
+            <div className="pt-4 border-t border-[#1c1c3a] flex items-center gap-3">
+              {SOCIAL_LINKS.map(({ icon: Icon, href, label }) => (
+                <a
+                  key={label}
+                  href={href}
+                  target={href.startsWith("http") ? "_blank" : undefined}
+                  rel="noopener noreferrer"
+                  aria-label={label}
+                  className="btn-icon"
+                >
+                  <Icon size={16} />
+                </a>
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+    </>
   );
 }

@@ -1,90 +1,194 @@
 "use client";
 
-import Image from "next/image";
-import { motion } from "framer-motion";
-import { Terminal, ShieldCheck, Zap, Cpu, Sparkles } from "lucide-react";
-import AnimatedHeading from "@/components/AnimatedHeading";
+import { useEffect, useRef } from "react";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { SplitText } from "gsap/SplitText";
+import { GraduationCap, Code2, Brain, Smartphone } from "lucide-react";
+
+const HIGHLIGHTS = [
+  {
+    icon: Code2,
+    label: "Full-Stack",
+    description: "React, Next.js, Node.js, FastAPI — end-to-end.",
+    color: "#4F8EFF",
+  },
+  {
+    icon: Brain,
+    label: "ML / AI",
+    description: "XGBoost, TensorFlow, LLM routing, NLP.",
+    color: "#A855F7",
+  },
+  {
+    icon: Smartphone,
+    label: "Mobile",
+    description: "Flutter + Dart, Firebase, production apps.",
+    color: "#10B981",
+  },
+  {
+    icon: GraduationCap,
+    label: "Student",
+    description: "B.Tech IT, RK University — 2023 cohort.",
+    color: "#F59E0B",
+  },
+];
 
 export default function AboutSection() {
+  const sectionRef = useRef<HTMLElement>(null);
+  const headingRef = useRef<HTMLHeadingElement>(null);
+  const bodyRef = useRef<HTMLDivElement>(null);
+  const cardsRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    gsap.registerPlugin(ScrollTrigger, SplitText);
+
+    const ctx = gsap.context(() => {
+      // Heading word reveal
+      const split = new SplitText(headingRef.current, { type: "lines,words" });
+      gsap.fromTo(
+        split.words,
+        { opacity: 0, y: 50 },
+        {
+          opacity: 1,
+          y: 0,
+          duration: 0.9,
+          ease: "power3.out",
+          stagger: 0.04,
+          scrollTrigger: {
+            trigger: headingRef.current,
+            start: "top 85%",
+          },
+        }
+      );
+
+      // Body fade in
+      gsap.fromTo(
+        bodyRef.current,
+        { opacity: 0, y: 30 },
+        {
+          opacity: 1,
+          y: 0,
+          duration: 0.9,
+          ease: "power3.out",
+          delay: 0.3,
+          scrollTrigger: {
+            trigger: bodyRef.current,
+            start: "top 85%",
+          },
+        }
+      );
+
+      // Cards stagger
+      const cards = gsap.utils.toArray<Element>(".about-card");
+      gsap.fromTo(
+        cards,
+        { opacity: 0, y: 30 },
+        {
+          opacity: 1,
+          y: 0,
+          duration: 0.7,
+          ease: "power3.out",
+          stagger: 0.1,
+          scrollTrigger: {
+            trigger: cardsRef.current,
+            start: "top 80%",
+          },
+        }
+      );
+    }, sectionRef);
+
+    return () => ctx.revert();
+  }, []);
+
   return (
-    <section id="about" className="relative w-full pt-20 sm:pt-24 pb-16 sm:pb-24 px-4 sm:px-6 md:px-12 bg-[#07070A] text-white scroll-mt-14">
-      <div className="max-w-6xl mx-auto space-y-10 sm:space-y-16">
-        {/* Animated Section Header */}
-        <AnimatedHeading
-          subtitle="// 04 ABOUT & PHILOSOPHY"
-          title="Engineering Precision & Systems Philosophy"
-        />
+    <section id="about" ref={sectionRef} className="section-padding relative">
+      {/* Background accent */}
+      <div className="absolute inset-0 pointer-events-none overflow-hidden" aria-hidden="true">
+        <div className="absolute -right-64 top-1/2 -translate-y-1/2 w-[600px] h-[600px] rounded-full bg-[#4F8EFF]/4 blur-[120px]" />
+      </div>
 
-        {/* Content Layout */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
-          {/* Left Column: Portrait Card */}
-          <motion.div 
-            initial={{ opacity: 0, y: 60, scale: 0.94, filter: "blur(10px)" }}
-            whileInView={{ opacity: 1, y: 0, scale: 1, filter: "blur(0px)" }}
-            viewport={{ once: true, amount: 0.2 }}
-            transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-            whileHover={{ scale: 1.02 }}
-            className="lg:col-span-5 relative rounded-3xl overflow-hidden border border-purple-500/40 bg-black/60 shadow-[0_20px_50px_rgba(0,0,0,0.9)] group"
-          >
-            {/* Ambient Purple Backdrop Glow */}
-            <div className="absolute inset-0 bg-gradient-to-t from-purple-950/80 via-transparent to-transparent z-10 pointer-events-none" />
+      <div className="section-container">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-24 items-start">
+          {/* Left — text */}
+          <div>
+            <div className="label-sm mb-6">About</div>
+            <h2
+              ref={headingRef}
+              className="display-md text-[#F0F0F8] mb-10 leading-tight"
+            >
+              IT engineer who
+              <br />
+              doesn&apos;t just study
+              <br />
+              technology—
+              <br />
+              <span className="text-gradient-blue">ships it.</span>
+            </h2>
 
-            <div className="relative w-full h-[320px] sm:h-[500px]">
-              <Image
-                src="/sequence/frame_0090.webp"
-                alt="Durgesh Kanzariya Studio Portrait"
-                fill
-                sizes="(max-width: 1024px) 100vw, 500px"
-                className="object-cover object-center filter grayscale group-hover:grayscale-0 transition-all duration-700"
-              />
-            </div>
-
-            <div className="absolute bottom-6 left-6 right-6 z-20 p-4 rounded-2xl bg-black/70 backdrop-blur-xl border border-white/10 font-mono text-xs text-purple-200">
-              <span className="font-bold text-white block uppercase">Durgesh Kanzariya</span>
-              <span className="text-[10px] text-purple-400/80">Data Scientist &amp; Full-Stack Engineer</span>
-            </div>
-          </motion.div>
-
-          {/* Right Column: Bio & Core Values */}
-          <motion.div 
-            initial={{ opacity: 0, y: 40, filter: "blur(8px)" }}
-            whileInView={{ opacity: 1, y: 0, filter: "blur(0px)" }}
-            viewport={{ once: true, amount: 0.2 }}
-            transition={{ duration: 0.8, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
-            className="lg:col-span-7 space-y-8"
-          >
-            <div className="space-y-4 font-sans text-purple-200/90 leading-relaxed text-sm sm:text-base">
+            <div
+              ref={bodyRef}
+              className="space-y-5 text-[#9CA3AF] text-base leading-relaxed"
+              style={{ opacity: 0 }}
+            >
               <p>
-                I am a Lead Systems Engineer and ML Architect specializing in high-frequency interactive UIs, predictive data pipelines, and scalable database architectures.
+                I&apos;m Durgesh Kanzariya, a B.Tech IT student at RK University, Rajkot (2023 cohort),
+                building real-world systems across the full software stack — from React dashboards
+                and FastAPI backends to Flutter mobile apps and deep learning models.
               </p>
               <p>
-                My work bridges mathematical machine learning algorithms with fluid 60fps web experiences — turning complex telemetry datasets into intuitive visual platforms.
+                My projects aren&apos;t homework assignments; they&apos;re production-grade systems with
+                real architectures: atomic Firestore transactions, dual-model AI routing engines,
+                normalized database schemas, and predictive ML pipelines on aerospace telemetry.
+              </p>
+              <p>
+                I believe the best engineers learn by building. Every project on this portfolio
+                was a problem worth solving — and an opportunity to go deep on a new domain.
               </p>
             </div>
 
-            {/* Core Values Matrix */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
-              <div className="p-5 rounded-2xl bg-black/60 border border-purple-900/40 space-y-2">
-                <div className="flex items-center gap-2 text-purple-400 font-mono text-xs font-bold uppercase">
-                  <Zap className="w-4 h-4" />
-                  <span>High-Frequency Performance</span>
-                </div>
-                <p className="text-xs text-purple-300/70 font-sans">
-                  Optimized canvas render loops, GPU shaders, and sub-45ms SQL query lookups.
-                </p>
-              </div>
+            {/* Quote */}
+            <blockquote className="mt-10 pl-5 border-l-2 border-[#4F8EFF] text-[#6B7280] text-sm italic">
+              &ldquo;Engineer by craft. Builder by passion.&rdquo;
+            </blockquote>
+          </div>
 
-              <div className="p-5 rounded-2xl bg-black/60 border border-purple-900/40 space-y-2">
-                <div className="flex items-center gap-2 text-purple-400 font-mono text-xs font-bold uppercase">
-                  <Cpu className="w-4 h-4" />
-                  <span>Predictive Data Intelligence</span>
+          {/* Right — highlight cards */}
+          <div>
+            <div
+              ref={cardsRef}
+              className="grid grid-cols-1 sm:grid-cols-2 gap-4"
+            >
+              {HIGHLIGHTS.map(({ icon: Icon, label, description, color }) => (
+                <div
+                  key={label}
+                  className="about-card card-base p-6 flex flex-col gap-4 hover:shadow-lg transition-all duration-300"
+                  style={{ opacity: 0 }}
+                >
+                  <div
+                    className="w-10 h-10 rounded-xl flex items-center justify-center"
+                    style={{ background: `${color}15`, color }}
+                  >
+                    <Icon size={18} />
+                  </div>
+                  <div>
+                    <div className="font-syne font-bold text-[#F0F0F8] text-lg mb-1">{label}</div>
+                    <p className="text-[#6B7280] text-sm leading-relaxed">{description}</p>
+                  </div>
                 </div>
-                <p className="text-xs text-purple-300/70 font-sans">
-                  Feature engineering and gradient boosted regressors tailored for real-world telemetry datasets.
-                </p>
+              ))}
+            </div>
+
+            {/* University badge */}
+            <div className="mt-6 card-base p-5 flex items-center gap-4">
+              <div className="w-10 h-10 rounded-xl bg-[#F59E0B]/10 flex items-center justify-center text-[#F59E0B]">
+                <GraduationCap size={18} />
+              </div>
+              <div>
+                <div className="text-[#F0F0F8] font-semibold text-sm">RK University, Rajkot</div>
+                <div className="text-[#6B7280] text-xs font-mono mt-0.5">B.Tech · Information Technology · 2023–</div>
               </div>
             </div>
-          </motion.div>
+          </div>
         </div>
       </div>
     </section>
