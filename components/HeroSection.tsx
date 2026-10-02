@@ -119,11 +119,6 @@ export default function HeroSection() {
 
       <div className="section-container relative z-10">
         <div className="max-w-5xl">
-          {/* Mono label */}
-          <div className="label-sm mb-8 flex items-center gap-3">
-            <span className="inline-block w-6 h-px bg-[#4F8EFF]" />
-            Available for opportunities
-          </div>
 
           {/* Main name */}
           <h1
