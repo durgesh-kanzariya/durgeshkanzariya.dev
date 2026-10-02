@@ -5,7 +5,6 @@ import { ArrowDown, Mail } from "lucide-react";
 import { GithubIcon } from "@/components/BrandIcons";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { SplitText } from "gsap/SplitText";
 
 const ROLES = ["Full-Stack Engineer", "Flutter Developer", "ML Engineer"];
 
@@ -20,37 +19,32 @@ export default function HeroSection() {
   const roleTicker = useRef<HTMLSpanElement>(null);
 
   useEffect(() => {
-    gsap.registerPlugin(ScrollTrigger, SplitText);
+    gsap.registerPlugin(ScrollTrigger);
 
     const ctx = gsap.context(() => {
-      // --- Name character reveal ---
-      const nameSplit = new SplitText(nameRef.current, { type: "chars,words" });
+      // --- Name reveal ---
       gsap.fromTo(
-        nameSplit.chars,
-        { opacity: 0, y: 80, rotateX: -90 },
+        nameRef.current,
+        { opacity: 0, y: 40 },
         {
           opacity: 1,
           y: 0,
-          rotateX: 0,
           duration: 1,
-          ease: "power4.out",
-          stagger: 0.035,
-          delay: 0.8,
+          ease: "power3.out",
+          delay: 0.2,
         }
       );
 
-      // --- Tagline word reveal ---
-      const taglineSplit = new SplitText(taglineRef.current, { type: "words" });
+      // --- Tagline reveal ---
       gsap.fromTo(
-        taglineSplit.words,
-        { opacity: 0, y: 30 },
+        taglineRef.current,
+        { opacity: 0, y: 20 },
         {
           opacity: 1,
           y: 0,
           duration: 0.8,
           ease: "power3.out",
-          stagger: 0.06,
-          delay: 1.5,
+          delay: 0.5,
         }
       );
 
@@ -58,14 +52,14 @@ export default function HeroSection() {
       gsap.fromTo(
         ctaRef.current,
         { opacity: 0, y: 20 },
-        { opacity: 1, y: 0, duration: 0.8, ease: "power3.out", delay: 2.0 }
+        { opacity: 1, y: 0, duration: 0.8, ease: "power3.out", delay: 0.8 }
       );
 
       // --- Stats counter fade in ---
       gsap.fromTo(
         counterRef.current,
         { opacity: 0, y: 20 },
-        { opacity: 1, y: 0, duration: 0.8, ease: "power3.out", delay: 2.2 }
+        { opacity: 1, y: 0, duration: 0.8, ease: "power3.out", delay: 1.0 }
       );
 
       // --- Scroll cue bob ---
@@ -135,7 +129,6 @@ export default function HeroSection() {
           <h1
             ref={nameRef}
             className="display-xl text-[#F0F0F8] mb-6"
-            style={{ opacity: 0 }}
           >
             Durgesh
             <br />
@@ -146,7 +139,6 @@ export default function HeroSection() {
           <p
             ref={taglineRef}
             className="text-[#6B7280] text-lg md:text-2xl font-jakarta font-normal max-w-xl mb-4"
-            style={{ opacity: 0 }}
           >
             Engineer by craft. Builder by passion.
           </p>
