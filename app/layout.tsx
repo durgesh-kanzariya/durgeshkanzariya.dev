@@ -1,21 +1,22 @@
 import type { Metadata } from "next";
-import { Syne, Plus_Jakarta_Sans, JetBrains_Mono } from "next/font/google";
+import { Outfit, Inter_Tight, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 import CustomCursor from "@/components/CustomCursor";
 import SmoothScrollProvider from "@/components/SmoothScrollProvider";
 import PageTransition from "@/components/PageTransition";
 
-const syne = Syne({
+const outfit = Outfit({
   subsets: ["latin"],
-  variable: "--font-syne",
-  weight: ["700", "800"],
+  variable: "--font-outfit",
+  weight: ["500", "600", "700", "800", "900"],
   display: "swap",
   preload: true,
 });
 
-const jakarta = Plus_Jakarta_Sans({
+const interTight = Inter_Tight({
   subsets: ["latin"],
-  variable: "--font-jakarta",
+  variable: "--font-inter-tight",
+  weight: ["300", "400", "500", "600"],
   display: "swap",
   preload: true,
 });
@@ -73,7 +74,7 @@ export default function RootLayout({
     <html
       lang="en"
       suppressHydrationWarning
-      className={`${syne.variable} ${jakarta.variable} ${jetbrains.variable} antialiased`}
+      className={`${outfit.variable} ${interTight.variable} ${jetbrains.variable} antialiased`}
     >
       <body
         suppressHydrationWarning

@@ -16,15 +16,16 @@ export default function ProjectsSection() {
     gsap.registerPlugin(ScrollTrigger);
 
     const ctx = gsap.context(() => {
-      // Header entrance
+      // Header kinetic text entrance
       gsap.fromTo(
-        headingRef.current,
-        { opacity: 0, y: 30 },
+        ".projects-heading-word",
+        { y: "115%", opacity: 0 },
         {
+          y: "0%",
           opacity: 1,
-          y: 0,
-          duration: 0.9,
-          ease: "power3.out",
+          duration: 0.85,
+          stagger: 0.08,
+          ease: "power4.out",
           scrollTrigger: {
             trigger: headingRef.current,
             start: "top 85%",
@@ -62,8 +63,10 @@ export default function ProjectsSection() {
       <div className="section-container">
         {/* Section Header */}
         <div ref={headingRef} className="mb-20">
-          <h2 className="display-lg text-[#F0F0F8]">
-            Things I&apos;ve <span className="text-hollow-accent">built.</span>
+          <h2 className="display-lg text-[#F0F0F8] overflow-hidden">
+            <span className="inline-block projects-heading-word mr-3 will-change-transform">Things</span>
+            <span className="inline-block projects-heading-word mr-3 will-change-transform">I&apos;ve</span>
+            <span className="inline-block projects-heading-word text-hollow-accent will-change-transform">built.</span>
           </h2>
           <p className="text-[#8E90A6] text-base md:text-lg max-w-xl font-light mt-3">
             Real production systems spanning intelligent routing, edge diagnostics,

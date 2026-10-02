@@ -5,8 +5,14 @@ import { ArrowDown, Mail } from "lucide-react";
 import { GithubIcon } from "@/components/BrandIcons";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { TextPlugin } from "gsap/TextPlugin";
 
-const ROLES = ["Full-Stack Engineer", "Flutter Developer", "ML Engineer"];
+const ROLES = [
+  "Full-Stack Engineer",
+  "Flutter Developer",
+  "AI & ML Systems Engineer",
+  "High-Throughput Backend Builder",
+];
 
 export default function HeroSection() {
   const sectionRef = useRef<HTMLDivElement>(null);
@@ -14,36 +20,52 @@ export default function HeroSection() {
   const taglineRef = useRef<HTMLParagraphElement>(null);
   const ctaRef = useRef<HTMLDivElement>(null);
   const counterRef = useRef<HTMLDivElement>(null);
-  const roleIndexRef = useRef(0);
   const roleTicker = useRef<HTMLSpanElement>(null);
 
   useEffect(() => {
-    gsap.registerPlugin(ScrollTrigger);
+    gsap.registerPlugin(ScrollTrigger, TextPlugin);
 
     const ctx = gsap.context(() => {
-      // --- Name reveal ---
+      // --- Kinetic Character Reveal with GSAP ---
       gsap.fromTo(
-        nameRef.current,
-        { opacity: 0, y: 40 },
+        ".hero-char-1",
+        { y: "115%", opacity: 0, rotateX: -60 },
         {
+          y: "0%",
           opacity: 1,
-          y: 0,
-          duration: 1,
-          ease: "power3.out",
-          delay: 0.2,
+          rotateX: 0,
+          duration: 0.95,
+          stagger: 0.04,
+          ease: "power4.out",
+          delay: 0.15,
         }
       );
 
-      // --- Tagline reveal ---
       gsap.fromTo(
-        taglineRef.current,
-        { opacity: 0, y: 20 },
+        ".hero-char-2",
+        { y: "115%", opacity: 0, rotateX: -60 },
         {
+          y: "0%",
           opacity: 1,
-          y: 0,
-          duration: 0.8,
+          rotateX: 0,
+          duration: 0.95,
+          stagger: 0.04,
+          ease: "power4.out",
+          delay: 0.35,
+        }
+      );
+
+      // --- Tagline Word Reveal with GSAP ---
+      gsap.fromTo(
+        ".hero-tagline-word",
+        { y: "110%", opacity: 0 },
+        {
+          y: "0%",
+          opacity: 1,
+          duration: 0.75,
+          stagger: 0.045,
           ease: "power3.out",
-          delay: 0.5,
+          delay: 0.65,
         }
       );
 
@@ -51,42 +73,41 @@ export default function HeroSection() {
       gsap.fromTo(
         ctaRef.current,
         { opacity: 0, y: 20 },
-        { opacity: 1, y: 0, duration: 0.8, ease: "power3.out", delay: 0.8 }
+        { opacity: 1, y: 0, duration: 0.8, ease: "power3.out", delay: 0.95 }
       );
 
       // --- Stats counter fade in ---
       gsap.fromTo(
         counterRef.current,
         { opacity: 0, y: 20 },
-        { opacity: 1, y: 0, duration: 0.8, ease: "power3.out", delay: 1.0 }
+        { opacity: 1, y: 0, duration: 0.8, ease: "power3.out", delay: 1.15 }
       );
 
-      // --- Role ticker ---
-      let index = 0;
-      const tick = () => {
-        if (!roleTicker.current) return;
-        gsap.to(roleTicker.current, {
-          opacity: 0,
-          y: -10,
-          duration: 0.3,
-          ease: "power2.in",
-          onComplete: () => {
-            index = (index + 1) % ROLES.length;
-            if (roleTicker.current) roleTicker.current.textContent = ROLES[index];
-            gsap.fromTo(
-              roleTicker.current,
-              { opacity: 0, y: 10 },
-              { opacity: 1, y: 0, duration: 0.4, ease: "power2.out" }
-            );
-          },
-        });
-      };
-      const interval = setInterval(tick, 2800);
-      return () => clearInterval(interval);
+      // --- GSAP TextPlugin Typewriter Loop ---
+      const roleTl = gsap.timeline({ repeat: -1 });
+      ROLES.forEach((role) => {
+        roleTl
+          .to(roleTicker.current, {
+            duration: 1.1,
+            text: role,
+            ease: "none",
+          })
+          .to({}, { duration: 1.8 }) // Pause to read
+          .to(roleTicker.current, {
+            duration: 0.6,
+            text: "",
+            ease: "none",
+          })
+          .to({}, { duration: 0.3 }); // Brief pause before next
+      });
     }, sectionRef);
 
     return () => ctx.revert();
   }, []);
+
+  const firstWord = "Durgesh";
+  const secondWord = "Kanzariya";
+  const taglineWords = ["Engineer", "by", "craft.", "Builder", "by", "passion."];
 
   return (
     <section
@@ -99,33 +120,61 @@ export default function HeroSection() {
 
       <div className="section-container relative z-10">
         <div className="max-w-5xl">
-          {/* Main name */}
+          {/* Main name with kinetic GSAP text masking */}
           <h1
             ref={nameRef}
-            className="display-xl text-[#F0F0F8] mb-6"
+            className="display-xl text-[#F0F0F8] mb-6 font-syne select-none"
           >
-            Durgesh
-            <br />
-            <span className="text-hollow-accent">Kanzariya</span>
+            <span className="block overflow-hidden py-1">
+              {firstWord.split("").map((char, i) => (
+                <span
+                  key={i}
+                  className="inline-block hero-char-1 will-change-transform"
+                >
+                  {char}
+                </span>
+              ))}
+            </span>
+            <span className="block overflow-hidden py-1">
+              <span className="text-hollow-accent inline-block">
+                {secondWord.split("").map((char, i) => (
+                  <span
+                    key={i}
+                    className="inline-block hero-char-2 will-change-transform"
+                  >
+                    {char}
+                  </span>
+                ))}
+              </span>
+            </span>
           </h1>
 
-          {/* Tagline + role ticker */}
+          {/* Tagline with kinetic word masking */}
           <p
             ref={taglineRef}
-            className="text-[#8E90A6] text-lg md:text-2xl font-jakarta font-normal max-w-xl mb-4"
+            className="text-[#8E90A6] text-lg md:text-2xl font-sans font-normal max-w-xl mb-4 overflow-hidden"
           >
-            Engineer by craft. Builder by passion.
+            {taglineWords.map((word, i) => (
+              <span key={i} className="inline-block mr-2.5 overflow-hidden py-0.5">
+                <span className="inline-block hero-tagline-word will-change-transform">
+                  {word}
+                </span>
+              </span>
+            ))}
           </p>
 
-          {/* Animated role ticker */}
+          {/* GSAP TextPlugin Typewriter Role Ticker */}
           <div className="flex items-center gap-3 mb-12">
             <span className="label-muted">Currently:</span>
-            <span
-              ref={roleTicker}
-              className="label-sm"
-              style={{ minWidth: "180px", display: "inline-block" }}
-            >
-              {ROLES[0]}
+            <span className="inline-flex items-center">
+              <span
+                ref={roleTicker}
+                className="label-sm text-[#4F8EFF] font-semibold"
+                style={{ minWidth: "160px", display: "inline-block" }}
+              >
+                {ROLES[0]}
+              </span>
+              <span className="inline-block w-1.5 h-3.5 bg-[#4F8EFF] ml-1 animate-pulse" />
             </span>
           </div>
 

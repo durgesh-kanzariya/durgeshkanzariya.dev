@@ -6,42 +6,41 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 
 const SKILLS = {
   Frontend: [
-    { name: "React.js", icon: "⚛️" },
-    { name: "TypeScript", icon: "𝕋" },
-    { name: "JavaScript", icon: "𝙅𝙎" },
-    { name: "HTML/CSS", icon: "🎨" },
-    { name: "Next.js", icon: "▲" },
-    { name: "Tailwind CSS", icon: "💨" },
+    { name: "React.js" },
+    { name: "TypeScript" },
+    { name: "JavaScript" },
+    { name: "HTML5/CSS3" },
+    { name: "Next.js" },
+    { name: "Tailwind CSS" },
   ],
   Backend: [
-    { name: "Node.js", icon: "🟢" },
-    { name: "Express.js", icon: "⚡" },
-    { name: "FastAPI", icon: "🚀" },
-    { name: "Python", icon: "🐍" },
-    { name: "REST APIs", icon: "🔗" },
-    { name: "PostgreSQL", icon: "🐘" },
-    { name: "SQL", icon: "📊" },
+    { name: "Node.js" },
+    { name: "Express.js" },
+    { name: "FastAPI" },
+    { name: "Python" },
+    { name: "REST APIs" },
+    { name: "PostgreSQL" },
+    { name: "SQL" },
   ],
   "ML / AI": [
-    { name: "TensorFlow", icon: "🧠" },
-    { name: "Keras", icon: "🔬" },
-    { name: "Scikit-Learn", icon: "📐" },
-    { name: "XGBoost", icon: "🌲" },
-    { name: "Pandas", icon: "🐼" },
-    { name: "NumPy", icon: "🔢" },
+    { name: "TensorFlow" },
+    { name: "PyTorch" },
+    { name: "Scikit-Learn" },
+    { name: "XGBoost" },
+    { name: "Pandas & NumPy" },
   ],
   Mobile: [
-    { name: "Flutter", icon: "💙" },
-    { name: "Dart", icon: "🎯" },
-    { name: "Firebase", icon: "🔥" },
-    { name: "Riverpod", icon: "⚓" },
+    { name: "Flutter" },
+    { name: "Dart" },
+    { name: "Firebase" },
+    { name: "Riverpod" },
   ],
   Tools: [
-    { name: "Git", icon: "🌿" },
-    { name: "GitHub", icon: "🐙" },
-    { name: "Docker", icon: "🐳" },
-    { name: "Figma", icon: "✏️" },
-    { name: "VS Code", icon: "💻" },
+    { name: "Git & GitHub" },
+    { name: "Docker" },
+    { name: "Postman" },
+    { name: "Figma" },
+    { name: "VS Code" },
   ],
 };
 
@@ -50,8 +49,8 @@ const ALL_SKILLS = Object.entries(SKILLS).flatMap(([cat, items]) =>
   items.map((s) => ({ ...s, category: cat }))
 );
 
-const ROW_1 = [...ALL_SKILLS.slice(0, 12), ...ALL_SKILLS.slice(0, 12)];
-const ROW_2 = [...ALL_SKILLS.slice(12), ...ALL_SKILLS.slice(12)];
+const ROW_1 = [...ALL_SKILLS.slice(0, 14), ...ALL_SKILLS.slice(0, 14)];
+const ROW_2 = [...ALL_SKILLS.slice(14), ...ALL_SKILLS.slice(14)];
 
 const CATEGORY_COLORS: Record<string, string> = {
   Frontend: "#4F8EFF",
@@ -61,15 +60,21 @@ const CATEGORY_COLORS: Record<string, string> = {
   Tools:    "#6B7280",
 };
 
-function SkillChip({ name, icon, category }: { name: string; icon: string; category: string }) {
+function SkillChip({ name, category }: { name: string; category: string }) {
+  const color = CATEGORY_COLORS[category] || "#4F8EFF";
+
   return (
-    <div className="flex-shrink-0 flex items-center gap-3 px-5 py-3 rounded-full border border-[#1c1c3a] bg-[#0f0f1e] hover:border-[#252548] hover:bg-[#13132a] transition-all duration-300 mx-2">
-      <span className="text-base leading-none">{icon}</span>
-      <span className="font-jakarta text-sm text-[#9CA3AF] font-medium whitespace-nowrap">{name}</span>
+    <div className="flex-shrink-0 flex items-center gap-2.5 px-4 py-2.5 rounded-full border border-white/[0.08] bg-[#0d0d1a] hover:border-white/20 hover:bg-[#121226] transition-all duration-300 mx-1.5 group cursor-default">
       <span
-        className="w-1.5 h-1.5 rounded-full flex-shrink-0"
-        style={{ background: CATEGORY_COLORS[category] }}
+        className="w-1.5 h-1.5 rounded-full flex-shrink-0 transition-transform duration-300 group-hover:scale-125"
+        style={{ background: color, boxShadow: `0 0 6px ${color}` }}
       />
+      <span className="font-sans text-xs text-[#C4C4D8] font-medium whitespace-nowrap group-hover:text-white transition-colors">
+        {name}
+      </span>
+      <span className="font-mono text-[0.6rem] text-[#6B7280] tracking-wider uppercase">
+        {category}
+      </span>
     </div>
   );
 }
@@ -83,9 +88,10 @@ export default function SkillsSection() {
     gsap.registerPlugin(ScrollTrigger);
 
     const ctx = gsap.context(() => {
+      // Heading word reveal
       gsap.fromTo(
         headingRef.current,
-        { opacity: 0, y: 40 },
+        { opacity: 0, y: 30 },
         {
           opacity: 1,
           y: 0,
@@ -94,93 +100,101 @@ export default function SkillsSection() {
           scrollTrigger: {
             trigger: headingRef.current,
             start: "top 85%",
+            toggleActions: "play none none none",
           },
         }
       );
 
-      // Category cards stagger
-      const cards = gsap.utils.toArray<Element>(".skill-category-card");
-      gsap.fromTo(
-        cards,
-        { opacity: 0, y: 30 },
-        {
-          opacity: 1,
-          y: 0,
-          duration: 0.6,
-          ease: "power3.out",
-          stagger: 0.08,
-          scrollTrigger: {
-            trigger: gridRef.current,
-            start: "top 80%",
-          },
-        }
-      );
+      // Stagger category cards
+      if (gridRef.current) {
+        gsap.fromTo(
+          gridRef.current.children,
+          { opacity: 0, y: 30 },
+          {
+            opacity: 1,
+            y: 0,
+            duration: 0.8,
+            stagger: 0.08,
+            ease: "power3.out",
+            scrollTrigger: {
+              trigger: gridRef.current,
+              start: "top 85%",
+              toggleActions: "play none none none",
+            },
+          }
+        );
+      }
     }, sectionRef);
 
     return () => ctx.revert();
   }, []);
 
   return (
-    <section id="skills" ref={sectionRef} className="section-padding relative overflow-hidden">
+    <section id="skills" ref={sectionRef} className="section-padding relative">
       <div className="section-container">
-        {/* Section header */}
-        <div ref={headingRef} className="mb-20" style={{ opacity: 0 }}>
-          <div className="label-sm mb-4">Technical Arsenal</div>
-          <div className="flex items-end justify-between flex-wrap gap-6">
-            <h2 className="display-lg text-[#F0F0F8]">
-              What I
-              <br />
-              <span className="text-hollow">work with.</span>
-            </h2>
-            <p className="text-[#6B7280] max-w-sm text-sm leading-relaxed">
-              A curated stack across full-stack web, mobile, and machine learning — tools
-              I&apos;ve shipped real projects with.
-            </p>
-          </div>
+        {/* Section Header */}
+        <div ref={headingRef} className="mb-16">
+          <h2 className="display-lg text-[#F0F0F8]">
+            What I <span className="text-hollow-accent">work with.</span>
+          </h2>
+          <p className="text-[#8E90A6] text-base md:text-lg max-w-xl font-light mt-3">
+            A production-proven technology stack spanning full-stack web, cross-platform mobile,
+            and machine learning systems.
+          </p>
         </div>
 
-        {/* Category grid */}
+        {/* Category grid — Double Bezel Architecture */}
         <div
           ref={gridRef}
-          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4 mb-24"
+          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4 mb-20"
         >
-          {Object.entries(SKILLS).map(([category, items]) => (
-            <div
-              key={category}
-              className="skill-category-card card-base p-5 flex flex-col gap-4"
-              style={{ opacity: 0 }}
-            >
-              {/* Category label */}
-              <div className="flex items-center gap-2">
-                <div
-                  className="w-2 h-2 rounded-full"
-                  style={{ background: CATEGORY_COLORS[category] }}
-                />
-                <span className="label-muted">{category}</span>
-              </div>
+          {Object.entries(SKILLS).map(([category, items]) => {
+            const color = CATEGORY_COLORS[category] || "#4F8EFF";
 
-              {/* Skills */}
-              <div className="flex flex-col gap-2.5">
-                {items.map(({ name, icon }) => (
-                  <div key={name} className="flex items-center gap-2.5">
-                    <span className="text-sm leading-none w-5 text-center">{icon}</span>
-                    <span className="text-[#9CA3AF] text-sm font-jakarta">{name}</span>
+            return (
+              <div
+                key={category}
+                className="p-1 rounded-2xl bg-white/[0.02] border border-white/[0.06] hover:border-white/15 hover:bg-white/[0.04] transition-all duration-500 flex flex-col group"
+              >
+                <div className="p-5 rounded-[calc(1rem-0.25rem)] bg-[#090912] border border-white/[0.03] flex flex-col justify-between h-full">
+                  {/* Category Header */}
+                  <div className="flex items-center gap-2.5 pb-3 border-b border-white/[0.04] mb-3">
+                    <div
+                      className="w-2 h-2 rounded-full"
+                      style={{ background: color, boxShadow: `0 0 6px ${color}` }}
+                    />
+                    <span className="font-mono text-xs font-semibold text-[#F0F0F8] tracking-wider uppercase">
+                      {category}
+                    </span>
                   </div>
-                ))}
+
+                  {/* Skills list */}
+                  <div className="flex flex-col gap-2">
+                    {items.map(({ name }) => (
+                      <div
+                        key={name}
+                        className="flex items-center justify-between text-xs py-1 text-[#8E90A6] group-hover:text-[#C4C4D8] transition-colors"
+                      >
+                        <span className="font-sans font-normal">{name}</span>
+                        <span className="w-1 h-1 rounded-full bg-white/20" />
+                      </div>
+                    ))}
+                  </div>
+                </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       </div>
 
-      {/* Marquee rows — full bleed */}
-      <div className="relative overflow-hidden">
-        {/* Gradient fade edges */}
-        <div className="absolute left-0 top-0 bottom-0 w-24 bg-gradient-to-r from-[#080810] to-transparent z-10 pointer-events-none" />
-        <div className="absolute right-0 top-0 bottom-0 w-24 bg-gradient-to-l from-[#080810] to-transparent z-10 pointer-events-none" />
+      {/* Marquee rows — full bleed with smooth velocity */}
+      <div className="relative overflow-hidden py-4 border-y border-white/[0.04]">
+        {/* Gradient edge vignettes */}
+        <div className="absolute left-0 top-0 bottom-0 w-32 bg-gradient-to-r from-[#080810] to-transparent z-10 pointer-events-none" />
+        <div className="absolute right-0 top-0 bottom-0 w-32 bg-gradient-to-l from-[#080810] to-transparent z-10 pointer-events-none" />
 
         {/* Row 1 — left scroll */}
-        <div className="overflow-hidden py-3">
+        <div className="overflow-hidden py-2">
           <div className="marquee-track flex items-center">
             {ROW_1.map((skill, i) => (
               <SkillChip key={`r1-${i}`} {...skill} />
@@ -189,7 +203,7 @@ export default function SkillsSection() {
         </div>
 
         {/* Row 2 — right scroll */}
-        <div className="overflow-hidden py-3">
+        <div className="overflow-hidden py-2">
           <div className="marquee-track-reverse flex items-center">
             {ROW_2.map((skill, i) => (
               <SkillChip key={`r2-${i}`} {...skill} />
