@@ -7,15 +7,9 @@ import Link from "next/link";
 import { motion } from "framer-motion";
 import { ArrowLeft, ArrowUpRight, CheckCircle2 } from "lucide-react";
 import Navbar from "@/components/Navbar";
-import FooterSection from "@/components/FooterSection";
+import FooterSection from "@/components/footer";
 import { PROJECTS_MAP } from "@/data/projectsData";
-
-const DOMAIN_COLORS: Record<string, string> = {
-  ai:     "#F59E0B",
-  mobile: "#10B981",
-  ml:     "#A855F7",
-  web:    "#4F8EFF",
-};
+import { DOMAIN_COLORS } from "@/components/projects/domainColors";
 
 interface PageProps {
   params: Promise<{ slug: string }>;

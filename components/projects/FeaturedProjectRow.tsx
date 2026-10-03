@@ -7,151 +7,135 @@ import { GithubIcon } from "@/components/BrandIcons";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { type ProjectData } from "@/data/projectsData";
-import { ProjectImage } from "./ProjectImage";
-import { DOMAIN_COLORS } from "./projectConstants";
+import { DOMAIN_COLORS } from "./domainColors";
+import ProjectImage from "./ProjectImage";
 
 interface FeaturedProjectRowProps {
   project: ProjectData;
   index: number;
 }
 
-export function FeaturedProjectRow({ project, index }: FeaturedProjectRowProps) {
+export default function FeaturedProjectRow({ project, index }: FeaturedProjectRowProps) {
   const rowRef = useRef<HTMLDivElement>(null);
   const imageRef = useRef<HTMLDivElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
   const isEven = index % 2 === 0;
-  const domainColor = DOMAIN_COLORS[project.domain] || "#4F8EFF";
+  const domainColor = DOMAIN_COLORS[project.domain];
 
   useEffect(() => {
-    gsap.registerPlugin(ScrollTrigger);
-
     const ctx = gsap.context(() => {
       const tl = gsap.timeline({
         scrollTrigger: {
           trigger: rowRef.current,
-          start: "top 85%",
+          start: "top 80%",
+          end: "bottom 20%",
           toggleActions: "play none none none",
         },
       });
 
       tl.fromTo(
         imageRef.current,
-        { opacity: 0, y: 30, scale: 0.98 },
-        { opacity: 1, y: 0, scale: 1, duration: 0.9, ease: "power3.out" }
+        { opacity: 0, x: isEven ? -60 : 60, scale: 0.96 },
+        { opacity: 1, x: 0, scale: 1, duration: 1.0, ease: "power3.out" }
       ).fromTo(
         contentRef.current,
-        { opacity: 0, y: 24 },
-        { opacity: 1, y: 0, duration: 0.8, ease: "power3.out" },
-        "-=0.6"
+        { opacity: 0, x: isEven ? 60 : -60 },
+        { opacity: 1, x: 0, duration: 1.0, ease: "power3.out" },
+        "-=0.7"
       );
     }, rowRef);
 
     return () => ctx.revert();
-  }, []);
+  }, [isEven]);
 
   return (
     <div
       ref={rowRef}
-      className={`group grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 items-center ${
-        !isEven ? "lg:[&>*:first-child]:order-2" : ""
-      }`}
+      className="group grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 items-center"
     >
-      {/* Visual Asset side (col 7) */}
-      <div ref={imageRef} className="lg:col-span-7">
-        <Link href={`/work/${project.slug}`} className="block focus:outline-none">
-          <ProjectImage project={project} />
-        </Link>
+      {/* Image */}
+      <div
+        ref={imageRef}
+        className={isEven ? "lg:order-1" : "lg:order-2"}
+        style={{ opacity: 0 }}
+      >
+        <ProjectImage project={project} />
       </div>
 
-      {/* Editorial Content side (col 5) */}
-      <div ref={contentRef} className="lg:col-span-5 flex flex-col justify-center">
-        {/* Project Index + Year */}
+      {/* Content */}
+      <div
+        ref={contentRef}
+        className={isEven ? "lg:order-2" : "lg:order-1"}
+        style={{ opacity: 0 }}
+      >
+        {/* Project number + domain */}
         <div className="flex items-center gap-3 mb-4">
-          <span className="font-mono text-xs font-semibold text-[#4F8EFF] tracking-wider">
-            {project.index}
-          </span>
-          <span className="w-4 h-px bg-[#1c1c3a]" />
-          <span className="font-mono text-[0.68rem] tracking-wider uppercase text-[#6B7280]">
-            {project.year}
+          <span className="project-number">{project.id}</span>
+          <span className="w-8 h-px bg-[#1A1D33]" />
+          <span className="label-sm" style={{ color: domainColor }}>
+            {project.domainLabel}
           </span>
         </div>
 
         {/* Title */}
-        <h3 className="font-syne text-2xl lg:text-3xl font-bold text-[#F0F0F8] mb-3 group-hover:text-white transition-colors">
-          <Link
-            href={`/work/${project.slug}`}
-            className="hover:text-[#4F8EFF] transition-colors inline-flex items-center gap-2"
-          >
-            {project.title}
-          </Link>
+        <h3 className="display-md text-[#F0F4FF] mb-3 group-hover:text-white transition-colors">
+          {project.title}
         </h3>
 
+        {/* Subtitle */}
+        <p className="text-[#64748B] text-sm font-mono mb-4">{project.subtitle}</p>
+
         {/* Tagline */}
-        <p className="font-sans text-base text-[#8E90A6] mb-5 leading-relaxed font-light">
+        <p className="text-[#94A3B8] text-base md:text-lg leading-relaxed mb-6 max-w-md">
           {project.tagline}
         </p>
 
-        {/* Key Metric highlight — Machined micro-card */}
-        <div className="mb-6 p-3 rounded-xl bg-white/[0.02] border border-white/[0.06] flex items-center gap-3">
-          <div
-            className="w-1.5 h-6 rounded-full"
-            style={{ background: domainColor }}
-          />
-          <div>
-            <div className="font-mono text-[0.65rem] tracking-wider uppercase text-[#6B7280]">
-              Performance Impact
-            </div>
-            <div className="font-syne font-semibold text-sm text-[#F0F0F8]">
-              {project.metric}
-            </div>
-          </div>
+        {/* Tags */}
+        <div className="flex flex-wrap gap-2 mb-8">
+          {project.tags.slice(0, 4).map((tag) => (
+            <span key={tag} className="tag-pill">{tag}</span>
+          ))}
+          {project.tags.length > 4 && (
+            <span className="tag-pill">+{project.tags.length - 4}</span>
+          )}
         </div>
 
-        {/* Tech Stack Pills */}
-        <div className="flex flex-wrap gap-2 mb-7">
-          {project.tags.map((tag) => (
-            <span
-              key={tag}
-              className="px-2.5 py-1 rounded-full text-[0.68rem] font-mono text-[#8E90A6] bg-white/[0.03] border border-white/[0.08]"
-            >
-              {tag}
-            </span>
+        {/* Metrics */}
+        <div className="grid grid-cols-2 gap-4 mb-8 pb-8 border-b border-[#1A1D33]">
+          {project.metrics.slice(0, 2).map(({ label, value }) => (
+            <div key={label}>
+              <div className="text-[#F0F4FF] font-syne font-bold text-lg">{value}</div>
+              <div className="label-muted mt-0.5">{label}</div>
+            </div>
           ))}
         </div>
 
-        {/* Actions — Button-in-Button architecture */}
-        <div className="flex flex-wrap items-center gap-3">
-          <Link
-            href={`/work/${project.slug}`}
-            className="group/btn inline-flex items-center gap-3 px-5 py-2.5 rounded-full bg-[#4F8EFF] text-white text-xs font-semibold tracking-wide hover:bg-[#3d7be8] active:scale-[0.98] transition-all duration-300"
-          >
-            <span>Explore Case Study</span>
-            <span className="w-5 h-5 rounded-full bg-white/20 flex items-center justify-center transition-transform duration-300 group-hover/btn:translate-x-0.5 group-hover/btn:-translate-y-0.5">
-              <ArrowUpRight size={12} />
-            </span>
+        {/* CTA links */}
+        <div className="flex items-center gap-3 flex-wrap">
+          <Link href={`/work/${project.slug}`} className="btn-primary text-sm py-2.5 px-5">
+            Case Study
+            <ArrowUpRight size={14} />
           </Link>
-
-          {project.github && (
+          {project.liveUrl && (
             <a
-              href={project.github}
+              href={project.liveUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="p-2.5 rounded-full bg-white/[0.04] border border-white/[0.08] text-[#8E90A6] hover:text-white hover:bg-white/[0.08] active:scale-[0.98] transition-all duration-300"
-              aria-label="GitHub Repository"
+              className="btn-ghost text-sm py-2.5 px-5"
             >
-              <GithubIcon size={14} />
+              <ExternalLink size={12} />
+              Live
             </a>
           )}
-
-          {project.demo && (
+          {project.githubUrl && (
             <a
-              href={project.demo}
+              href={project.githubUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="p-2.5 rounded-full bg-white/[0.04] border border-white/[0.08] text-[#8E90A6] hover:text-white hover:bg-white/[0.08] active:scale-[0.98] transition-all duration-300"
-              aria-label="Live Demo"
+              className="btn-icon"
+              aria-label="GitHub"
             >
-              <ExternalLink size={14} />
+              <GithubIcon size={14} />
             </a>
           )}
         </div>

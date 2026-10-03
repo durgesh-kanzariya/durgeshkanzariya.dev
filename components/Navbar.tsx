@@ -79,9 +79,9 @@ export default function Navbar() {
             {/* Logo / Name */}
             <Link
               href="/"
-              className="font-syne font-bold text-[#F0F0F8] text-sm tracking-wide hover:text-[#4F8EFF] transition-colors duration-200"
+              className="font-mono text-[#F0F0F8] text-sm hover:text-[#4F8EFF] transition-colors duration-200"
             >
-              DK<span className="text-[#4F8EFF]">.</span>
+              durgeshkanzariya<span className="text-[#4F8EFF]">.dev</span>
             </Link>
 
             {/* Desktop Nav Links */}
