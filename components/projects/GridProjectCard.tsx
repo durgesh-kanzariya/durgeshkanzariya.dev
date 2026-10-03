@@ -2,6 +2,7 @@
 
 import { useEffect, useRef } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { ArrowUpRight } from "lucide-react";
 import { GithubIcon } from "@/components/BrandIcons";
 import gsap from "gsap";
@@ -29,6 +30,7 @@ export default function GridProjectCard({ project, index }: GridProjectCardProps
           opacity: 1,
           y: 0,
           duration: 0.8,
+          delay: index * 0.1,
           ease: "power3.out",
           scrollTrigger: {
             trigger: cardRef.current,
@@ -40,97 +42,88 @@ export default function GridProjectCard({ project, index }: GridProjectCardProps
     }, cardRef);
 
     return () => ctx.revert();
-  }, []);
+  }, [index]);
 
   return (
     <div
       ref={cardRef}
-      className="group relative flex flex-col justify-between rounded-2xl border border-[#1A1D33] bg-[#0E101E] p-7 md:p-8 transition-all duration-300 hover:border-[#4F8EFF]/40 hover:bg-[#121528] shadow-lg shadow-black/20"
+      className="group relative flex flex-col rounded-2xl border border-[#1A1D33] bg-[#0E101E] overflow-hidden transition-all duration-300 hover:border-[#4F8EFF]/40 hover:shadow-2xl hover:shadow-black/50"
       style={{ opacity: 0 }}
     >
-      <div>
-        {/* Top bar: Domain badge + Index + GitHub */}
-        <div className="flex items-center justify-between gap-4 mb-6">
-          <div className="flex items-center gap-2 px-3 py-1 rounded-md text-[0.65rem] font-mono uppercase tracking-widest text-[#94A3B8] bg-[#161930] border border-[#252846]">
-            <span
-              className="w-1.5 h-1.5 rounded-full"
-              style={{ background: domainColor }}
-            />
-            {project.domainLabel}
-          </div>
+      {/* Visual Cover Preview */}
+      <Link
+        href={`/work/${project.slug}`}
+        className="relative w-full aspect-[16/10] overflow-hidden bg-[#0A0C16] block"
+      >
+        <Image
+          src={project.image}
+          alt={project.title}
+          fill
+          sizes="(max-width: 768px) 100vw, 50vw"
+          className="object-cover opacity-85 group-hover:opacity-100 group-hover:scale-105 transition-all duration-500"
+        />
 
-          <div className="flex items-center gap-2">
-            <span className="text-[0.7rem] font-mono text-[#475569] font-medium tracking-wider">
-              {String(index + 4).padStart(2, "0")}
-            </span>
-            {project.githubUrl && (
-              <a
-                href={project.githubUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label="GitHub Repository"
-                className="w-7 h-7 rounded-lg border border-[#252846] bg-[#080810] flex items-center justify-center text-[#94A3B8] hover:text-[#F0F4FF] hover:border-[#4F8EFF]/50 transition-colors"
-              >
-                <GithubIcon size={12} />
-              </a>
-            )}
-          </div>
+        {/* Ambient bottom gradient blend into card */}
+        <div className="absolute inset-0 bg-gradient-to-t from-[#0E101E] via-[#0E101E]/20 to-transparent" />
+
+        {/* Floating Domain Badge */}
+        <div className="absolute top-4 left-4 z-10 flex items-center gap-2 px-3 py-1 rounded-md text-[0.65rem] font-mono uppercase tracking-widest text-white/90 bg-[#080810]/75 backdrop-blur-md border border-white/10">
+          <span
+            className="w-1.5 h-1.5 rounded-full"
+            style={{ background: domainColor }}
+          />
+          {project.domainLabel}
         </div>
 
-        {/* Title + Subtitle */}
-        <div className="mb-4">
-          <h3 className="font-syne font-bold text-[#F0F4FF] text-xl md:text-2xl leading-tight group-hover:text-white transition-colors duration-200">
-            {project.title}
-          </h3>
-          <p className="text-[#64748B] text-xs font-mono mt-1">{project.subtitle}</p>
-        </div>
-
-        {/* Tagline / Overview */}
-        <p className="text-[#94A3B8] text-sm leading-relaxed mb-6">
-          {project.tagline}
-        </p>
-
-        {/* Highlights / Architecture stats */}
-        {project.metrics && project.metrics.length > 0 && (
-          <div className="grid grid-cols-2 gap-3 p-3.5 rounded-xl bg-[#080810]/70 border border-[#1A1D33] mb-6">
-            {project.metrics.slice(0, 2).map(({ label, value }) => (
-              <div key={label} className="min-w-0">
-                <div className="text-[0.62rem] font-mono uppercase tracking-wider text-[#64748B] truncate">
-                  {label}
-                </div>
-                <div className="text-xs font-semibold text-[#F0F4FF] mt-0.5 truncate font-mono">
-                  {value}
-                </div>
-              </div>
-            ))}
-          </div>
+        {/* Floating GitHub Link */}
+        {project.githubUrl && (
+          <a
+            href={project.githubUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="GitHub Repository"
+            onClick={(e) => e.stopPropagation()}
+            className="absolute top-4 right-4 z-10 w-8 h-8 rounded-lg bg-[#080810]/75 backdrop-blur-md border border-white/10 flex items-center justify-center text-white/70 hover:text-white hover:border-[#4F8EFF]/50 transition-colors"
+          >
+            <GithubIcon size={13} />
+          </a>
         )}
+      </Link>
+
+      {/* Card Content */}
+      <div className="p-6 md:p-7 flex flex-col justify-between flex-1">
+        <div>
+          {/* Title row with hover arrow indicator */}
+          <Link
+            href={`/work/${project.slug}`}
+            className="flex items-center justify-between gap-4 mb-3 group/title"
+          >
+            <h3 className="font-syne font-bold text-xl md:text-2xl text-[#F0F4FF] group-hover/title:text-white transition-colors duration-200">
+              {project.title}
+            </h3>
+            <div className="w-8 h-8 rounded-full border border-[#252846] bg-[#14172B] text-[#94A3B8] group-hover:bg-[#4F8EFF] group-hover:border-[#4F8EFF] group-hover:text-white transition-all duration-300 flex items-center justify-center flex-shrink-0">
+              <ArrowUpRight size={14} />
+            </div>
+          </Link>
+
+          {/* Clean, punchy tagline — no complex cluttered text */}
+          <p className="text-[#94A3B8] text-sm leading-relaxed mb-6 line-clamp-2">
+            {project.tagline}
+          </p>
+        </div>
 
         {/* Tech Stack Pills */}
-        <div className="flex flex-wrap gap-1.5 mb-8">
+        <div className="flex flex-wrap items-center gap-1.5 pt-4 border-t border-[#1A1D33]">
           {project.tags.slice(0, 4).map((tag) => (
             <span
               key={tag}
-              className="text-[0.62rem] font-mono uppercase tracking-wider px-2.5 py-1 rounded-md text-[#94A3B8] bg-[#14172B] border border-[#1E223D]"
+              className="text-[0.62rem] font-mono uppercase tracking-wider px-2.5 py-1 rounded-md text-[#94A3B8] bg-white/[0.03] border border-white/[0.08]"
             >
               {tag}
             </span>
           ))}
         </div>
       </div>
-
-      {/* Footer CTA: Case study link */}
-      <Link
-        href={`/work/${project.slug}`}
-        className="pt-4 border-t border-[#1A1D33] flex items-center justify-between group/link"
-      >
-        <span className="font-mono text-xs uppercase tracking-widest font-semibold text-[#F0F4FF] group-hover/link:text-[#4F8EFF] transition-colors flex items-center gap-2">
-          Case Study
-        </span>
-        <div className="w-8 h-8 rounded-full border border-[#252846] bg-[#14172B] text-[#94A3B8] group-hover/link:bg-[#4F8EFF] group-hover/link:border-[#4F8EFF] group-hover/link:text-white transition-all duration-300 flex items-center justify-center">
-          <ArrowUpRight size={13} />
-        </div>
-      </Link>
     </div>
   );
 }
