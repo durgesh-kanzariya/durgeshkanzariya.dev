@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Syne, Plus_Jakarta_Sans, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 import CustomCursor from "@/components/CustomCursor";
+import Preloader from "@/components/Preloader";
 import SmoothScrollProvider from "@/components/SmoothScrollProvider";
 import PageTransition from "@/components/PageTransition";
 
@@ -79,6 +80,9 @@ export default function RootLayout({
         suppressHydrationWarning
         className="bg-[#080810] text-[#F0F0F8] md:cursor-none relative overflow-x-hidden"
       >
+        {/* Cinematic Liquid Wave Preloader */}
+        <Preloader />
+
         {/* Noise overlay — subtle film grain */}
         <div className="noise-overlay" aria-hidden="true" />
 

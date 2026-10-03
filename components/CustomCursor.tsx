@@ -182,13 +182,13 @@ export default function CustomCursor() {
       {/* High Performance 60 FPS Grid Matrix Canvas */}
       <canvas
         ref={canvasRef}
-        className="hidden md:block fixed inset-0 pointer-events-none z-[99999] w-full h-full"
+        className="hidden md:block fixed inset-0 pointer-events-none z-[9999998] w-full h-full"
       />
 
       {/* Crisp Solid Main Cursor Head without Bloom Effect */}
       <div
         ref={cursorHeadRef}
-        className="hidden md:block fixed top-0 left-0 w-2.5 h-2.5 rounded-full pointer-events-none z-[999999] bg-white border border-blue-200/80 [&.cursor-head-hover]:bg-blue-500/50 [&.cursor-head-hover]:border-blue-300 [&.cursor-head-magnetic]:bg-blue-900/60 [&.cursor-head-magnetic]:backdrop-blur-md [&.cursor-head-magnetic]:border-blue-400 transition-opacity duration-200"
+        className="hidden md:block fixed top-0 left-0 w-2.5 h-2.5 rounded-full pointer-events-none z-[9999999] bg-white border border-blue-200/80 [&.cursor-head-hover]:bg-blue-500/50 [&.cursor-head-hover]:border-blue-300 [&.cursor-head-magnetic]:bg-blue-900/60 [&.cursor-head-magnetic]:backdrop-blur-md [&.cursor-head-magnetic]:border-blue-400 transition-opacity duration-200"
         style={{
           transform: "translate3d(-100px, -100px, 0)",
           opacity: 0,

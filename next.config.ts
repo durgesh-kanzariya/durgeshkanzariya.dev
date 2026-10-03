@@ -8,8 +8,28 @@ const nextConfig: NextConfig = {
     "192.168.1.3:3000",
     "192.168.1.6",
     "192.168.1.3",
-    "100.94.118.70"
-  ]
+    "100.94.118.70",
+  ],
+  webpack: (config) => {
+    config.module.rules.push({
+      test: /\.html$/,
+      type: "asset/source",
+    });
+    return config;
+  },
+  turbopack: {
+    rules: {
+      "*": {
+        condition: {
+          any: [
+            { path: "*.html" },
+            { query: /[?&]raw(?=&|$)/ },
+          ],
+        },
+        type: "raw",
+      },
+    },
+  },
 };
 
 export default nextConfig;

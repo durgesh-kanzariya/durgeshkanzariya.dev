@@ -58,7 +58,7 @@ export default function SkillsSection() {
         {/* Section header */}
         <div ref={headingRef} className="mb-16" style={{ opacity: 0 }}>
           <h2 className="display-lg text-[#F0F4FF] mb-6">
-            What I <span className="text-hollow">work with.</span>
+            What I <span className="text-hollow-accent">work with.</span>
           </h2>
           <p className="text-[#94A3B8] max-w-lg text-base leading-relaxed">
             A curated stack across full-stack web, mobile, and machine learning — tools
