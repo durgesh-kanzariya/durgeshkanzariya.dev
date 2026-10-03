@@ -51,23 +51,26 @@ export default function GridProjectCard({ project, index }: GridProjectCardProps
       style={{ opacity: 0 }}
     >
       {/* Visual Cover Preview */}
-      <Link
-        href={`/work/${project.slug}`}
-        className="relative w-full aspect-[16/10] overflow-hidden bg-[#0A0C16] block"
-      >
-        <Image
-          src={project.image}
-          alt={project.title}
-          fill
-          sizes="(max-width: 768px) 100vw, 50vw"
-          className="object-cover opacity-85 group-hover:opacity-100 group-hover:scale-105 transition-all duration-500"
-        />
+      <div className="relative w-full aspect-[16/10] overflow-hidden bg-[#0A0C16]">
+        <Link
+          href={`/work/${project.slug}`}
+          className="absolute inset-0 block cursor-pointer"
+          aria-label={`View ${project.title} case study`}
+        >
+          <Image
+            src={project.image}
+            alt={project.title}
+            fill
+            sizes="(max-width: 768px) 100vw, 50vw"
+            className="object-cover opacity-85 group-hover:opacity-100 group-hover:scale-105 transition-all duration-500"
+          />
 
-        {/* Ambient bottom gradient blend into card */}
-        <div className="absolute inset-0 bg-gradient-to-t from-[#0E101E] via-[#0E101E]/20 to-transparent" />
+          {/* Ambient bottom gradient blend into card */}
+          <div className="absolute inset-0 bg-gradient-to-t from-[#0E101E] via-[#0E101E]/20 to-transparent" />
+        </Link>
 
         {/* Floating Domain Badge */}
-        <div className="absolute top-4 left-4 z-10 flex items-center gap-2 px-3 py-1 rounded-md text-[0.65rem] font-mono uppercase tracking-widest text-white/90 bg-[#080810]/75 backdrop-blur-md border border-white/10">
+        <div className="absolute top-4 left-4 z-10 pointer-events-none flex items-center gap-2 px-3 py-1 rounded-md text-[0.65rem] font-mono uppercase tracking-widest text-white/90 bg-[#080810]/75 backdrop-blur-md border border-white/10">
           <span
             className="w-1.5 h-1.5 rounded-full"
             style={{ background: domainColor }}
@@ -75,20 +78,19 @@ export default function GridProjectCard({ project, index }: GridProjectCardProps
           {project.domainLabel}
         </div>
 
-        {/* Floating GitHub Link */}
+        {/* Floating GitHub Link (sibling, not nested in Link) */}
         {project.githubUrl && (
           <a
             href={project.githubUrl}
             target="_blank"
             rel="noopener noreferrer"
             aria-label="GitHub Repository"
-            onClick={(e) => e.stopPropagation()}
-            className="absolute top-4 right-4 z-10 w-8 h-8 rounded-lg bg-[#080810]/75 backdrop-blur-md border border-white/10 flex items-center justify-center text-white/70 hover:text-white hover:border-[#4F8EFF]/50 transition-colors"
+            className="absolute top-4 right-4 z-20 w-8 h-8 rounded-lg bg-[#080810]/75 backdrop-blur-md border border-white/10 flex items-center justify-center text-white/70 hover:text-white hover:border-[#4F8EFF]/50 transition-colors"
           >
             <GithubIcon size={13} />
           </a>
         )}
-      </Link>
+      </div>
 
       {/* Card Content */}
       <div className="p-6 md:p-7 flex flex-col justify-between flex-1">
