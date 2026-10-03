@@ -188,7 +188,7 @@ export default function CustomCursor() {
       {/* Crisp Solid Main Cursor Head without Bloom Effect */}
       <div
         ref={cursorHeadRef}
-        className="hidden md:block fixed top-0 left-0 w-2.5 h-2.5 rounded-full pointer-events-none z-[999999] bg-white border border-purple-200/80 [&.cursor-head-hover]:bg-purple-500/50 [&.cursor-head-hover]:border-purple-300 [&.cursor-head-magnetic]:bg-purple-900/60 [&.cursor-head-magnetic]:backdrop-blur-md [&.cursor-head-magnetic]:border-purple-400 transition-opacity duration-200"
+        className="hidden md:block fixed top-0 left-0 w-2.5 h-2.5 rounded-full pointer-events-none z-[999999] bg-white border border-blue-200/80 [&.cursor-head-hover]:bg-blue-500/50 [&.cursor-head-hover]:border-blue-300 [&.cursor-head-magnetic]:bg-blue-900/60 [&.cursor-head-magnetic]:backdrop-blur-md [&.cursor-head-magnetic]:border-blue-400 transition-opacity duration-200"
         style={{
           transform: "translate3d(-100px, -100px, 0)",
           opacity: 0,

@@ -20,8 +20,8 @@ export default function PageTransition({ children }: PageTransitionProps) {
     // Always reset scroll to top on route change
     if (typeof window !== "undefined") {
       window.scrollTo(0, 0);
-      if ((window as any).lenis) {
-        (window as any).lenis.scrollTo(0, { immediate: true });
+      if (window.lenis) {
+        window.lenis.scrollTo(0, { immediate: true });
       }
       ScrollTrigger.refresh();
     }

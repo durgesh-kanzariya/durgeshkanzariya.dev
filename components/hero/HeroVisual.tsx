@@ -21,7 +21,7 @@ export default function HeroVisual() {
 
         {/* Code block */}
         <div className="p-5 font-mono text-[0.72rem] leading-relaxed space-y-1">
-          <div><span className="text-[#64748B]">// 2024 stack snapshot</span></div>
+          <div><span className="text-[#64748B]">{"// 2024 stack snapshot"}</span></div>
           <div className="h-1.5" />
 
           <div>
@@ -49,7 +49,7 @@ export default function HeroVisual() {
             <span className="text-[#38BDF8]">shipped</span>
             <span className="text-[#64748B]">: </span>
             <span className="text-[#93C5FD]">5</span>
-            <span className="text-[#64748B]">, // production projects</span>
+            <span className="text-[#64748B]">{", // production projects"}</span>
           </div>
 
           <div><span className="text-[#F0F4FF]">{"}"}</span></div>

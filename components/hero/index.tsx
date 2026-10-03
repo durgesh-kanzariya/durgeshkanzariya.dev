@@ -13,7 +13,7 @@ const ROLES = ["Full-Stack Engineer", "Flutter Developer", "ML Engineer"];
 function scrollTo(id: string, duration = 1.2) {
   const el = document.getElementById(id);
   if (!el) return;
-  const lenis = (window as any).lenis;
+  const lenis = window.lenis;
   if (lenis) lenis.scrollTo(el, { duration });
   else el.scrollIntoView({ behavior: "smooth" });
 }

@@ -21,7 +21,7 @@ export default function Home() {
         const el = document.getElementById(targetId);
         if (el) {
           ScrollTrigger.refresh();
-          const lenis = (window as any).lenis;
+          const lenis = window.lenis;
           if (lenis) {
             lenis.scrollTo(el, { immediate: true });
           } else {

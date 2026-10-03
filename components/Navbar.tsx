@@ -53,7 +53,7 @@ export default function Navbar() {
     if (href.startsWith("#")) {
       const el = document.getElementById(href.replace("#", ""));
       if (el) {
-        const lenis = (window as any).lenis;
+        const lenis = window.lenis;
         if (lenis) {
           lenis.scrollTo(el, { duration: 1.2, easing: (t: number) => Math.min(1, 1.001 - Math.pow(2, -10 * t)) });
         } else {

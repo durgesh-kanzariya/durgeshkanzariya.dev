@@ -143,7 +143,7 @@ export const PROJECTS: ProjectData[] = [
     stack: "React · Node.js · Express · PostgreSQL · REST APIs",
     role: "Full-Stack Engineer & DB Architect",
     year: "2026",
-    image: "/images/traveldost_logo.jpeg",
+    image: "/images/traveldost_cover.png",
     overview:
       "TravelDost is a full-stack travel planning platform with 3NF normalized PostgreSQL schemas, multi-tier RESTful API routing, and a responsive React frontend for managing multi-destination itineraries.",
     problem:

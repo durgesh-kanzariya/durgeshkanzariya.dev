@@ -23,6 +23,7 @@ export default function FeaturedProjectRow({ project, index }: FeaturedProjectRo
   const domainColor = DOMAIN_COLORS[project.domain];
 
   useEffect(() => {
+    gsap.registerPlugin(ScrollTrigger);
     const ctx = gsap.context(() => {
       const tl = gsap.timeline({
         scrollTrigger: {

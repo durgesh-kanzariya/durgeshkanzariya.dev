@@ -32,7 +32,7 @@ export default function SmoothScrollProvider({ children }: { children: React.Rea
     gsap.ticker.add(updateLenis);
     gsap.ticker.lagSmoothing(0);
 
-    (window as any).lenis = lenis;
+    window.lenis = lenis;
 
     const handleRefresh = () => {
       lenis.resize();
@@ -41,7 +41,7 @@ export default function SmoothScrollProvider({ children }: { children: React.Rea
     ScrollTrigger.addEventListener("refresh", handleRefresh);
 
     return () => {
-      delete (window as any).lenis;
+      delete window.lenis;
       ScrollTrigger.removeEventListener("refresh", handleRefresh);
       lenis.destroy();
       gsap.ticker.remove(updateLenis);
