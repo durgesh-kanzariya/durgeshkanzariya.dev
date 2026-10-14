@@ -11,6 +11,7 @@ import FooterSection from "@/components/footer";
 import { PROJECTS_MAP } from "@/data/projectsData";
 import { DOMAIN_COLORS } from "@/components/projects/domainColors";
 import MagneticText from "@/components/MagneticText";
+import InteractiveButton from "@/components/common/InteractiveButton";
 
 interface PageProps {
   params: Promise<{ slug: string }>;
@@ -166,15 +167,28 @@ export default function ProjectCaseStudyPage({ params }: PageProps) {
           {/* CTA links */}
           <div className="flex flex-wrap gap-4 pt-8 border-t border-[#1c1c3a]">
             {project.liveUrl && (
-              <a href={project.liveUrl} target="_blank" rel="noopener noreferrer" className="btn-primary">
-                <ArrowUpRight size={14} />
+              <InteractiveButton
+                variant="glow-trace"
+                href={project.liveUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                icon={<ArrowUpRight size={14} />}
+                iconPosition="right"
+                size="md"
+              >
                 View Live
-              </a>
+              </InteractiveButton>
             )}
             {project.githubUrl && (
-              <a href={project.githubUrl} target="_blank" rel="noopener noreferrer" className="btn-ghost">
+              <InteractiveButton
+                variant="glass-trace"
+                href={project.githubUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                size="md"
+              >
                 View on GitHub
-              </a>
+              </InteractiveButton>
             )}
           </div>
 

@@ -1,13 +1,14 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import { Mail, ArrowUpRight } from "lucide-react";
+import { Mail } from "lucide-react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { SOCIAL_CHANNELS } from "./footerData";
 import SocialLinkCard from "./SocialLinkCard";
 import FooterBottomBar from "./FooterBottomBar";
 import MagneticText from "@/components/MagneticText";
+import InteractiveButton from "@/components/common/InteractiveButton";
 
 export default function FooterSection() {
   const sectionRef = useRef<HTMLElement>(null);
@@ -108,14 +109,16 @@ export default function FooterSection() {
               className="flex flex-col sm:flex-row items-start sm:items-center gap-4"
               style={{ opacity: 0 }}
             >
-              <a
+              <InteractiveButton
+                variant="glow-trace"
                 href="mailto:durgesh.j.kanzariya@gmail.com"
-                className="btn-primary text-base py-3.5 px-7"
+                icon={<Mail size={16} />}
+                iconPosition="left"
+                size="lg"
+                className="py-4 px-8 text-base shadow-2xl"
               >
-                <Mail size={16} />
                 Send an email
-                <ArrowUpRight size={14} />
-              </a>
+              </InteractiveButton>
             </div>
           </div>
 

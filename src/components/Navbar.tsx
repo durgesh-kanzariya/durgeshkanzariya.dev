@@ -6,6 +6,7 @@ import { Mail, FileText } from "lucide-react";
 import { GithubIcon, LinkedinIcon } from "@/components/BrandIcons";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import InteractiveButton from "@/components/common/InteractiveButton";
 
 const NAV_LINKS = [
   { label: "Projects", href: "#projects" },
@@ -111,15 +112,18 @@ export default function Navbar() {
                   <Icon size={14} />
                 </a>
               ))}
-              <a
+              <InteractiveButton
+                variant="glass-trace"
                 href="/resume.pdf"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="ml-2 btn-ghost py-1.5 px-4 text-xs"
+                icon={<FileText size={12} />}
+                iconPosition="left"
+                size="sm"
+                className="ml-2 py-1.5 px-3.5 text-xs"
               >
-                <FileText size={12} />
                 Resume
-              </a>
+              </InteractiveButton>
             </div>
 
             {/* Mobile Menu Toggle */}

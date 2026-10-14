@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import Link from "next/link";
 import { ExternalLink, ArrowUpRight } from "lucide-react";
 import { GithubIcon } from "@/components/BrandIcons";
 import gsap from "gsap";
@@ -9,6 +8,7 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { type ProjectData } from "@/data/projectsData";
 import { DOMAIN_COLORS } from "./domainColors";
 import ProjectImage from "./ProjectImage";
+import InteractiveButton from "@/components/common/InteractiveButton";
 
 interface FeaturedProjectRowProps {
   project: ProjectData;
@@ -113,20 +113,29 @@ export default function FeaturedProjectRow({ project, index }: FeaturedProjectRo
 
         {/* CTA links */}
         <div className="flex items-center gap-3 flex-wrap">
-          <Link href={`/work/${project.slug}`} className="btn-primary text-sm py-2.5 px-5">
+          <InteractiveButton
+            variant="glow-trace"
+            href={`/work/${project.slug}`}
+            icon={<ArrowUpRight size={14} />}
+            iconPosition="right"
+            size="sm"
+            className="py-2.5 px-5 text-xs font-semibold"
+          >
             Case Study
-            <ArrowUpRight size={14} />
-          </Link>
+          </InteractiveButton>
           {project.liveUrl && (
-            <a
+            <InteractiveButton
+              variant="glass-trace"
               href={project.liveUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="btn-ghost text-sm py-2.5 px-5"
+              icon={<ExternalLink size={12} />}
+              iconPosition="left"
+              size="sm"
+              className="py-2.5 px-4 text-xs"
             >
-              <ExternalLink size={12} />
               Live
-            </a>
+            </InteractiveButton>
           )}
           {project.githubUrl && (
             <a

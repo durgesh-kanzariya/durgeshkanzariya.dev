@@ -7,6 +7,7 @@ import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import HeroVisual from "./HeroVisual";
 import MagneticHeading from "./MagneticHeading";
+import InteractiveButton from "@/components/common/InteractiveButton";
 import { LaserCollection } from "@designcodeio/threeui";
 import "@designcodeio/threeui/style.css";
 
@@ -173,19 +174,27 @@ export default function HeroSection() {
 
             {/* CTAs */}
             <div className="flex flex-wrap items-center gap-4 mb-14">
-              <button onClick={() => scrollTo("projects")} className="btn-primary group">
+              <InteractiveButton
+                variant="glow-trace"
+                onClick={() => scrollTo("projects")}
+                icon={<ArrowDown size={14} />}
+                iconPosition="right"
+                className="py-3 px-6 text-sm"
+              >
                 View Projects
-                <ArrowDown size={14} className="group-hover:translate-y-0.5 transition-transform" />
-              </button>
-              <a
+              </InteractiveButton>
+
+              <InteractiveButton
+                variant="glass-trace"
                 href="https://github.com/durgesh-kanzariya"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="btn-ghost"
+                icon={<GithubIcon size={14} />}
+                iconPosition="left"
+                className="py-3 px-6 text-sm"
               >
-                <GithubIcon size={14} />
                 GitHub
-              </a>
+              </InteractiveButton>
             </div>
 
             {/* Interactive Stats Row */}
