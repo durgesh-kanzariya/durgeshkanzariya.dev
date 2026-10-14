@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useRef, useState, useCallback, useId } from "react";
+import React, { useRef, useState, useCallback, useEffect, useId } from "react";
 import Link from "next/link";
 
 export type ButtonVariant = "glow-pill" | "trace" | "glow-trace" | "glass-trace";
@@ -18,6 +18,7 @@ interface InteractiveButtonProps {
   icon?: React.ReactNode;
   iconPosition?: "left" | "right";
   magnetic?: boolean;
+  proximityRadius?: number; // Distance in pixels to trigger trace interaction (default: 130)
   textColor?: string;
   size?: "sm" | "md" | "lg";
   ariaLabel?: string;
@@ -35,38 +36,73 @@ export default function InteractiveButton({
   icon,
   iconPosition = "right",
   magnetic = true,
+  proximityRadius = 130,
   textColor,
   size = "md",
   ariaLabel,
 }: InteractiveButtonProps) {
   const buttonRef = useRef<HTMLDivElement | HTMLAnchorElement | HTMLButtonElement | null>(null);
-  const [coords, setCoords] = useState({ x: 50, y: 50 });
   const [isHovered, setIsHovered] = useState(false);
-  const [offset, setOffset] = useState({ x: 0, y: 0 });
   const uniqueId = useId().replace(/:/g, "_");
 
-  // Mouse move handler for spotlight and magnetic tracking
-  const handlePointerMove = useCallback(
-    (e: React.PointerEvent) => {
+  // Proximity Detection Engine: Traces & awakens when cursor is NEAR the button
+  useEffect(() => {
+    const handleGlobalPointerMove = (e: PointerEvent) => {
       const el = buttonRef.current;
       if (!el) return;
 
       const rect = el.getBoundingClientRect();
-      const x = e.clientX - rect.left;
-      const y = e.clientY - rect.top;
+      // Viewport culling: ignore buttons far offscreen
+      if (rect.bottom < -80 || rect.top > window.innerHeight + 80) return;
 
-      setCoords({ x, y });
+      // Find closest point on button rectangle to cursor
+      const closestX = Math.max(rect.left, Math.min(e.clientX, rect.right));
+      const closestY = Math.max(rect.top, Math.min(e.clientY, rect.bottom));
+      const dx = e.clientX - closestX;
+      const dy = e.clientY - closestY;
+      const dist = Math.hypot(dx, dy);
 
-      if (magnetic) {
-        const centerX = rect.width / 2;
-        const centerY = rect.height / 2;
-        const deltaX = (x - centerX) * 0.16;
-        const deltaY = (y - centerY) * 0.16;
-        setOffset({ x: deltaX, y: deltaY });
+      if (dist < proximityRadius) {
+        // Distance factor: 1 when touching/on button, 0 at outer perimeter
+        const factor = Math.max(0, Math.min(1, 1 - dist / proximityRadius));
+        
+        // Trace awakens the moment pointer gets near: ramps from 0.35 to 1.0
+        const traceVal = (0.35 + factor * 0.65).toFixed(3);
+        const ambientVal = (factor * 0.6).toFixed(3);
+
+        el.style.setProperty("--trace-opacity", traceVal);
+        el.style.setProperty("--ambient-opacity", ambientVal);
+
+        // Project cursor coordinates inside the button for spotlight reflection
+        const relX = e.clientX - rect.left;
+        const relY = e.clientY - rect.top;
+        el.style.setProperty("--mouse-x", `${relX}px`);
+        el.style.setProperty("--mouse-y", `${relY}px`);
+
+        // Proximity-based magnetic draw towards cursor
+        if (magnetic) {
+          const centerX = rect.width / 2;
+          const centerY = rect.height / 2;
+          const pull = factor * 0.15;
+          const pullX = (relX - centerX) * pull;
+          const pullY = (relY - centerY) * pull;
+          el.style.setProperty("--mag-x", `${pullX.toFixed(1)}px`);
+          el.style.setProperty("--mag-y", `${pullY.toFixed(1)}px`);
+        }
+      } else {
+        // Outside proximity threshold: button rests quietly with trace hidden
+        el.style.setProperty("--trace-opacity", "0");
+        el.style.setProperty("--ambient-opacity", "0");
+        el.style.setProperty("--mag-x", "0px");
+        el.style.setProperty("--mag-y", "0px");
       }
-    },
-    [magnetic]
-  );
+    };
+
+    window.addEventListener("pointermove", handleGlobalPointerMove, { passive: true });
+    return () => {
+      window.removeEventListener("pointermove", handleGlobalPointerMove);
+    };
+  }, [magnetic, proximityRadius]);
 
   const handlePointerEnter = useCallback(() => {
     setIsHovered(true);
@@ -74,7 +110,6 @@ export default function InteractiveButton({
 
   const handlePointerLeave = useCallback(() => {
     setIsHovered(false);
-    setOffset({ x: 0, y: 0 });
   }, []);
 
   // Sizing
@@ -96,8 +131,8 @@ export default function InteractiveButton({
     : "linear-gradient(135deg, #181C2E 0%, #111424 50%, #0B0D18 100%)";
 
   const ambientColor = isPastelTheme
-    ? "rgba(203, 213, 225, 0.35)"
-    : "rgba(100, 116, 139, 0.2)";
+    ? "rgba(203, 213, 225, 0.45)"
+    : "rgba(100, 116, 139, 0.25)";
 
   const specularRim = isPastelTheme
     ? "inset 0 1.5px 2px 0 rgba(255, 255, 255, 0.95), inset 0 -1.5px 2px 0 rgba(15, 23, 42, 0.12)"
@@ -115,21 +150,24 @@ export default function InteractiveButton({
   const baseClasses = `
     group/ibtn relative inline-flex items-center justify-center font-medium
     rounded-full select-none cursor-pointer overflow-visible
-    transition-transform duration-200 ease-out active:scale-[0.97]
+    transition-[transform,box-shadow] duration-200 ease-out active:scale-[0.97]
     ${sizeClasses}
     ${className}
   `.trim();
 
+  // Dynamic transform driven by proximity magnetic pull
+  const dynamicTransform = "translate3d(var(--mag-x, 0px), var(--mag-y, 0px), 0)";
+
   // Content rendering
   const content = (
     <>
-      {/* 1. Subtle Ambient Glow Bloom Beneath Button (Muted, non-neon) */}
+      {/* 1. Subtle Ambient Glow Bloom (Awakens when cursor approaches near) */}
       {isGlowPill && (
         <span
-          className="absolute -inset-1 rounded-full blur-xl pointer-events-none transition-opacity duration-500 ease-out -z-10"
+          className="absolute -inset-1 rounded-full blur-xl pointer-events-none transition-[opacity,transform] duration-300 ease-out -z-10"
           style={{
             background: ambientColor,
-            opacity: isHovered ? 0.75 : 0.35,
+            opacity: "var(--ambient-opacity, 0)",
             transform: isHovered ? "scale(1.06)" : "scale(0.96)",
           }}
           aria-hidden="true"
@@ -158,14 +196,14 @@ export default function InteractiveButton({
           />
         )}
 
-        {/* 3. Cursor Following Dynamic Spotlight (Soft, calm light specular) */}
+        {/* 3. Cursor Following Dynamic Spotlight (Soft specular reflection) */}
         <span
-          className="absolute inset-0 rounded-full pointer-events-none transition-opacity duration-300 ease-out"
+          className="absolute inset-0 rounded-full pointer-events-none transition-opacity duration-250 ease-out"
           style={{
-            opacity: isHovered ? 1 : 0.2,
+            opacity: isHovered ? 1 : "calc(var(--trace-opacity, 0) * 0.4)",
             background: isPastelTheme
-              ? `radial-gradient(circle 80px at ${coords.x}px ${coords.y}px, rgba(255, 255, 255, 0.95) 0%, rgba(241, 245, 249, 0.6) 35%, rgba(226, 232, 240, 0.1) 70%, transparent 100%)`
-              : `radial-gradient(circle 85px at ${coords.x}px ${coords.y}px, rgba(226, 232, 240, 0.35) 0%, rgba(148, 163, 184, 0.12) 45%, transparent 80%)`,
+              ? "radial-gradient(circle 80px at var(--mouse-x, 50%) var(--mouse-y, 50%), rgba(255, 255, 255, 0.95) 0%, rgba(241, 245, 249, 0.6) 35%, rgba(226, 232, 240, 0.1) 70%, transparent 100%)"
+              : "radial-gradient(circle 85px at var(--mouse-x, 50%) var(--mouse-y, 50%), rgba(226, 232, 240, 0.35) 0%, rgba(148, 163, 184, 0.12) 45%, transparent 80%)",
           }}
         />
 
@@ -174,19 +212,22 @@ export default function InteractiveButton({
           <span
             className="absolute pointer-events-none w-20 h-20 rounded-full blur-md mix-blend-overlay transition-opacity duration-150"
             style={{
-              left: coords.x - 40,
-              top: coords.y - 40,
+              left: "calc(var(--mouse-x, 50%) - 40px)",
+              top: "calc(var(--mouse-y, 50%) - 40px)",
               background: "radial-gradient(circle, rgba(255,255,255,0.9) 0%, rgba(255,255,255,0.4) 40%, transparent 80%)",
             }}
           />
         )}
       </span>
 
-      {/* 4. Trace Tracing Effect: Animated Border Orbit Beam (Cool silver/platinum tone) */}
+      {/* 4. Trace Tracing Effect: Awakens & Orbits when cursor is NEAR the button */}
       {hasTrace && (
         <svg
-          className="absolute inset-0 w-full h-full pointer-events-none overflow-visible rounded-full"
-          style={{ padding: "0.5px" }}
+          className="absolute inset-0 w-full h-full pointer-events-none overflow-visible rounded-full transition-opacity duration-250 ease-out"
+          style={{
+            padding: "0.5px",
+            opacity: "var(--trace-opacity, 0)",
+          }}
           aria-hidden="true"
         >
           <defs>
@@ -225,9 +266,7 @@ export default function InteractiveButton({
             filter={`url(#trace-blur-${uniqueId})`}
             className="animate-border-trace"
             style={{
-              animationDuration: isHovered ? "2.4s" : "4.2s",
-              opacity: isHovered ? 1 : 0.6,
-              transition: "opacity 0.3s ease",
+              animationDuration: isHovered ? "2.2s" : "3.8s",
             }}
           />
         </svg>
@@ -254,15 +293,12 @@ export default function InteractiveButton({
     </>
   );
 
-  const dynamicTransform = `translate3d(${offset.x}px, ${offset.y}px, 0)`;
-
   // Render as Next Link
   if (href && (href.startsWith("/") || href.startsWith("#"))) {
     return (
       <Link
         href={href}
         ref={buttonRef as unknown as React.Ref<HTMLAnchorElement>}
-        onPointerMove={handlePointerMove}
         onPointerEnter={handlePointerEnter}
         onPointerLeave={handlePointerLeave}
         className={baseClasses}
@@ -283,7 +319,6 @@ export default function InteractiveButton({
         ref={buttonRef as unknown as React.Ref<HTMLAnchorElement>}
         target={target || "_blank"}
         rel={rel || "noopener noreferrer"}
-        onPointerMove={handlePointerMove}
         onPointerEnter={handlePointerEnter}
         onPointerLeave={handlePointerLeave}
         className={baseClasses}
@@ -302,7 +337,6 @@ export default function InteractiveButton({
       type="button"
       ref={buttonRef as unknown as React.Ref<HTMLButtonElement>}
       onClick={onClick}
-      onPointerMove={handlePointerMove}
       onPointerEnter={handlePointerEnter}
       onPointerLeave={handlePointerLeave}
       className={baseClasses}
