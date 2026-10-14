@@ -80,7 +80,7 @@ export default function AboutSection() {
               className="font-syne font-extrabold text-[#F0F4FF] text-3xl sm:text-4xl lg:text-[2.65rem] leading-[1.14] tracking-tight mb-8"
             >
               IT engineer who doesn&apos;t just study technology —{" "}
-              <span className="text-hollow-accent whitespace-nowrap">ships it.</span>
+              <span className="text-[#4F8EFF] whitespace-nowrap">ships it.</span>
             </h2>
 
             <AboutBio ref={bodyRef} />

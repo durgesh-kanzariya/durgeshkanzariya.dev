@@ -96,7 +96,7 @@ export default function FooterSection() {
               <br />
               something
               <br />
-              <span className="text-hollow-accent">great.</span>
+              <span className="text-[#4F8EFF]">great.</span>
             </h2>
 
             <div

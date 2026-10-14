@@ -42,7 +42,7 @@ export default function ProjectsSection() {
         <div ref={headingRef} className="mb-20" style={{ opacity: 0 }}>
           <h2 className="display-lg text-[#F0F4FF] mb-6">
             Things I&apos;ve{" "}
-            <span className="text-hollow-accent">built.</span>
+            <span className="text-[#4F8EFF]">built.</span>
           </h2>
           <p className="text-[#94A3B8] max-w-lg text-base leading-relaxed">
             From AI routing engines to Flutter mobile apps to ML models — a snapshot of
