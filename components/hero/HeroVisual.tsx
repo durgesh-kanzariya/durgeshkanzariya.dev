@@ -1,9 +1,17 @@
 "use client";
 
-import { useState, useRef, MouseEvent } from "react";
+import { useState, useRef, useEffect, MouseEvent } from "react";
 import { Copy, Check, Play, Terminal, FileCode2, Activity } from "lucide-react";
 
 type Tab = "snapshot" | "terminal" | "telemetry";
+
+// Default resting 3D tilt angled toward the top-right corner
+const RESTING_TRANSFORM =
+  "perspective(1000px) rotateX(5.5deg) rotateY(6.5deg) scale3d(1.02, 1.02, 1.02)";
+const FLAT_TRANSFORM =
+  "perspective(1000px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)";
+const RESTING_GLARE = { x: 80, y: 20, opacity: 0.14 };
+const INITIAL_GLARE = { x: 50, y: 50, opacity: 0 };
 
 export default function HeroVisual() {
   const [activeTab, setActiveTab] = useState<Tab>("snapshot");
@@ -15,11 +23,50 @@ export default function HeroVisual() {
 
   // 3D Tilt & Glare State
   const cardRef = useRef<HTMLDivElement>(null);
-  const [transformStyle, setTransformStyle] = useState("");
-  const [glarePosition, setGlarePosition] = useState({ x: 50, y: 50, opacity: 0 });
+  const [transformStyle, setTransformStyle] = useState(FLAT_TRANSFORM);
+  const [glarePosition, setGlarePosition] = useState(INITIAL_GLARE);
+  const [isHovered, setIsHovered] = useState(false);
+
+  // Auto-tilt animation triggered AFTER preloader lifts up so the user sees it happen
+  useEffect(() => {
+    let triggered = false;
+
+    const triggerTilt = (delayMs = 250) => {
+      if (triggered) return;
+      triggered = true;
+      setTimeout(() => {
+        setTransformStyle(RESTING_TRANSFORM);
+        setGlarePosition(RESTING_GLARE);
+      }, delayMs);
+    };
+
+    // If preloader has already completed (e.g. fast nav or already lifted)
+    if (typeof window !== "undefined" && window.__preloaderDone) {
+      triggerTilt(300);
+      return;
+    }
+
+    const handlePreloaderComplete = () => {
+      triggerTilt(250);
+    };
+
+    window.addEventListener("preloader-complete", handlePreloaderComplete);
+
+    // Fallback timer (in case preloader is disabled, skipped, or finishes on fallback)
+    const fallbackTimer = setTimeout(() => {
+      triggerTilt(0);
+    }, 3800);
+
+    return () => {
+      window.removeEventListener("preloader-complete", handlePreloaderComplete);
+      clearTimeout(fallbackTimer);
+    };
+  }, []);
 
   const handleMouseMove = (e: MouseEvent<HTMLDivElement>) => {
     if (!cardRef.current) return;
+    setIsHovered(true);
+
     const rect = cardRef.current.getBoundingClientRect();
     const x = e.clientX - rect.left;
     const y = e.clientY - rect.top;
@@ -27,23 +74,25 @@ export default function HeroVisual() {
     const centerX = rect.width / 2;
     const centerY = rect.height / 2;
 
-    const rotateX = ((y - centerY) / centerY) * -7; // max 7 deg
-    const rotateY = ((x - centerX) / centerX) * 7;
+    const rotateX = ((y - centerY) / centerY) * -7.5; // max 7.5 deg
+    const rotateY = ((x - centerX) / centerX) * 7.5;
 
     setTransformStyle(
-      `perspective(1000px) rotateX(${rotateX.toFixed(2)}deg) rotateY(${rotateY.toFixed(2)}deg) scale3d(1.02, 1.02, 1.02)`
+      `perspective(1000px) rotateX(${rotateX.toFixed(2)}deg) rotateY(${rotateY.toFixed(2)}deg) scale3d(1.025, 1.025, 1.025)`
     );
 
     setGlarePosition({
       x: (x / rect.width) * 100,
       y: (y / rect.height) * 100,
-      opacity: 0.15,
+      opacity: 0.16,
     });
   };
 
   const handleMouseLeave = () => {
-    setTransformStyle("perspective(1000px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)");
-    setGlarePosition((prev) => ({ ...prev, opacity: 0 }));
+    setIsHovered(false);
+    // Smoothly return back to the top-right tilted resting position
+    setTransformStyle(RESTING_TRANSFORM);
+    setGlarePosition(RESTING_GLARE);
   };
 
   const handleCopy = () => {
@@ -81,8 +130,10 @@ export default durgesh;`;
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
       style={{
-        transform: transformStyle || "perspective(1000px) rotateX(0deg) rotateY(0deg)",
-        transition: transformStyle ? "transform 0.1s ease-out" : "transform 0.5s ease-out",
+        transform: transformStyle,
+        transition: isHovered
+          ? "transform 0.1s ease-out"
+          : "transform 0.85s cubic-bezier(0.22, 1, 0.36, 1)",
       }}
       className="relative w-full cursor-pointer select-none group pointer-events-auto"
     >
@@ -94,15 +145,18 @@ export default durgesh;`;
 
         {/* Dynamic Glare Overlay */}
         <div
-          className="absolute inset-0 pointer-events-none rounded-2xl transition-opacity duration-300 z-30"
+          className="absolute inset-0 pointer-events-none rounded-2xl z-30"
           style={{
             background: `radial-gradient(circle at ${glarePosition.x}% ${glarePosition.y}%, rgba(255,255,255,${glarePosition.opacity}), transparent 60%)`,
+            transition: isHovered
+              ? "opacity 0.15s ease-out"
+              : "all 0.85s cubic-bezier(0.22, 1, 0.36, 1)",
           }}
         />
 
         {/* Window Chrome Header */}
-        <div className="flex items-center justify-between px-4 py-3 border-b border-[#1A1D33] bg-[#080810]/90">
-          <div className="flex items-center gap-2">
+        <div className="flex items-center justify-between px-5 py-3.5 border-b border-[#1A1D33] bg-[#080810]/90">
+          <div className="flex items-center gap-2.5">
             <span className="w-2.5 h-2.5 rounded-full bg-[#FF5F57]/80 group-hover:bg-[#FF5F57] transition-colors" />
             <span className="w-2.5 h-2.5 rounded-full bg-[#FFBD2E]/80 group-hover:bg-[#FFBD2E] transition-colors" />
             <span className="w-2.5 h-2.5 rounded-full bg-[#28C840]/80 group-hover:bg-[#28C840] transition-colors" />
@@ -112,37 +166,37 @@ export default durgesh;`;
               <button
                 type="button"
                 onClick={() => setActiveTab("snapshot")}
-                className={`flex items-center gap-1.5 px-2.5 py-1 rounded text-[0.68rem] font-mono transition-all ${
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-[0.72rem] font-mono transition-all ${
                   activeTab === "snapshot"
                     ? "bg-[#1E223D] text-[#F0F4FF] shadow-sm font-semibold"
                     : "text-[#64748B] hover:text-[#94A3B8]"
                 }`}
               >
-                <FileCode2 size={11} className={activeTab === "snapshot" ? "text-[#4F8EFF]" : ""} />
+                <FileCode2 size={12} className={activeTab === "snapshot" ? "text-[#4F8EFF]" : ""} />
                 snapshot.ts
               </button>
               <button
                 type="button"
                 onClick={() => setActiveTab("terminal")}
-                className={`flex items-center gap-1.5 px-2.5 py-1 rounded text-[0.68rem] font-mono transition-all ${
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-[0.72rem] font-mono transition-all ${
                   activeTab === "terminal"
                     ? "bg-[#1E223D] text-[#F0F4FF] shadow-sm font-semibold"
                     : "text-[#64748B] hover:text-[#94A3B8]"
                 }`}
               >
-                <Terminal size={11} className={activeTab === "terminal" ? "text-[#4F8EFF]" : ""} />
+                <Terminal size={12} className={activeTab === "terminal" ? "text-[#4F8EFF]" : ""} />
                 terminal.zsh
               </button>
               <button
                 type="button"
                 onClick={() => setActiveTab("telemetry")}
-                className={`flex items-center gap-1.5 px-2.5 py-1 rounded text-[0.68rem] font-mono transition-all ${
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-[0.72rem] font-mono transition-all ${
                   activeTab === "telemetry"
                     ? "bg-[#1E223D] text-[#F0F4FF] shadow-sm font-semibold"
                     : "text-[#64748B] hover:text-[#94A3B8]"
                 }`}
               >
-                <Activity size={11} className={activeTab === "telemetry" ? "text-[#4F8EFF]" : ""} />
+                <Activity size={12} className={activeTab === "telemetry" ? "text-[#4F8EFF]" : ""} />
                 live.log
               </button>
             </div>
@@ -152,17 +206,17 @@ export default durgesh;`;
           <button
             type="button"
             onClick={handleCopy}
-            className="flex items-center gap-1 px-2 py-1 rounded text-[0.65rem] font-mono text-[#64748B] hover:text-[#F0F4FF] hover:bg-[#1A1D33] transition-all"
+            className="flex items-center gap-1.5 px-2.5 py-1 rounded text-[0.68rem] font-mono text-[#64748B] hover:text-[#F0F4FF] hover:bg-[#1A1D33] transition-all"
             title="Copy code"
           >
             {copied ? (
               <>
-                <Check size={12} className="text-[#38BDF8]" />
+                <Check size={13} className="text-[#38BDF8]" />
                 <span className="text-[#38BDF8]">Copied!</span>
               </>
             ) : (
               <>
-                <Copy size={12} />
+                <Copy size={13} />
                 <span>Copy</span>
               </>
             )}
@@ -171,7 +225,7 @@ export default durgesh;`;
 
         {/* Tab 1: Code Snapshot */}
         {activeTab === "snapshot" && (
-          <div className="p-5 font-mono text-[0.72rem] leading-relaxed space-y-1">
+          <div className="p-6 font-mono text-[0.78rem] leading-relaxed space-y-1.5">
             <div className="flex items-center justify-between">
               <span className="text-[#64748B]">{"// 2026 engineer stack & state"}</span>
               <span className="text-[0.6rem] px-2 py-0.5 rounded-full bg-[#14172B] text-[#4F8EFF] border border-[#1E223D]">
@@ -239,9 +293,9 @@ export default durgesh;`;
 
         {/* Tab 2: Interactive Terminal */}
         {activeTab === "terminal" && (
-          <div className="p-5 font-mono text-[0.72rem] leading-relaxed space-y-3 min-h-[220px] flex flex-col justify-between">
-            <div className="space-y-1.5">
-              <div className="text-[#64748B] text-[0.68rem]">
+          <div className="p-6 font-mono text-[0.78rem] leading-relaxed space-y-3.5 min-h-[250px] flex flex-col justify-between">
+            <div className="space-y-2">
+              <div className="text-[#64748B] text-[0.72rem]">
                 Durgesh CLI v2.4 (darwin-arm64) — Interactive session
               </div>
               {outputLogs.map((log, i) => (
@@ -256,12 +310,12 @@ export default durgesh;`;
 
             {/* Quick action buttons */}
             <div className="pt-3 border-t border-[#1A1D33] flex flex-wrap gap-2">
-              <span className="text-[#475569] text-[0.65rem] self-center mr-1">Quick run:</span>
+              <span className="text-[#475569] text-[0.68rem] self-center mr-1">Quick run:</span>
               <button
                 type="button"
                 disabled={executing}
                 onClick={() => runCommand("pnpm run test")}
-                className="px-2 py-1 rounded bg-[#14172B] hover:bg-[#1E223D] border border-[#1E223D] text-[#93C5FD] text-[0.65rem] transition-colors active:scale-95"
+                className="px-2.5 py-1 rounded bg-[#14172B] hover:bg-[#1E223D] border border-[#1E223D] text-[#93C5FD] text-[0.68rem] transition-colors active:scale-95"
               >
                 test:all
               </button>
@@ -269,7 +323,7 @@ export default durgesh;`;
                 type="button"
                 disabled={executing}
                 onClick={() => runCommand("git status")}
-                className="px-2 py-1 rounded bg-[#14172B] hover:bg-[#1E223D] border border-[#1E223D] text-[#93C5FD] text-[0.65rem] transition-colors active:scale-95"
+                className="px-2.5 py-1 rounded bg-[#14172B] hover:bg-[#1E223D] border border-[#1E223D] text-[#93C5FD] text-[0.68rem] transition-colors active:scale-95"
               >
                 git:status
               </button>
@@ -277,7 +331,7 @@ export default durgesh;`;
                 type="button"
                 disabled={executing}
                 onClick={() => runCommand("system.health()")}
-                className="px-2 py-1 rounded bg-[#14172B] hover:bg-[#1E223D] border border-[#1E223D] text-[#93C5FD] text-[0.65rem] transition-colors active:scale-95"
+                className="px-2.5 py-1 rounded bg-[#14172B] hover:bg-[#1E223D] border border-[#1E223D] text-[#93C5FD] text-[0.68rem] transition-colors active:scale-95"
               >
                 health
               </button>
@@ -287,29 +341,29 @@ export default durgesh;`;
 
         {/* Tab 3: Live Telemetry */}
         {activeTab === "telemetry" && (
-          <div className="p-5 font-mono text-[0.72rem] leading-relaxed space-y-3 min-h-[220px]">
-            <div className="text-[#64748B] text-[0.68rem]">Telemetry sync: Quantum uplink active</div>
+          <div className="p-6 font-mono text-[0.78rem] leading-relaxed space-y-3.5 min-h-[250px]">
+            <div className="text-[#64748B] text-[0.72rem]">Telemetry sync: Quantum uplink active</div>
             
-            <div className="grid grid-cols-2 gap-3 pt-1">
-              <div className="p-2.5 rounded-lg bg-[#14172B]/60 border border-[#1E223D]">
-                <div className="text-[0.6rem] text-[#64748B] uppercase tracking-wider">Ping Latency</div>
-                <div className="text-sm font-bold text-[#38BDF8] mt-0.5">1.2 ms</div>
+            <div className="grid grid-cols-2 gap-3.5 pt-1">
+              <div className="p-3 rounded-lg bg-[#14172B]/60 border border-[#1E223D]">
+                <div className="text-[0.65rem] text-[#64748B] uppercase tracking-wider">Ping Latency</div>
+                <div className="text-base font-bold text-[#38BDF8] mt-0.5">1.2 ms</div>
               </div>
-              <div className="p-2.5 rounded-lg bg-[#14172B]/60 border border-[#1E223D]">
-                <div className="text-[0.6rem] text-[#64748B] uppercase tracking-wider">Uptime Rate</div>
-                <div className="text-sm font-bold text-[#28C840] mt-0.5">99.98%</div>
+              <div className="p-3 rounded-lg bg-[#14172B]/60 border border-[#1E223D]">
+                <div className="text-[0.65rem] text-[#64748B] uppercase tracking-wider">Uptime Rate</div>
+                <div className="text-base font-bold text-[#28C840] mt-0.5">99.98%</div>
               </div>
-              <div className="p-2.5 rounded-lg bg-[#14172B]/60 border border-[#1E223D]">
-                <div className="text-[0.6rem] text-[#64748B] uppercase tracking-wider">Active Runtime</div>
-                <div className="text-sm font-bold text-[#F0F4FF] mt-0.5">WebGL + React 19</div>
+              <div className="p-3 rounded-lg bg-[#14172B]/60 border border-[#1E223D]">
+                <div className="text-[0.65rem] text-[#64748B] uppercase tracking-wider">Active Runtime</div>
+                <div className="text-base font-bold text-[#F0F4FF] mt-0.5">WebGL + React 19</div>
               </div>
-              <div className="p-2.5 rounded-lg bg-[#14172B]/60 border border-[#1E223D]">
-                <div className="text-[0.6rem] text-[#64748B] uppercase tracking-wider">Matrix Grid</div>
-                <div className="text-sm font-bold text-[#818CF8] mt-0.5">Synced</div>
+              <div className="p-3 rounded-lg bg-[#14172B]/60 border border-[#1E223D]">
+                <div className="text-[0.65rem] text-[#64748B] uppercase tracking-wider">Matrix Grid</div>
+                <div className="text-base font-bold text-[#818CF8] mt-0.5">Synced</div>
               </div>
             </div>
 
-            <div className="flex items-center gap-2 pt-2 text-[#64748B] text-[0.65rem]">
+            <div className="flex items-center gap-2 pt-2 text-[#64748B] text-[0.7rem]">
               <span className="w-1.5 h-1.5 rounded-full bg-[#28C840] animate-ping" />
               <span>Telemetry streaming real-time metrics</span>
             </div>
@@ -317,19 +371,19 @@ export default durgesh;`;
         )}
 
         {/* Interactive Bottom Stat Bar */}
-        <div className="border-t border-[#1A1D33] px-5 py-3 flex items-center justify-between bg-[#080810]/80">
-          <div className="flex items-center gap-6">
+        <div className="border-t border-[#1A1D33] px-6 py-3.5 flex items-center justify-between bg-[#080810]/80">
+          <div className="flex items-center gap-7">
             {[
               { label: "Projects", value: "5" },
               { label: "Domains",  value: "3" },
               { label: "Status",   value: "Open" },
             ].map(({ label, value }) => (
               <div key={label} className="flex items-center gap-2">
-                <span className="text-[#475569] text-[0.6rem] uppercase tracking-widest font-mono">
+                <span className="text-[#475569] text-[0.65rem] uppercase tracking-widest font-mono">
                   {label}
                 </span>
                 <span
-                  className="text-[0.65rem] font-mono font-bold"
+                  className="text-[0.72rem] font-mono font-bold"
                   style={{ color: value === "Open" ? "#4F8EFF" : "#F0F4FF" }}
                 >
                   {value}
@@ -338,7 +392,7 @@ export default durgesh;`;
             ))}
           </div>
 
-          <div className="flex items-center gap-1.5 text-[0.62rem] font-mono text-[#64748B]">
+          <div className="flex items-center gap-2 text-[0.68rem] font-mono text-[#64748B]">
             <span className="w-1.5 h-1.5 rounded-full bg-[#4F8EFF] animate-pulse" />
             <span>Interactive Node</span>
           </div>

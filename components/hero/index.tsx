@@ -141,7 +141,7 @@ export default function HeroSection() {
       </div>
 
       <div className="section-container relative z-10 w-full pointer-events-none">
-        <div className="grid grid-cols-1 lg:grid-cols-[1fr_420px] xl:grid-cols-[1fr_480px] gap-12 lg:gap-16 items-center">
+        <div className="grid grid-cols-1 lg:grid-cols-[1fr_490px] xl:grid-cols-[1fr_560px] 2xl:grid-cols-[1fr_600px] gap-10 lg:gap-14 items-center">
 
           {/* Left Column — Identity & Actions */}
           <div ref={leftRef} style={{ opacity: 0 }} className="pointer-events-auto">
@@ -151,7 +151,7 @@ export default function HeroSection() {
             >
               Durgesh
               <br />
-              <span className="text-hollow-accent">Kanzariya</span>
+              <span className="text-[#4F8EFF]">Kanzariya</span>
             </h1>
 
             <p className="text-[#94A3B8] text-lg md:text-xl font-jakarta font-normal max-w-md mb-4 leading-relaxed">
