@@ -19,7 +19,7 @@
       }
     ],
     "paths": {
-      "@/*": ["./*"],
+      "@/*": ["./src/*"],
       "@designcodeio/threeui": ["./src/shaders/laser/LaserCollection.tsx"],
       "@designcodeio/threeui/style.css": ["./src/shaders/threeui.css"]
     }
