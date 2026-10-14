@@ -6,6 +6,7 @@ import { GithubIcon } from "@/components/BrandIcons";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import HeroVisual from "./HeroVisual";
+import MagneticHeading from "./MagneticHeading";
 import { LaserCollection } from "@designcodeio/threeui";
 import "@designcodeio/threeui/style.css";
 
@@ -145,14 +146,7 @@ export default function HeroSection() {
 
           {/* Left Column — Identity & Actions */}
           <div ref={leftRef} style={{ opacity: 0 }} className="pointer-events-auto">
-            <h1
-              className="font-syne font-extrabold text-[#F0F4FF] mb-5 leading-[0.92] tracking-tight"
-              style={{ fontSize: "clamp(2.5rem, 4.5vw, 5rem)" }}
-            >
-              Durgesh
-              <br />
-              <span className="text-[#4F8EFF]">Kanzariya</span>
-            </h1>
+            <MagneticHeading />
 
             <p className="text-[#94A3B8] text-lg md:text-xl font-jakarta font-normal max-w-md mb-4 leading-relaxed">
               Engineer by craft. Builder by passion.
