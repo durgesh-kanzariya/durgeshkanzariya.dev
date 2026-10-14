@@ -15,4 +15,6 @@ interface LenisInstance {
 
 interface Window {
   lenis?: LenisInstance;
+  __preloaderDone?: boolean;
+  __preloaderLifting?: boolean;
 }

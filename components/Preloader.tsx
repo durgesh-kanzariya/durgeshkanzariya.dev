@@ -90,6 +90,10 @@ export default function Preloader({ onComplete }: PreloaderProps) {
         // Complete! Hold briefly at 100%, then slide up curtain with power4.inOut
         setTimeout(() => {
           if (!containerRef.current) return;
+          if (typeof window !== "undefined") {
+            window.__preloaderLifting = true;
+            window.dispatchEvent(new CustomEvent("preloader-lifting"));
+          }
           gsap.to(containerRef.current, {
             yPercent: -100,
             duration: 0.95,
@@ -97,6 +101,10 @@ export default function Preloader({ onComplete }: PreloaderProps) {
             onComplete: () => {
               document.body.style.overflow = originalOverflow;
               setIsDone(true);
+              if (typeof window !== "undefined") {
+                window.__preloaderDone = true;
+                window.dispatchEvent(new CustomEvent("preloader-complete"));
+              }
               if (onComplete) onComplete();
             },
           });
