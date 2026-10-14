@@ -388,6 +388,22 @@ body {
 }
 
 /* ============================================================
+   TRACE EFFECT (BORDER BEAM)
+   ============================================================ */
+@keyframes borderTraceOrbit {
+  from {
+    stroke-dashoffset: 0;
+  }
+  to {
+    stroke-dashoffset: -100;
+  }
+}
+
+.animate-border-trace {
+  animation: borderTraceOrbit 3.5s linear infinite;
+}
+
+/* ============================================================
    GRID BACKGROUND DOT PATTERN
    ============================================================ */
 .dot-grid {
