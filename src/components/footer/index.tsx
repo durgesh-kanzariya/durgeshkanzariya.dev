@@ -7,6 +7,7 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { SOCIAL_CHANNELS } from "./footerData";
 import SocialLinkCard from "./SocialLinkCard";
 import FooterBottomBar from "./FooterBottomBar";
+import MagneticText from "@/components/MagneticText";
 
 export default function FooterSection() {
   const sectionRef = useRef<HTMLElement>(null);
@@ -87,8 +88,11 @@ export default function FooterSection() {
           {/* Left Column — CTA */}
           <div>
             <div className="label-sm mb-8">Get in touch</div>
-            <h2
+            <MagneticText
+              as="h2"
               ref={ctaRef}
+              radius={85}
+              maxRepel={100}
               className="font-syne font-extrabold text-[#F0F4FF] mb-8 leading-[0.96] tracking-tight"
               style={{ fontSize: "clamp(2.2rem, 3.5vw, 3.75rem)" }}
             >
@@ -97,7 +101,7 @@ export default function FooterSection() {
               something
               <br />
               <span className="text-[#4F8EFF]">great.</span>
-            </h2>
+            </MagneticText>
 
             <div
               ref={bodyRef}

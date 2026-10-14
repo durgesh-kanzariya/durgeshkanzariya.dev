@@ -120,6 +120,106 @@ export default function Preloader({ onComplete }: PreloaderProps) {
     };
   }, [onComplete]);
 
+  const [charCoords, setCharCoords] = useState<{ x: number }[] | null>(null);
+  const measureTextRef = useRef<SVGTextElement>(null);
+  const charGroupsRef = useRef<(SVGGElement | null)[]>([]);
+  const charCentersRef = useRef<{ x: number; y: number }[]>([]);
+
+  useEffect(() => {
+    // Measure natural SVG character coordinates once font is loaded
+    const measure = () => {
+      if (measureTextRef.current) {
+        try {
+          const coords: { x: number }[] = [];
+          for (let i = 0; i < 7; i++) {
+            const pt = measureTextRef.current.getStartPositionOfChar(i);
+            coords.push({ x: pt.x });
+          }
+          if (coords.length === 7 && coords.every((c) => !isNaN(c.x))) {
+            setCharCoords(coords);
+          }
+        } catch {
+          // Fallback gracefully to standard text layout
+        }
+      }
+    };
+
+    const timer = setTimeout(measure, 60);
+    return () => clearTimeout(timer);
+  }, []);
+
+  const handleWordmarkMouseEnter = () => {
+    charCentersRef.current = charGroupsRef.current.map((el) => {
+      if (!el) return { x: 0, y: 0 };
+      const rect = el.getBoundingClientRect();
+      const currentX = (gsap.getProperty(el, "x") as number) || 0;
+      const currentY = (gsap.getProperty(el, "y") as number) || 0;
+      return {
+        x: rect.left + rect.width / 2 - currentX,
+        y: rect.top + rect.height / 2 - currentY,
+      };
+    });
+  };
+
+  const handleWordmarkMouseMove = (e: React.MouseEvent<SVGSVGElement>) => {
+    if (!charCentersRef.current.length) handleWordmarkMouseEnter();
+    const radius = 95;
+    const maxRepel = 100;
+
+    charGroupsRef.current.forEach((el, index) => {
+      if (!el) return;
+      const pos = charCentersRef.current[index];
+      if (!pos) return;
+
+      const dx = e.clientX - pos.x;
+      const dy = e.clientY - pos.y;
+      const dist = Math.hypot(dx, dy);
+
+      if (dist < radius && dist > 0) {
+        const nx = -dx / dist;
+        const ny = -dy / dist;
+        const power = Math.pow(1 - dist / radius, 1.4);
+        const force = power * maxRepel;
+
+        gsap.to(el, {
+          x: nx * force,
+          y: ny * force,
+          rotate: (dx / radius) * -14,
+          scale: 1.05,
+          duration: 0.22,
+          ease: "power2.out",
+          overwrite: "auto",
+        });
+      } else {
+        gsap.to(el, {
+          x: 0,
+          y: 0,
+          rotate: 0,
+          scale: 1,
+          duration: 0.75,
+          ease: "elastic.out(1.1, 0.35)",
+          overwrite: "auto",
+        });
+      }
+    });
+  };
+
+  const handleWordmarkMouseLeave = () => {
+    charGroupsRef.current.forEach((el) => {
+      if (!el) return;
+      gsap.to(el, {
+        x: 0,
+        y: 0,
+        rotate: 0,
+        scale: 1,
+        duration: 0.85,
+        ease: "elastic.out(1.2, 0.35)",
+        overwrite: "auto",
+      });
+    });
+    charCentersRef.current = [];
+  };
+
   if (isDone) return null;
 
   return (
@@ -140,7 +240,10 @@ export default function Preloader({ onComplete }: PreloaderProps) {
         {/* SVG Container holding wave clip-paths and 3 text layers */}
         <svg
           viewBox="0 0 1000 240"
-          className="w-full h-auto overflow-visible"
+          onMouseEnter={handleWordmarkMouseEnter}
+          onMouseMove={handleWordmarkMouseMove}
+          onMouseLeave={handleWordmarkMouseLeave}
+          className="w-full h-auto overflow-visible cursor-default select-none"
           preserveAspectRatio="xMidYMid meet"
         >
           <defs>
@@ -152,8 +255,9 @@ export default function Preloader({ onComplete }: PreloaderProps) {
             </clipPath>
           </defs>
 
-          {/* Layer 1: Background Unfilled Text (Muted Slate Gray #272A34) */}
+          {/* Hidden reference text to calculate exact character coordinates */}
           <text
+            ref={measureTextRef}
             x="50%"
             y="55%"
             textAnchor="middle"
@@ -163,47 +267,127 @@ export default function Preloader({ onComplete }: PreloaderProps) {
               fontWeight: 800,
               fontSize: "clamp(85px, 15vw, 160px)",
               letterSpacing: "-0.04em",
-              fill: "#282B37",
+              opacity: 0,
+              pointerEvents: "none",
             }}
           >
             Durgesh
           </text>
 
-          {/* Layer 2: Back Wave (Translucent white liquid crest peeking out behind front wave) */}
-          <text
-            x="50%"
-            y="55%"
-            textAnchor="middle"
-            dominantBaseline="central"
-            clipPath="url(#waveClipBack)"
-            style={{
-              fontFamily: "var(--font-syne), 'Syne', sans-serif",
-              fontWeight: 800,
-              fontSize: "clamp(85px, 15vw, 160px)",
-              letterSpacing: "-0.04em",
-              fill: "rgba(255, 255, 255, 0.28)",
-            }}
-          >
-            Durgesh
-          </text>
+          {/* Render individual magnetic characters once measured */}
+          {charCoords ? (
+            "Durgesh".split("").map((char, i) => (
+              <g
+                key={i}
+                ref={(el) => {
+                  charGroupsRef.current[i] = el;
+                }}
+                className="will-change-transform"
+                style={{ transformBox: "fill-box", transformOrigin: "center center" }}
+              >
+                {/* Layer 1: Background Unfilled Text */}
+                <text
+                  x={charCoords[i].x}
+                  y="55%"
+                  dominantBaseline="central"
+                  style={{
+                    fontFamily: "var(--font-syne), 'Syne', sans-serif",
+                    fontWeight: 800,
+                    fontSize: "clamp(85px, 15vw, 160px)",
+                    letterSpacing: "-0.04em",
+                    fill: "#282B37",
+                  }}
+                >
+                  {char}
+                </text>
 
-          {/* Layer 3: Front Wave (Solid Pure White Liquid) */}
-          <text
-            x="50%"
-            y="55%"
-            textAnchor="middle"
-            dominantBaseline="central"
-            clipPath="url(#waveClipFront)"
-            style={{
-              fontFamily: "var(--font-syne), 'Syne', sans-serif",
-              fontWeight: 800,
-              fontSize: "clamp(85px, 15vw, 160px)",
-              letterSpacing: "-0.04em",
-              fill: "#FFFFFF",
-            }}
-          >
-            Durgesh
-          </text>
+                {/* Layer 2: Back Wave */}
+                <text
+                  x={charCoords[i].x}
+                  y="55%"
+                  dominantBaseline="central"
+                  clipPath="url(#waveClipBack)"
+                  style={{
+                    fontFamily: "var(--font-syne), 'Syne', sans-serif",
+                    fontWeight: 800,
+                    fontSize: "clamp(85px, 15vw, 160px)",
+                    letterSpacing: "-0.04em",
+                    fill: "rgba(255, 255, 255, 0.28)",
+                  }}
+                >
+                  {char}
+                </text>
+
+                {/* Layer 3: Front Wave */}
+                <text
+                  x={charCoords[i].x}
+                  y="55%"
+                  dominantBaseline="central"
+                  clipPath="url(#waveClipFront)"
+                  style={{
+                    fontFamily: "var(--font-syne), 'Syne', sans-serif",
+                    fontWeight: 800,
+                    fontSize: "clamp(85px, 15vw, 160px)",
+                    letterSpacing: "-0.04em",
+                    fill: "#FFFFFF",
+                  }}
+                >
+                  {char}
+                </text>
+              </g>
+            ))
+          ) : (
+            <>
+              {/* Fallback while font is loading */}
+              <text
+                x="50%"
+                y="55%"
+                textAnchor="middle"
+                dominantBaseline="central"
+                style={{
+                  fontFamily: "var(--font-syne), 'Syne', sans-serif",
+                  fontWeight: 800,
+                  fontSize: "clamp(85px, 15vw, 160px)",
+                  letterSpacing: "-0.04em",
+                  fill: "#282B37",
+                }}
+              >
+                Durgesh
+              </text>
+              <text
+                x="50%"
+                y="55%"
+                textAnchor="middle"
+                dominantBaseline="central"
+                clipPath="url(#waveClipBack)"
+                style={{
+                  fontFamily: "var(--font-syne), 'Syne', sans-serif",
+                  fontWeight: 800,
+                  fontSize: "clamp(85px, 15vw, 160px)",
+                  letterSpacing: "-0.04em",
+                  fill: "rgba(255, 255, 255, 0.28)",
+                }}
+              >
+                Durgesh
+              </text>
+              <text
+                x="50%"
+                y="55%"
+                textAnchor="middle"
+                dominantBaseline="central"
+                clipPath="url(#waveClipFront)"
+                style={{
+                  fontFamily: "var(--font-syne), 'Syne', sans-serif",
+                  fontWeight: 800,
+                  fontSize: "clamp(85px, 15vw, 160px)",
+                  letterSpacing: "-0.04em",
+                  fill: "#FFFFFF",
+                }}
+              >
+                Durgesh
+              </text>
+            </>
+          )}
         </svg>
 
         {/* Bottom Right Percentage Counter (Matching NeoLeaf style: "loading... XX %") */}

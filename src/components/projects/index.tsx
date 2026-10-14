@@ -6,6 +6,7 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { FEATURED_PROJECTS, GRID_PROJECTS } from "@/data/projectsData";
 import FeaturedProjectRow from "./FeaturedProjectRow";
 import GridProjectCard from "./GridProjectCard";
+import MagneticText from "@/components/MagneticText";
 
 export default function ProjectsSection() {
   const sectionRef = useRef<HTMLElement>(null);
@@ -40,10 +41,15 @@ export default function ProjectsSection() {
 
         {/* Section header */}
         <div ref={headingRef} className="mb-20" style={{ opacity: 0 }}>
-          <h2 className="display-lg text-[#F0F4FF] mb-6">
+          <MagneticText
+            as="h2"
+            radius={85}
+            maxRepel={100}
+            className="display-lg text-[#F0F4FF] mb-6"
+          >
             Things I&apos;ve{" "}
             <span className="text-[#4F8EFF]">built.</span>
-          </h2>
+          </MagneticText>
           <p className="text-[#94A3B8] max-w-lg text-base leading-relaxed">
             From AI routing engines to Flutter mobile apps to ML models — a snapshot of
             what I&apos;ve shipped across domains.

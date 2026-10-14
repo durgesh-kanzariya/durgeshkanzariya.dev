@@ -10,6 +10,7 @@ import Navbar from "@/components/Navbar";
 import FooterSection from "@/components/footer";
 import { PROJECTS_MAP } from "@/data/projectsData";
 import { DOMAIN_COLORS } from "@/components/projects/domainColors";
+import MagneticText from "@/components/MagneticText";
 
 interface PageProps {
   params: Promise<{ slug: string }>;
@@ -70,7 +71,14 @@ export default function ProjectCaseStudyPage({ params }: PageProps) {
             </div>
 
             {/* Title */}
-            <h1 className="display-xl text-[#F0F0F8] leading-[0.9]">{project.title}</h1>
+            <MagneticText
+              as="h1"
+              radius={85}
+              maxRepel={100}
+              className="display-xl text-[#F0F0F8] leading-[0.9]"
+            >
+              {project.title}
+            </MagneticText>
             <p className="heading-sm text-[#6B7280] font-normal">{project.subtitle}</p>
 
             {/* Metadata grid */}

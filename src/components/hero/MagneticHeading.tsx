@@ -34,7 +34,7 @@ export default function MagneticHeading() {
     if (!letterPositions.current.length) handleMouseEnter();
 
     const radius = 85; // Proximity threshold in pixels
-    const maxRepel = 32; // Maximum pixel displacement per character
+    const maxRepel = 100; // Maximum pixel displacement per character
 
     letterRefs.current.forEach((el, index) => {
       if (!el) return;

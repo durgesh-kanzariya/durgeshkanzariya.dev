@@ -6,6 +6,7 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { SKILL_CATEGORIES } from "./skillsData";
 import SkillCategoryCard from "./SkillCategoryCard";
 import SkillMarquee from "./SkillMarquee";
+import MagneticText from "@/components/MagneticText";
 
 export default function SkillsSection() {
   const sectionRef = useRef<HTMLElement>(null);
@@ -57,9 +58,14 @@ export default function SkillsSection() {
       <div className="section-container">
         {/* Section header */}
         <div ref={headingRef} className="mb-16" style={{ opacity: 0 }}>
-          <h2 className="display-lg text-[#F0F4FF] mb-6">
+          <MagneticText
+            as="h2"
+            radius={85}
+            maxRepel={100}
+            className="display-lg text-[#F0F4FF] mb-6"
+          >
             What I <span className="text-[#4F8EFF]">work with.</span>
-          </h2>
+          </MagneticText>
           <p className="text-[#94A3B8] max-w-lg text-base leading-relaxed">
             A curated stack across full-stack web, mobile, and machine learning — tools
             I&apos;ve shipped real production projects with.

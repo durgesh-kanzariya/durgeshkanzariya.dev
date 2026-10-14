@@ -7,6 +7,7 @@ import { ABOUT_HIGHLIGHTS } from "./aboutData";
 import AboutBio from "./AboutBio";
 import AboutHighlightItem from "./AboutHighlightItem";
 import UniversityCard from "./UniversityCard";
+import MagneticText from "@/components/MagneticText";
 
 export default function AboutSection() {
   const sectionRef = useRef<HTMLElement>(null);
@@ -75,13 +76,16 @@ export default function AboutSection() {
           <div className="flex flex-col justify-center">
             <div className="label-sm mb-6">About Me</div>
 
-            <h2
+            <MagneticText
+              as="h2"
               ref={headingRef}
+              radius={85}
+              maxRepel={100}
               className="font-syne font-extrabold text-[#F0F4FF] text-3xl sm:text-4xl lg:text-[2.65rem] leading-[1.14] tracking-tight mb-8"
             >
               IT engineer who doesn&apos;t just study technology —{" "}
               <span className="text-[#4F8EFF] whitespace-nowrap">ships it.</span>
-            </h2>
+            </MagneticText>
 
             <AboutBio ref={bodyRef} />
           </div>
