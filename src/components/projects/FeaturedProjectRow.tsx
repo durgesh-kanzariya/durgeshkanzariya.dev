@@ -23,6 +23,8 @@ export default function FeaturedProjectRow({ project, index }: FeaturedProjectRo
   const domainColor = DOMAIN_COLORS[project.domain];
 
   useEffect(() => {
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+
     gsap.registerPlugin(ScrollTrigger);
     const ctx = gsap.context(() => {
       const tl = gsap.timeline({
@@ -58,7 +60,6 @@ export default function FeaturedProjectRow({ project, index }: FeaturedProjectRo
       <div
         ref={imageRef}
         className={isEven ? "lg:order-1" : "lg:order-2"}
-        style={{ opacity: 0 }}
       >
         <ProjectImage project={project} />
       </div>
@@ -67,7 +68,6 @@ export default function FeaturedProjectRow({ project, index }: FeaturedProjectRo
       <div
         ref={contentRef}
         className={isEven ? "lg:order-2" : "lg:order-1"}
-        style={{ opacity: 0 }}
       >
         {/* Project number + domain */}
         <div className="flex items-center gap-3 mb-4">

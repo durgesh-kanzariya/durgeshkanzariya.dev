@@ -14,15 +14,59 @@ export default function Preloader({ onComplete }: PreloaderProps) {
   const frontPathRef = useRef<SVGPathElement>(null);
   const backPathRef = useRef<SVGPathElement>(null);
   const animFrameRef = useRef<number | null>(null);
+  const skipRef = useRef<() => void>(() => {});
+  const skipButtonRef = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
+    // If preloader was already seen in this session or reduced motion is preferred, bypass immediately
+    let hasSeen = false;
+    try {
+      hasSeen = sessionStorage.getItem("portfolio_preloader_seen") === "1";
+    } catch {
+      // Storage may be unavailable in private browsing or restricted contexts.
+    }
+    const prefersReducedMotion =
+      typeof window !== "undefined" &&
+      window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    const focusMainContent = () => {
+      requestAnimationFrame(() => {
+        document.querySelector<HTMLElement>("main")?.focus();
+      });
+    };
+
+    const markSeen = () => {
+      try {
+        sessionStorage.setItem("portfolio_preloader_seen", "1");
+      } catch {
+        // The intro still completes when browser storage is unavailable.
+      }
+    };
+
+    const completeImmediately = () => {
+      setIsDone(true);
+      if (typeof window !== "undefined") {
+        window.__preloaderLifting = true;
+        window.__preloaderDone = true;
+        window.dispatchEvent(new CustomEvent("preloader-lifting"));
+        window.dispatchEvent(new CustomEvent("preloader-complete"));
+      }
+      if (onComplete) onComplete();
+      focusMainContent();
+    };
+
+    if (hasSeen || prefersReducedMotion) {
+      completeImmediately();
+      return;
+    }
+
     // Lock body scrolling while preloader is active
     const originalOverflow = document.body.style.overflow;
     document.body.style.overflow = "hidden";
 
     let phase = 0;
     const startTime = performance.now();
-    const duration = 2300; // 2.3s smooth, organic loading duration
+    const duration = 900; // Short intro that leaves the portfolio available quickly
 
     const updateWaves = (prog: number, currentPhase: number) => {
       // Extend coordinates well beyond text boundaries (-200 to 1300) so 'D' and 'h' never get clipped
@@ -72,6 +116,69 @@ export default function Preloader({ onComplete }: PreloaderProps) {
       if (backPathRef.current) backPathRef.current.setAttribute("d", dBack);
     };
 
+    const handleSkip = () => {
+      if (animFrameRef.current) cancelAnimationFrame(animFrameRef.current);
+      markSeen();
+      if (containerRef.current) {
+        if (typeof window !== "undefined") {
+          window.__preloaderLifting = true;
+          window.dispatchEvent(new CustomEvent("preloader-lifting"));
+        }
+        gsap.to(containerRef.current, {
+          yPercent: -100,
+          duration: 0.5,
+          ease: "power3.inOut",
+          onComplete: () => {
+            document.body.style.overflow = originalOverflow;
+            setIsDone(true);
+            if (typeof window !== "undefined") {
+              window.__preloaderDone = true;
+              window.dispatchEvent(new CustomEvent("preloader-complete"));
+            }
+            if (onComplete) onComplete();
+            focusMainContent();
+          },
+        });
+      } else {
+        document.body.style.overflow = originalOverflow;
+        completeImmediately();
+      }
+    };
+    skipRef.current = handleSkip;
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        e.preventDefault();
+        handleSkip();
+        return;
+      }
+
+      if (e.key === "Tab") {
+        const focusable = containerRef.current?.querySelectorAll<HTMLElement>(
+          'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+        );
+        if (!focusable?.length) {
+          e.preventDefault();
+          return;
+        }
+
+        const first = focusable[0];
+        const last = focusable[focusable.length - 1];
+        if (!containerRef.current?.contains(document.activeElement)) {
+          e.preventDefault();
+          first.focus();
+        } else if (e.shiftKey && document.activeElement === first) {
+          e.preventDefault();
+          last.focus();
+        } else if (!e.shiftKey && document.activeElement === last) {
+          e.preventDefault();
+          first.focus();
+        }
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    const focusFrame = requestAnimationFrame(() => skipButtonRef.current?.focus());
+
     const tick = (now: number) => {
       const elapsed = now - startTime;
       const t = Math.min(elapsed / duration, 1);
@@ -87,7 +194,8 @@ export default function Preloader({ onComplete }: PreloaderProps) {
       if (t < 1) {
         animFrameRef.current = requestAnimationFrame(tick);
       } else {
-        // Complete! Hold briefly at 100%, then slide up curtain with power4.inOut
+        // Hold briefly at 100%, then reveal the portfolio.
+        markSeen();
         setTimeout(() => {
           if (!containerRef.current) return;
           if (typeof window !== "undefined") {
@@ -96,7 +204,7 @@ export default function Preloader({ onComplete }: PreloaderProps) {
           }
           gsap.to(containerRef.current, {
             yPercent: -100,
-            duration: 0.95,
+            duration: 0.45,
             ease: "power4.inOut",
             onComplete: () => {
               document.body.style.overflow = originalOverflow;
@@ -106,15 +214,18 @@ export default function Preloader({ onComplete }: PreloaderProps) {
                 window.dispatchEvent(new CustomEvent("preloader-complete"));
               }
               if (onComplete) onComplete();
+              focusMainContent();
             },
           });
-        }, 240);
+        }, 80);
       }
     };
 
     animFrameRef.current = requestAnimationFrame(tick);
 
     return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+      cancelAnimationFrame(focusFrame);
       if (animFrameRef.current) cancelAnimationFrame(animFrameRef.current);
       document.body.style.overflow = originalOverflow;
     };
@@ -225,9 +336,24 @@ export default function Preloader({ onComplete }: PreloaderProps) {
   return (
     <div
       ref={containerRef}
+      role="dialog"
+      aria-modal="true"
+      aria-label="Portfolio introduction"
       className="fixed inset-0 z-[999990] bg-[#0E0F12] flex flex-col items-center justify-center select-none overflow-hidden"
       style={{ touchAction: "none" }}
     >
+      {/* Skip Button for instant access */}
+      <button
+        ref={skipButtonRef}
+        type="button"
+        onClick={() => skipRef.current()}
+        className="absolute top-6 right-6 z-20 px-3.5 py-1.5 rounded-full text-xs font-mono text-[#94A3B8] hover:text-[#F0F0F8] bg-white/[0.06] hover:bg-white/[0.12] border border-white/10 transition-colors pointer-events-auto flex items-center gap-1.5 focus-visible:outline-2 focus-visible:outline-white"
+        aria-label="Skip introduction animation"
+      >
+        <span>Skip</span>
+        <span className="text-[10px] text-[#64748B] font-mono tracking-wider">[Esc]</span>
+      </button>
+
       {/* Centered Liquid Wordmark & Indicator */}
       <div className="relative w-[92vw] max-w-5xl px-4 flex flex-col items-center">
         
@@ -392,8 +518,15 @@ export default function Preloader({ onComplete }: PreloaderProps) {
 
         {/* Bottom Right Percentage Counter (Matching NeoLeaf style: "loading... XX %") */}
         <div className="w-full flex justify-end pr-3 md:pr-10 mt-1">
-          <span className="font-mono text-xs md:text-sm text-[#A0AEC0] tracking-wide select-none">
-            loading... {progress} %
+          <span
+            role="progressbar"
+            aria-label="Portfolio introduction"
+            aria-valuemin={0}
+            aria-valuemax={100}
+            aria-valuenow={progress}
+            className="font-mono text-xs md:text-sm text-[#A0AEC0] tracking-wide select-none"
+          >
+            intro... {progress}%
           </span>
         </div>
       </div>

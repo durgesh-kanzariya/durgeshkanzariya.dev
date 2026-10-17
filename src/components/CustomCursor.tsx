@@ -15,7 +15,12 @@ export default function CustomCursor() {
   const cursorHeadRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    if (typeof window !== "undefined" && window.matchMedia("(hover: none) and (pointer: coarse)").matches) {
+    if (typeof window === "undefined") return;
+
+    // Respect reduced motion preference and touch devices
+    const isTouch = window.matchMedia("(hover: none) and (pointer: coarse)").matches;
+    const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (isTouch || prefersReducedMotion) {
       return;
     }
 
@@ -24,7 +29,10 @@ export default function CustomCursor() {
     const ctx = canvas.getContext("2d", { alpha: true });
     if (!ctx) return;
 
-    let animationFrameId: number;
+    // Activate custom cursor styling safely on body
+    document.body.classList.add("custom-cursor-active");
+
+    let animationFrameId: number | null = null;
     let isHovering = false;
     let isMagnetic = false;
     let isMoving = false;
@@ -60,6 +68,7 @@ export default function CustomCursor() {
       mousePos.y = e.clientY;
       isMoving = true;
       globalOpacity = 1.0;
+      requestRender();
 
       // Position main cursor head INSTANTLY without CSS transition lag
       if (cursorHeadRef.current) {
@@ -137,9 +146,12 @@ export default function CustomCursor() {
 
     window.addEventListener("mousemove", handleMouseMove, { passive: true });
 
-    // 60 FPS Canvas Render Loop
-    const render = () => {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
+    // Draw only while the pointer moves or its trail is fading out.
+    function render() {
+      animationFrameId = null;
+      const currentCanvas = canvasRef.current;
+      if (!ctx || !currentCanvas) return;
+      ctx.clearRect(0, 0, currentCanvas.width, currentCanvas.height);
 
       if (!isMoving && trailPoints.length > 0) {
         // Fade entire trail array out together simultaneously
@@ -163,17 +175,24 @@ export default function CustomCursor() {
         }
       }
 
-      animationFrameId = requestAnimationFrame(render);
-    };
+      if (isMoving || trailPoints.length > 0) {
+        animationFrameId = requestAnimationFrame(render);
+      }
+    }
 
-    render();
+    function requestRender() {
+      if (animationFrameId === null) {
+        animationFrameId = requestAnimationFrame(render);
+      }
+    }
 
     return () => {
+      document.body.classList.remove("custom-cursor-active");
       if (idleTimer) clearTimeout(idleTimer);
       window.removeEventListener("resize", handleResize);
       window.removeEventListener("mouseleave", handleMouseLeaveWindow);
       window.removeEventListener("mousemove", handleMouseMove);
-      cancelAnimationFrame(animationFrameId);
+      if (animationFrameId !== null) cancelAnimationFrame(animationFrameId);
     };
   }, []);
 

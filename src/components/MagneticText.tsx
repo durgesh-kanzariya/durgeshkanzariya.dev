@@ -57,6 +57,7 @@ export const MagneticText = forwardRef<HTMLElement, MagneticTextProps>(
     };
 
     const handleMouseMove = (e: MouseEvent<HTMLElement>) => {
+      if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
       if (!letterPositions.current.length) handleMouseEnter();
 
       letterRefs.current.forEach((el, index) => {
@@ -106,6 +107,10 @@ export const MagneticText = forwardRef<HTMLElement, MagneticTextProps>(
     };
 
     const handleMouseLeave = () => {
+      if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+        letterPositions.current = [];
+        return;
+      }
       letterRefs.current.forEach((el) => {
         if (!el) return;
         gsap.to(el, {

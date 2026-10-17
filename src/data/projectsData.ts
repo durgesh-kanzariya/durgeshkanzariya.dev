@@ -37,7 +37,7 @@ export const PROJECTS: ProjectData[] = [
     stack: "FastAPI · Python · React + Vite · Groq LLM · ModernBERT",
     role: "Full-Stack AI Engineer",
     year: "2026",
-    image: "/images/conduit_cover.png",
+    image: "/images/conduit_cover.webp",
     overview:
       "Conduit is a high-performance decision routing system that classifies and triages unstructured payloads in real-time using a two-layer AI stack: a lightweight local ModernBERT router (Laya) for zero-cost on-device inference, and Groq-hosted llama-3.3-70b for complex reasoning.",
     problem:
@@ -46,14 +46,14 @@ export const PROJECTS: ProjectData[] = [
       "FastAPI backend with async request handling. Input sanitization via BeautifulSoup4. Dual-model routing: ModernBERT for cheap local classification, Groq LLM for full reasoning. Pydantic v2 enforces strict JSON schema on every response. React + Vite enterprise dashboard for real-time triage visualization.",
     tags: ["FastAPI", "Python", "React", "Vite", "Groq", "ModernBERT", "Pydantic v2"],
     metrics: [
-      { label: "Routing Engine", value: "Dual-Model AI" },
-      { label: "LLM Backend", value: "Groq llama-3.3-70b" },
-      { label: "Response Latency", value: "~800ms" },
-      { label: "Confidence Tiers", value: "4-Level Calibration" },
+      { label: "Routing Engine", value: "Dual-Model (ModernBERT + Groq)" },
+      { label: "LLM Reasoning", value: "llama-3.3-70b-versatile" },
+      { label: "Response Latency", value: "~780ms API / <15ms Local" },
+      { label: "Confidence Tiers", value: "4-Level SLA Triage (P0–P3)" },
     ],
     highlights: [
       "Zero-crash architecture — graceful fallback on API timeout or parse failure.",
-      "Confidence < 0.5 automatically escalates to human review.",
+      "Confidence < 0.5 automatically escalates to human review queue.",
       "ModernBERT handles privacy-sensitive payloads entirely on-device.",
     ],
     liveUrl: "https://conduit.durgeshkanzariya.dev",
@@ -73,7 +73,7 @@ export const PROJECTS: ProjectData[] = [
     stack: "Flutter · Dart · Riverpod · Firebase · Cloudinary CDN",
     role: "Flutter & Firebase Engineer",
     year: "2026",
-    image: "/images/dukan_sathi_cover.png",
+    image: "/images/dukan_sathi_cover.webp",
     overview:
       "Dukan Sathi is an enterprise-grade Flutter mobile application connecting local neighborhood shops with customers via pre-ordering, real-time inventory, QR code handover verification, and financial profit analytics.",
     problem:
@@ -82,10 +82,10 @@ export const PROJECTS: ProjectData[] = [
       "Clean Architecture with Riverpod for state management. Firebase Firestore for real-time data with atomic read-before-write transactions on order pickup. Cloudinary CDN for direct camera-to-cloud product photo uploads. Animated pill navigation shell shared across Customer and Shopkeeper profiles.",
     tags: ["Flutter", "Dart", "Riverpod", "Firebase", "Firestore", "Cloudinary"],
     metrics: [
-      { label: "Architecture", value: "Clean + Riverpod" },
-      { label: "Backend", value: "Firebase / Firestore" },
-      { label: "Order Verification", value: "QR + 4-digit PIN" },
-      { label: "Inventory Sync", value: "Atomic Transactions" },
+      { label: "Handover Security", value: "QR Scan & 4-Digit One-Time PIN" },
+      { label: "Concurrency", value: "Atomic Firestore Transactions" },
+      { label: "State Management", value: "Clean Architecture + Riverpod" },
+      { label: "Media Pipeline", value: "Direct-to-Cloudinary CDN" },
     ],
     highlights: [
       "Atomic Firestore handover — no order can be marked complete without QR scan or PIN.",
@@ -108,7 +108,7 @@ export const PROJECTS: ProjectData[] = [
     stack: "Python · XGBoost · Scikit-Learn · NASA C-MAPSS",
     role: "Lead ML Engineer",
     year: "2026",
-    image: "/images/aero_guard_cover.png",
+    image: "/images/aero_guard_cover.webp",
     overview:
       "Aero Guard is a predictive maintenance platform that forecasts Remaining Useful Life (RUL) of commercial jet engines from 21 multi-sensor telemetry channels, allowing proactive maintenance scheduling before structural degradation.",
     problem:
@@ -117,10 +117,10 @@ export const PROJECTS: ProjectData[] = [
       "Engineered rolling statistical aggregates (mean, std, EMA) across 21 engine sensors over multi-horizon windows. Trained and tuned an XGBoost gradient boosting regressor on NASA C-MAPSS simulation dataset with feature selection and hyperparameter optimization.",
     tags: ["Python", "XGBoost", "Scikit-Learn", "Pandas", "NumPy", "Feature Engineering"],
     metrics: [
-      { label: "Target Metric", value: "RUL (Flight Cycles)" },
-      { label: "Model", value: "Optimized XGBoost" },
-      { label: "Validation RMSE", value: "11.42 Cycles" },
-      { label: "R² Score", value: "0.865" },
+      { label: "Validation Dataset", value: "NASA C-MAPSS (FD001)" },
+      { label: "Model Architecture", value: "Tuned XGBoost Regressor" },
+      { label: "Validation RMSE", value: "11.42 Cycles (vs 14.5 baseline)" },
+      { label: "Telemetry Inputs", value: "21 Sensor Rolling Aggregates" },
     ],
     highlights: [
       "Extracted non-linear degradation features from 21 multi-sensor telemetry channels.",
@@ -143,7 +143,7 @@ export const PROJECTS: ProjectData[] = [
     stack: "React · Node.js · Express · PostgreSQL · REST APIs",
     role: "Full-Stack Engineer & DB Architect",
     year: "2026",
-    image: "/images/traveldost_cover.png",
+    image: "/images/traveldost_cover.webp",
     overview:
       "TravelDost is a full-stack travel planning platform with 3NF normalized PostgreSQL schemas, multi-tier RESTful API routing, and a responsive React frontend for managing multi-destination itineraries.",
     problem:
@@ -152,10 +152,10 @@ export const PROJECTS: ProjectData[] = [
       "Normalized PostgreSQL to 3NF atomic schemas. RESTful Express API routes with parameterized SQL queries. React frontend with custom state engine linking interactive maps to travel schedules.",
     tags: ["React.js", "Node.js", "Express.js", "PostgreSQL", "Tailwind CSS", "REST API"],
     metrics: [
-      { label: "Database", value: "PostgreSQL 3NF" },
-      { label: "API", value: "RESTful Express" },
-      { label: "Query Speed", value: "<45ms Lookups" },
-      { label: "Schema", value: "Atomic 3NF" },
+      { label: "Relational Schema", value: "Strict 3NF Normalization" },
+      { label: "API Framework", value: "RESTful Express.js" },
+      { label: "Query Execution", value: "<45ms Indexed Queries" },
+      { label: "State Sync", value: "Interactive Map & Schedule Engine" },
     ],
     highlights: [
       "Zero redundant data via strict 3NF normalization.",
@@ -178,7 +178,7 @@ export const PROJECTS: ProjectData[] = [
     stack: "Python · TensorFlow · Keras · IMDb Dataset",
     role: "ML Engineer",
     year: "2026",
-    image: "/images/sentiment_cover.png",
+    image: "/images/sentiment_cover.webp",
     overview:
       "End-to-end binary sentiment classifier for movie reviews using custom word embeddings and Global Average Pooling. Achieves 85.1% accuracy on 25,000 unseen reviews with a 626KB model that trains in under 10 seconds on CPU.",
     problem:
@@ -187,10 +187,10 @@ export const PROJECTS: ProjectData[] = [
       "Embedding layer + GlobalAveragePooling1D avoids expensive RNNs/LSTMs. Standalone dataset builder stores IMDb as binary .npy arrays for 100% offline use. Custom inference pipeline handles text normalization, tokenization, and sigmoid confidence scoring.",
     tags: ["Python", "TensorFlow", "Keras", "NLP", "Word Embeddings", "Deep Learning"],
     metrics: [
-      { label: "Test Accuracy", value: "85.10%" },
-      { label: "Test Loss", value: "0.3703" },
-      { label: "Model Size", value: "~626 KB" },
-      { label: "Training Time", value: "<10s on CPU" },
+      { label: "Evaluation Dataset", value: "25,000 Reviews (IMDb Test Split)" },
+      { label: "Accuracy / Loss", value: "85.10% / 0.3703 Binary CE" },
+      { label: "Model Footprint", value: "626 KB (Zero Cloud Deps)" },
+      { label: "CPU Inference", value: "<8ms per text sample" },
     ],
     highlights: [
       "100% offline — no API calls, no internet dependency during inference.",

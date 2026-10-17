@@ -29,6 +29,8 @@ export default function HeroVisual() {
 
   // Auto-tilt animation triggered AFTER preloader lifts up so the user sees it happen
   useEffect(() => {
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+
     let triggered = false;
 
     const triggerTilt = (delayMs = 250) => {
@@ -64,6 +66,7 @@ export default function HeroVisual() {
   }, []);
 
   const handleMouseMove = (e: MouseEvent<HTMLDivElement>) => {
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
     if (!cardRef.current) return;
     setIsHovered(true);
 
@@ -89,6 +92,7 @@ export default function HeroVisual() {
   };
 
   const handleMouseLeave = () => {
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
     setIsHovered(false);
     // Smoothly return back to the top-right tilted resting position
     setTransformStyle(RESTING_TRANSFORM);
@@ -113,11 +117,13 @@ export default durgesh;`;
     setExecuting(true);
     let result = "";
     if (cmd === "pnpm run test") {
-      result = "✓ All 18 test suites passed (100% coverage).";
+      result = "Demo only: no test command was executed.";
     } else if (cmd === "git status") {
-      result = "On branch main. Working tree clean. Zero technical debt.";
+      result = "Demo only: repository status is not connected.";
+    } else if (cmd === "system.health()") {
+      result = "Demo only: system health checks are not connected.";
     } else {
-      result = `Running ${cmd}... System nominal. Ping: 1.2ms.`;
+      result = `Demo only: ${cmd} is not connected to a running system.`;
     }
 
     setOutputLogs((prev) => [...prev.slice(-3), `> ${cmd}`, result]);
@@ -165,6 +171,7 @@ export default durgesh;`;
             <div className="ml-3 flex items-center gap-1 bg-[#14172B]/80 p-0.5 rounded-lg border border-[#1E223D]">
               <button
                 type="button"
+                aria-pressed={activeTab === "snapshot"}
                 onClick={() => setActiveTab("snapshot")}
                 className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-[0.72rem] font-mono transition-all ${
                   activeTab === "snapshot"
@@ -177,6 +184,7 @@ export default durgesh;`;
               </button>
               <button
                 type="button"
+                aria-pressed={activeTab === "terminal"}
                 onClick={() => setActiveTab("terminal")}
                 className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-[0.72rem] font-mono transition-all ${
                   activeTab === "terminal"
@@ -189,6 +197,7 @@ export default durgesh;`;
               </button>
               <button
                 type="button"
+                aria-pressed={activeTab === "telemetry"}
                 onClick={() => setActiveTab("telemetry")}
                 className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-[0.72rem] font-mono transition-all ${
                   activeTab === "telemetry"
@@ -197,7 +206,7 @@ export default durgesh;`;
                 }`}
               >
                 <Activity size={12} className={activeTab === "telemetry" ? "text-[#4F8EFF]" : ""} />
-                live.log
+                telemetry.demo
               </button>
             </div>
           </div>
@@ -271,11 +280,12 @@ export default durgesh;`;
             </div>
 
             {/* Interactive Runner Trigger */}
-            <div
+            <button
+              type="button"
               onClick={() => runCommand("durgesh.execute()")}
-              className="flex items-center justify-between mt-3 pt-2 border-t border-[#1A1D33]/60 cursor-pointer group/run hover:bg-[#14172B]/60 px-2 py-1 rounded transition-colors"
+              className="w-full text-left flex items-center justify-between mt-3 pt-2 border-t border-[#1A1D33]/60 cursor-pointer group/run hover:bg-[#14172B]/60 px-2 py-1 rounded transition-colors focus-visible:outline-2 focus-visible:outline-[#4F8EFF]"
             >
-              <div className="flex items-center gap-1.5">
+              <span className="flex items-center gap-1.5">
                 <span className="text-[#4F8EFF] group-hover/run:translate-x-0.5 transition-transform">
                   <Play size={10} fill="#4F8EFF" />
                 </span>
@@ -283,11 +293,11 @@ export default durgesh;`;
                   {outputLogs[outputLogs.length - 1]}
                 </span>
                 <span className="inline-block w-1.5 h-3 bg-[#4F8EFF] ml-0.5 animate-pulse" />
-              </div>
-              <span className="text-[0.62rem] text-[#475569] group-hover/run:text-[#4F8EFF] transition-colors">
-                Click to run ▶
               </span>
-            </div>
+              <span className="text-[0.62rem] text-[#718096] group-hover/run:text-[#4F8EFF] transition-colors">
+                  Run demo ▶
+              </span>
+            </button>
           </div>
         )}
 
@@ -296,8 +306,9 @@ export default durgesh;`;
           <div className="p-6 font-mono text-[0.78rem] leading-relaxed space-y-3.5 min-h-[250px] flex flex-col justify-between">
             <div className="space-y-2">
               <div className="text-[#64748B] text-[0.72rem]">
-                Durgesh CLI v2.4 (darwin-arm64) — Interactive session
+                Interactive terminal demo · commands do not execute
               </div>
+              <div aria-live="polite" aria-atomic="false">
               {outputLogs.map((log, i) => (
                 <div
                   key={i}
@@ -306,18 +317,19 @@ export default durgesh;`;
                   {log}
                 </div>
               ))}
+              </div>
             </div>
 
             {/* Quick action buttons */}
             <div className="pt-3 border-t border-[#1A1D33] flex flex-wrap gap-2">
-              <span className="text-[#475569] text-[0.68rem] self-center mr-1">Quick run:</span>
+              <span className="text-[#718096] text-[0.68rem] self-center mr-1">Demo output:</span>
               <button
                 type="button"
                 disabled={executing}
                 onClick={() => runCommand("pnpm run test")}
                 className="px-2.5 py-1 rounded bg-[#14172B] hover:bg-[#1E223D] border border-[#1E223D] text-[#93C5FD] text-[0.68rem] transition-colors active:scale-95"
               >
-                test:all
+                test demo
               </button>
               <button
                 type="button"
@@ -325,7 +337,7 @@ export default durgesh;`;
                 onClick={() => runCommand("git status")}
                 className="px-2.5 py-1 rounded bg-[#14172B] hover:bg-[#1E223D] border border-[#1E223D] text-[#93C5FD] text-[0.68rem] transition-colors active:scale-95"
               >
-                git:status
+                status demo
               </button>
               <button
                 type="button"
@@ -333,16 +345,16 @@ export default durgesh;`;
                 onClick={() => runCommand("system.health()")}
                 className="px-2.5 py-1 rounded bg-[#14172B] hover:bg-[#1E223D] border border-[#1E223D] text-[#93C5FD] text-[0.68rem] transition-colors active:scale-95"
               >
-                health
+                health demo
               </button>
             </div>
           </div>
         )}
 
-        {/* Tab 3: Live Telemetry */}
+        {/* Tab 3: Illustrative Telemetry */}
         {activeTab === "telemetry" && (
           <div className="p-6 font-mono text-[0.78rem] leading-relaxed space-y-3.5 min-h-[250px]">
-            <div className="text-[#64748B] text-[0.72rem]">Telemetry sync: Quantum uplink active</div>
+            <div className="text-[#64748B] text-[0.72rem]">Illustrative telemetry · not live system data</div>
             
             <div className="grid grid-cols-2 gap-3.5 pt-1">
               <div className="p-3 rounded-lg bg-[#14172B]/60 border border-[#1E223D]">
@@ -365,7 +377,7 @@ export default durgesh;`;
 
             <div className="flex items-center gap-2 pt-2 text-[#64748B] text-[0.7rem]">
               <span className="w-1.5 h-1.5 rounded-full bg-[#28C840] animate-ping" />
-              <span>Telemetry streaming real-time metrics</span>
+              <span>Sample values for interface preview</span>
             </div>
           </div>
         )}
@@ -379,7 +391,7 @@ export default durgesh;`;
               { label: "Status",   value: "Open" },
             ].map(({ label, value }) => (
               <div key={label} className="flex items-center gap-2">
-                <span className="text-[#475569] text-[0.65rem] uppercase tracking-widest font-mono">
+                <span className="text-[#718096] text-[0.65rem] uppercase tracking-widest font-mono">
                   {label}
                 </span>
                 <span

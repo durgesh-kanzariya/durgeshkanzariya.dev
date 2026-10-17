@@ -13,6 +13,9 @@ export default function ProjectsSection() {
   const headingRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
+    if (typeof window === "undefined") return;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+
     gsap.registerPlugin(ScrollTrigger);
 
     const ctx = gsap.context(() => {
@@ -40,7 +43,7 @@ export default function ProjectsSection() {
       <div className="section-container">
 
         {/* Section header */}
-        <div ref={headingRef} className="mb-20" style={{ opacity: 0 }}>
+        <div ref={headingRef} className="mb-20">
           <MagneticText
             as="h2"
             radius={85}

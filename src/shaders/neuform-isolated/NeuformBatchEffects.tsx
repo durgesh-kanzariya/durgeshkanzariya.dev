@@ -29,7 +29,6 @@ function resolveSourceString(src: unknown): string {
   return "";
 }
 
-console.log(">>> CHECK matrixFieldSource:", typeof matrixFieldSource, resolveSourceString(matrixFieldSource).length);
 
 type FocusRole = "background" | "ui";
 type NeuformMode = "dark" | "light";

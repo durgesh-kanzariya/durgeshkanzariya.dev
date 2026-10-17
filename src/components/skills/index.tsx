@@ -14,6 +14,9 @@ export default function SkillsSection() {
   const gridRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
+    if (typeof window === "undefined") return;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+
     gsap.registerPlugin(ScrollTrigger);
 
     const ctx = gsap.context(() => {
@@ -57,7 +60,7 @@ export default function SkillsSection() {
     <section id="skills" ref={sectionRef} className="section-padding relative overflow-hidden">
       <div className="section-container">
         {/* Section header */}
-        <div ref={headingRef} className="mb-16" style={{ opacity: 0 }}>
+        <div ref={headingRef} className="mb-16">
           <MagneticText
             as="h2"
             radius={85}

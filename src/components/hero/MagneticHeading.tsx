@@ -31,6 +31,7 @@ export default function MagneticHeading() {
   };
 
   const handleMouseMove = (e: MouseEvent<HTMLHeadingElement>) => {
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
     if (!letterPositions.current.length) handleMouseEnter();
 
     const radius = 85; // Proximity threshold in pixels
@@ -83,6 +84,10 @@ export default function MagneticHeading() {
   };
 
   const handleMouseLeave = () => {
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      letterPositions.current = [];
+      return;
+    }
     // Smoothly bounce all letters back to resting baseline
     letterRefs.current.forEach((el) => {
       if (!el) return;

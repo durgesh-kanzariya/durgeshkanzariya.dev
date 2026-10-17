@@ -17,6 +17,9 @@ export default function FooterSection() {
   const rightRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
+    if (typeof window === "undefined") return;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+
     gsap.registerPlugin(ScrollTrigger);
 
     const ctx = gsap.context(() => {
@@ -107,7 +110,6 @@ export default function FooterSection() {
             <div
               ref={bodyRef}
               className="flex flex-col sm:flex-row items-start sm:items-center gap-4"
-              style={{ opacity: 0 }}
             >
               <InteractiveButton
                 variant="glow-trace"
@@ -123,7 +125,7 @@ export default function FooterSection() {
           </div>
 
           {/* Right Column — Social links panel */}
-          <div ref={rightRef} className="flex flex-col justify-center" style={{ opacity: 0 }}>
+          <div ref={rightRef} className="flex flex-col justify-center">
             <p className="text-[#64748B] text-xs font-mono uppercase tracking-widest mb-4">
               Connect directly
             </p>
@@ -134,7 +136,7 @@ export default function FooterSection() {
               ))}
             </div>
 
-            <p className="mt-4 text-[#475569] text-xs leading-relaxed font-mono">
+            <p className="mt-4 text-[#718096] text-xs leading-relaxed font-mono">
               I respond to all inquiries — collaborations, full-time engineering roles, or tech chats.
             </p>
           </div>

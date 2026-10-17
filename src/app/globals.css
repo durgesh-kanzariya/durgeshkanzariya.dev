@@ -17,7 +17,7 @@
   /* — Ink (crisp white & cool slates — no yellowish tones) — */
   --color-ink-primary: #F0F4FF;
   --color-ink-muted:   #94A3B8;
-  --color-ink-subtle:  #475569;
+  --color-ink-subtle:  #718096;
 
   /* — Accent (electric ice blue) — */
   --color-accent:       #4F8EFF;
@@ -94,12 +94,60 @@ body {
 .scrollbar-none { -ms-overflow-style: none !important; scrollbar-width: none !important; }
 
 /* ============================================================
-   CURSOR (desktop)
+   ACCESSIBILITY & FOCUS INDICATORS
    ============================================================ */
-@media (min-width: 768px) {
-  * { cursor: none !important; }
-  a, button, [role="button"], input, select, textarea, .cursor-pointer {
+:focus {
+  outline: none;
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 3px;
+  border-radius: 6px;
+}
+
+/* Screen reader only utility */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* ============================================================
+   CURSOR (desktop only when CustomCursor is active & mounted)
+   ============================================================ */
+@media (min-width: 768px) and (hover: hover) and (pointer: fine) {
+  body.custom-cursor-active,
+  body.custom-cursor-active a,
+  body.custom-cursor-active button,
+  body.custom-cursor-active [role="button"],
+  body.custom-cursor-active .cursor-pointer {
     cursor: none !important;
+  }
+}
+
+/* ============================================================
+   REDUCED MOTION (A11Y)
+   ============================================================ */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation: none !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  .marquee-track,
+  .marquee-track-reverse {
+    animation: none !important;
+    transform: none !important;
   }
 }
 

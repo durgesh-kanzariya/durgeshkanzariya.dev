@@ -20,6 +20,8 @@ export default function GridProjectCard({ project, index }: GridProjectCardProps
   const domainColor = DOMAIN_COLORS[project.domain] || "#4F8EFF";
 
   useEffect(() => {
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+
     gsap.registerPlugin(ScrollTrigger);
 
     const ctx = gsap.context(() => {
@@ -48,7 +50,6 @@ export default function GridProjectCard({ project, index }: GridProjectCardProps
     <div
       ref={cardRef}
       className="group relative flex flex-col rounded-2xl border border-[#1A1D33] bg-[#0E101E] overflow-hidden transition-all duration-300 hover:border-[#4F8EFF]/40 hover:shadow-2xl hover:shadow-black/50"
-      style={{ opacity: 0 }}
     >
       {/* Visual Cover Preview */}
       <div className="relative w-full aspect-[16/10] overflow-hidden bg-[#0A0C16]">
@@ -59,7 +60,7 @@ export default function GridProjectCard({ project, index }: GridProjectCardProps
         >
           <Image
             src={project.image}
-            alt={project.title}
+            alt={`${project.title} project cover`}
             fill
             sizes="(max-width: 768px) 100vw, 50vw"
             className="object-cover opacity-85 group-hover:opacity-100 group-hover:scale-105 transition-all duration-500"

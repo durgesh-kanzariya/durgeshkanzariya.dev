@@ -16,6 +16,7 @@ export default function PageTransition({ children }: PageTransitionProps) {
 
   useEffect(() => {
     gsap.registerPlugin(ScrollTrigger);
+    const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
     // Always reset scroll to top on route change
     if (typeof window !== "undefined") {
@@ -30,6 +31,8 @@ export default function PageTransition({ children }: PageTransitionProps) {
       isFirstMount.current = false;
       return;
     }
+
+    if (prefersReducedMotion) return;
 
     const el = containerRef.current;
     if (!el) return;

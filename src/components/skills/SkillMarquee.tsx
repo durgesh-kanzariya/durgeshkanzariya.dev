@@ -20,7 +20,7 @@ function SkillChip({ name, category }: SkillItem) {
 
 export default function SkillMarquee() {
   return (
-    <div className="relative overflow-hidden pt-8">
+    <div className="relative overflow-hidden pt-8" aria-hidden="true">
       {/* Edge gradient masks */}
       <div className="absolute left-0 top-0 bottom-0 w-24 bg-gradient-to-r from-[#080810] to-transparent z-10 pointer-events-none" />
       <div className="absolute right-0 top-0 bottom-0 w-24 bg-gradient-to-l from-[#080810] to-transparent z-10 pointer-events-none" />

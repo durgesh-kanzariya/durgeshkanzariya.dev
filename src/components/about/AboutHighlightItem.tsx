@@ -12,7 +12,7 @@ export default function AboutHighlightItem({ item }: AboutHighlightItemProps) {
   return (
     <div className="about-item group flex items-start gap-5 py-6 first:pt-0 last:pb-0 transition-colors duration-300">
       {/* Number index */}
-      <span className="font-mono text-[0.7rem] text-[#475569] font-bold pt-1.5 w-6 flex-shrink-0 group-hover:text-[#94A3B8] transition-colors">
+      <span className="font-mono text-[0.7rem] text-[#718096] font-bold pt-1.5 w-6 flex-shrink-0 group-hover:text-[#94A3B8] transition-colors">
         {number}
       </span>
 

@@ -7,8 +7,15 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 
 export default function SmoothScrollProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
+    if (typeof window === "undefined") return;
+
+    // Honor reduced motion accessibility preference
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      return;
+    }
+
     // Disable automatic browser scroll restoration on reload so page always starts at top
-    if (typeof window !== "undefined" && "scrollRestoration" in window.history) {
+    if ("scrollRestoration" in window.history) {
       window.history.scrollRestoration = "manual";
       window.scrollTo(0, 0);
     }

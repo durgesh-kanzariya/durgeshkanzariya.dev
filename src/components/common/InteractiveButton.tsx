@@ -151,6 +151,7 @@ export default function InteractiveButton({
     group/ibtn relative inline-flex items-center justify-center font-medium
     rounded-full select-none cursor-pointer overflow-visible
     transition-[transform,box-shadow] duration-200 ease-out active:scale-[0.97]
+    focus-visible:outline-2 focus-visible:outline-[#4F8EFF] focus-visible:outline-offset-2
     ${sizeClasses}
     ${className}
   `.trim();

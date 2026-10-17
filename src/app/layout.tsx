@@ -29,34 +29,40 @@ const jetbrains = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Durgesh Kanzariya — Engineer by craft. Builder by passion.",
+  metadataBase: new URL("https://durgeshkanzariya.dev"),
+  title: "Durgesh Kanzariya — Full-Stack & Machine Learning Engineer",
   description:
-    "IT engineer at RK University building real systems across the full stack — from React dashboards and FastAPI backends to Flutter mobile apps and deep learning models.",
+    "IT engineer building production systems across the full stack — from React dashboards and high-throughput FastAPI backends to Flutter mobile apps and predictive ML models.",
   keywords: [
     "Durgesh Kanzariya",
     "Full-Stack Developer",
     "Flutter Developer",
-    "Machine Learning",
-    "React",
+    "Machine Learning Engineer",
     "FastAPI",
-    "Portfolio",
+    "React",
+    "Next.js",
+    "Python",
     "RK University",
+    "Software Engineer",
   ],
   authors: [{ name: "Durgesh Kanzariya", url: "https://durgeshkanzariya.dev" }],
   creator: "Durgesh Kanzariya",
+  alternates: {
+    canonical: "/",
+  },
   openGraph: {
     type: "website",
     locale: "en_US",
     url: "https://durgeshkanzariya.dev",
-    title: "Durgesh Kanzariya — Engineer by craft. Builder by passion.",
+    title: "Durgesh Kanzariya — Full-Stack & ML Engineer",
     description:
-      "IT engineer building real systems across the full stack — web, mobile, ML.",
-    siteName: "Durgesh Kanzariya",
+      "IT engineer building scalable full-stack web applications, Flutter mobile apps, and machine learning models.",
+    siteName: "Durgesh Kanzariya Portfolio",
   },
   twitter: {
     card: "summary_large_image",
-    title: "Durgesh Kanzariya — Portfolio",
-    description: "Full-Stack Engineer & ML Developer. Engineer by craft. Builder by passion.",
+    title: "Durgesh Kanzariya — Full-Stack & ML Engineer",
+    description: "IT engineer building scalable full-stack web applications, Flutter mobile apps, and machine learning models.",
     creator: "@durgesh_kanzariya",
   },
   robots: {
@@ -78,7 +84,7 @@ export default function RootLayout({
     >
       <body
         suppressHydrationWarning
-        className="bg-[#080810] text-[#F0F0F8] md:cursor-none relative overflow-x-hidden"
+        className="bg-[#080810] text-[#F0F0F8] relative overflow-x-hidden"
       >
         {/* Cinematic Liquid Wave Preloader */}
         <Preloader />

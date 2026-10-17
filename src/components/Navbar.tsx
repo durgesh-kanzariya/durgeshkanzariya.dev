@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
+import { useRouter, usePathname } from "next/navigation";
 import { Mail, FileText } from "lucide-react";
 import { GithubIcon, LinkedinIcon } from "@/components/BrandIcons";
 import gsap from "gsap";
@@ -22,9 +23,72 @@ const SOCIAL_LINKS = [
 ];
 
 export default function Navbar() {
+  const router = useRouter();
+  const pathname = usePathname();
   const navRef = useRef<HTMLElement>(null);
+  const toggleBtnRef = useRef<HTMLButtonElement>(null);
+  const drawerRef = useRef<HTMLDivElement>(null);
+  const mobileOpenRef = useRef(false);
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
+
+  const closeMobileMenu = (restoreFocus = true) => {
+    const wasOpen = mobileOpenRef.current;
+    mobileOpenRef.current = false;
+    setMobileOpen(false);
+    if (restoreFocus && wasOpen) {
+      requestAnimationFrame(() => toggleBtnRef.current?.focus());
+    }
+  };
+
+  const openMobileMenu = () => {
+    mobileOpenRef.current = true;
+    setMobileOpen(true);
+  };
+
+  // Focus trap & auto-focus inside mobile drawer when opened
+  useEffect(() => {
+    if (!mobileOpen) return;
+
+    // Focus the first navigation button inside the drawer
+    const timer = setTimeout(() => {
+      const focusable = drawerRef.current?.querySelectorAll<HTMLElement>(
+        'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+      );
+      if (focusable && focusable.length > 0) {
+        focusable[0].focus();
+      }
+    }, 50);
+
+    // Trap tab key cycling inside drawer
+    const handleTabTrap = (e: KeyboardEvent) => {
+      if (e.key !== "Tab" || !drawerRef.current) return;
+      const elements = drawerRef.current.querySelectorAll<HTMLElement>(
+        'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+      );
+      if (!elements.length) return;
+
+      const first = elements[0];
+      const last = elements[elements.length - 1];
+
+      if (!drawerRef.current.contains(document.activeElement)) {
+        e.preventDefault();
+        first.focus();
+      } else if (e.shiftKey && document.activeElement === first) {
+        e.preventDefault();
+        last.focus();
+      } else if (!e.shiftKey && document.activeElement === last) {
+        e.preventDefault();
+        first.focus();
+      }
+    };
+
+    window.addEventListener("keydown", handleTabTrap);
+    return () => {
+      clearTimeout(timer);
+      window.removeEventListener("keydown", handleTabTrap);
+    };
+  }, [mobileOpen]);
 
   useEffect(() => {
     gsap.registerPlugin(ScrollTrigger);
@@ -34,33 +98,53 @@ export default function Navbar() {
     };
     window.addEventListener("scroll", handleScroll, { passive: true });
 
-    // Animate in on load
+    // Handle Escape key to close mobile menu & return focus
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape" && mobileOpenRef.current) {
+        closeMobileMenu();
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+
+    // Animate in on load unless user prefers reduced motion
+    const prefersReducedMotion =
+      typeof window !== "undefined" &&
+      window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
     const ctx = gsap.context(() => {
-      gsap.fromTo(
-        navRef.current,
-        { opacity: 0, y: -20 },
-        { opacity: 1, y: 0, duration: 1, ease: "power3.out", delay: 0.5 }
-      );
+      if (!prefersReducedMotion) {
+        gsap.fromTo(
+          navRef.current,
+          { opacity: 0, y: -20 },
+          { opacity: 1, y: 0, duration: 1, ease: "power3.out", delay: 0.5 }
+        );
+      }
     });
 
     return () => {
       window.removeEventListener("scroll", handleScroll);
+      window.removeEventListener("keydown", handleKeyDown);
       ctx.revert();
     };
   }, []);
 
   const handleNavClick = (href: string) => {
-    setMobileOpen(false);
+    closeMobileMenu();
     if (href.startsWith("#")) {
-      const el = document.getElementById(href.replace("#", ""));
-      if (el) {
+      const sectionId = href.replace("#", "");
+      const el = document.getElementById(sectionId);
+      if (el && pathname === "/") {
         const lenis = window.lenis;
         if (lenis) {
           lenis.scrollTo(el, { duration: 1.2, easing: (t: number) => Math.min(1, 1.001 - Math.pow(2, -10 * t)) });
         } else {
           el.scrollIntoView({ behavior: "smooth" });
         }
+      } else {
+        router.push(`/${href}`);
       }
+    } else {
+      router.push(href);
     }
   };
 
@@ -68,12 +152,12 @@ export default function Navbar() {
     <>
       <nav
         ref={navRef}
+        aria-label="Primary navigation"
         className={`fixed top-0 left-0 right-0 z-40 transition-all duration-500 ${
           scrolled
             ? "bg-[#080810]/80 backdrop-blur-xl border-b border-[#1c1c3a]"
             : "bg-transparent"
         }`}
-        style={{ opacity: 0 }}
       >
         <div className="section-container">
           <div className="flex items-center justify-between h-16 md:h-18">
@@ -128,9 +212,12 @@ export default function Navbar() {
 
             {/* Mobile Menu Toggle */}
             <button
-              className="md:hidden flex flex-col gap-1.5 p-2"
-              onClick={() => setMobileOpen(!mobileOpen)}
-              aria-label="Toggle navigation"
+              ref={toggleBtnRef}
+              className="md:hidden flex flex-col gap-1.5 p-2 rounded-lg focus-visible:outline-2 focus-visible:outline-[#4F8EFF]"
+              onClick={() => mobileOpen ? closeMobileMenu(false) : openMobileMenu()}
+              aria-expanded={mobileOpen}
+              aria-controls="mobile-nav"
+              aria-label={mobileOpen ? "Close navigation menu" : "Open navigation menu"}
             >
               <span
                 className={`block w-5 h-[1.5px] bg-[#F0F0F8] transition-all duration-300 ${
@@ -154,13 +241,20 @@ export default function Navbar() {
 
       {/* Mobile Menu Drawer */}
       <div
+        ref={drawerRef}
+        id="mobile-nav"
+        role="dialog"
+        aria-modal={mobileOpen}
+        aria-hidden={!mobileOpen}
+        inert={!mobileOpen}
+        aria-label="Mobile navigation"
         className={`fixed inset-0 z-30 transition-all duration-500 ${
-          mobileOpen ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
+          mobileOpen ? "opacity-100 pointer-events-auto visible" : "opacity-0 pointer-events-none invisible"
         }`}
       >
         <div
           className="absolute inset-0 bg-[#080810]/90 backdrop-blur-xl"
-          onClick={() => setMobileOpen(false)}
+          onClick={() => closeMobileMenu()}
         />
         <div
           className={`absolute top-16 left-0 right-0 bg-[#0c0c18] border-b border-[#1c1c3a] transition-transform duration-500 ${

@@ -24,7 +24,7 @@ export default function ProjectImage({ project }: ProjectImageProps) {
       <div className="absolute inset-0">
         <Image
           src={project.image}
-          alt={project.title}
+          alt={`${project.title} project cover`}
           fill
           sizes="(max-width: 1024px) 100vw, 50vw"
           className="object-cover opacity-75 group-hover:opacity-95 transition-opacity duration-500 group-hover:scale-[1.02] transition-transform"
